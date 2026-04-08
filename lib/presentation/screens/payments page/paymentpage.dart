@@ -85,7 +85,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                 preferredSize: Size.fromHeight(screenHeight * 0.12),
                 child: AppBar(
                   title: Text(
-                    ' My Payments',
+                    ' My Payments'.tr,
                     style: TextStyle(
                       fontSize: screenHeight * 0.03,
                       fontWeight: FontWeight.w600,
@@ -151,7 +151,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                   ),
                                   child: DropdownButton<String>(
                                     value: selectedPaymentType,
-                                    hint: Text("Payment Type"),
+                                    hint: Text("Payment Type".tr),
                                     isExpanded: true,
                                     underline: SizedBox(),
                                     items: uniqueTypes.map((String type) {
@@ -183,7 +183,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          selectedPaymentDate ?? "Payment Date",
+                                          selectedPaymentDate ?? "Payment Date".tr,
                                           style: TextStyle(
                                             fontSize: screenSize.width * 0.040,
                                             fontWeight: FontWeight.bold,
@@ -200,7 +200,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                             ),
                             SizedBox(height: screenSize.height * 0.02),
                             if (filteredPayments.isEmpty)
-                              Center(child: Text("No payments found."))
+                              Center(child: Text("No payments found.".tr))
                             else
                               ...filteredPayments.map((payment) {
                                 final dateStr =
@@ -265,7 +265,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                                 height:
                                                     screenSize.height * 0.01),
                                             Text(
-                                              'Paid on: $dateStr',
+                                              'Paid on: $dateStr'.tr,
                                               style: TextStyle(
                                                 fontSize:
                                                     screenSize.width * 0.03,

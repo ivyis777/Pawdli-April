@@ -33,7 +33,7 @@ class UploadReelPage extends StatelessWidget {
         child: Stack(
           children: [
             AppBar(
-              title: const Text("Upload Videos"),
+              title:  Text("Upload Videos".tr),
               backgroundColor: Colors.white,
             ),
 
@@ -59,7 +59,7 @@ class UploadReelPage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () => pickVideo(context),
-          child: const Text("Select Video"),
+          child:  Text("Select Video".tr),
         ),
       ),
     );
@@ -108,7 +108,7 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
           children: [
             AppBar(
               centerTitle: true,
-              title: const Text("Upload Videos"),
+              title:  Text("Upload Videos".tr),
               backgroundColor: Colors.white,
             ),
 
@@ -197,7 +197,7 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
               maxLines: 3,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
-                hintText: "Description",
+                hintText: "Description".tr,
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 10,
                   horizontal: 12,
@@ -260,8 +260,8 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
                                       size: 60,
                                     ),
                                     const SizedBox(height: 12),
-                                    const Text(
-                                      "Uploaded Successfully",
+                                     Text(
+                                      "Uploaded Successfully".tr,
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w600,
@@ -274,7 +274,7 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
                           );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Upload Failed ❌")),
+                             SnackBar(content: Text("Upload Failed ❌".tr)),
                           );
                         }
                       },
@@ -305,8 +305,8 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
                           ),
                         ],
                       )
-                    : const Text(
-                        "Upload Video",
+                    :  Text(
+                        "Upload Video".tr,
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,

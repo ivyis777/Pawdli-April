@@ -100,7 +100,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
       aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
       uiSettings: [
         AndroidUiSettings(
-          toolbarTitle: 'Crop Image',
+          toolbarTitle: 'Crop Image'.tr,
           toolbarColor: Colours.primarycolour,
           toolbarWidgetColor: Colors.white,
           cropStyle: CropStyle.circle, // ✅ CIRCLE CROP (Android)
@@ -108,7 +108,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
           lockAspectRatio: true,
         ),
         IOSUiSettings(
-          title: 'Crop Image',
+          title: 'Crop Image'.tr,
           aspectRatioLockEnabled: true,
         ),
       ],
@@ -129,7 +129,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
             children: [
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title: const Text('Take a Picture'),
+                title: Text('Take a Picture'.tr),
                 onTap: () async {
                   Navigator.pop(sheetContext); // ✅ CLOSE SHEET FIRST
 
@@ -150,7 +150,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
               ),
               ListTile(
                 leading: const Icon(Icons.image),
-                title: const Text('Upload from Gallery'),
+                title: Text('Upload from Gallery'.tr),
                 onTap: () async {
                   Navigator.pop(sheetContext); // ✅ CLOSE SHEET FIRST
 
@@ -234,7 +234,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
         onTap: onTap,
         validator: (value) {
           if (requireValidation && (value == null || value.trim().isEmpty)) {
-            return 'Please enter this field';
+            return 'Please enter this field'.tr;
           }
           return null;
         },
@@ -262,7 +262,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(
-            'Gender:',
+            'Gender:'.tr,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           ToggleSwitch(
@@ -273,7 +273,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
             inactiveBgColor: Colors.grey,
             inactiveFgColor: Colors.white,
             totalSwitches: 2,
-            labels: ['Male', 'Female'],
+            labels: ['Male'.tr, 'Female'.tr],
             icons: [FontAwesomeIcons.mars, FontAwesomeIcons.venus],
             activeBgColors: [
               [Colours.primarycolour],
@@ -299,7 +299,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Text(
-              'Neutered/Spayed:',
+              'Neutered/Spayed:'.tr,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             ToggleSwitch(
@@ -315,7 +315,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
               initialLabelIndex:
                   _isSpayed == 'Yes' ? 0 : 1, // Sync with current state
               totalSwitches: 2,
-              labels: ['Yes', 'No'],
+              labels: ['Yes'.tr, 'No'.tr],
               radiusStyle: true,
               onToggle: (index) {
                 setState(() {
@@ -337,7 +337,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(
-            'Is Free:',
+            'Is Free:'.tr,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           ToggleSwitch(
@@ -352,7 +352,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
             inactiveFgColor: Colors.white,
             initialLabelIndex: _isFree == 'Yes' ? 0 : 1,
             totalSwitches: 2,
-            labels: ['Yes', 'No'],
+            labels: ['Yes'.tr, 'No'.tr],
             radiusStyle: true,
             onToggle: (index) {
               setState(() {
@@ -373,7 +373,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(
-            'Status:',
+            'Status:'.tr,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           IgnorePointer(
@@ -390,7 +390,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
               inactiveFgColor: Colors.white,
               initialLabelIndex: 0, // Always "Available"
               totalSwitches: 2,
-              labels: ['Available', 'Adopted'],
+              labels: ['Available'.tr, 'Adopted'.tr],
               radiusStyle: true,
               onToggle: (_) {}, // Won't be called due to IgnorePointer
             ),
@@ -420,7 +420,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
       Column(children: [
         AppBar(
           title: Text(
-            'Add  Pet',
+            'Add Pet'.tr,
             style: TextStyle(
               fontSize: screenHeight * 0.035,
               fontWeight: FontWeight.w600,
@@ -489,7 +489,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      _buildTextField('Pet Name', _nameController,
+                      _buildTextField('Pet Name'.tr, _nameController,
                           requireValidation: false),
 
                       SizedBox(height: 5),
@@ -505,8 +505,8 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
                                 isValid; // ✅ <-- This is what was missing
                           });
                           print(isValid
-                              ? '✅ Valid phone number'
-                              : '❌ Invalid phone number');
+                              ? '✅ Valid phone number'.tr
+                              : '❌ Invalid phone number'.tr);
                         },
                         selectorConfig: SelectorConfig(
                           selectorType: PhoneInputSelectorType.DIALOG,
@@ -516,12 +516,12 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
                         initialValue: _phoneNumber,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your phone number';
+                            return 'Please enter your phone number'.tr;
                           }
                           return null;
                         },
                         inputDecoration: InputDecoration(
-                          labelText: 'Phone Number',
+                          labelText: 'Phone Number'.tr,
                           fillColor: Colors.white,
                           labelStyle: TextStyle(color: Colors.brown[600]),
                           border: OutlineInputBorder(
@@ -540,11 +540,11 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
 
                       //  _buildTextField("Enter Pet Age", _ageController),
                       _buildTextField(
-                          "Enter Pet Description", _descriptionController),
+                          "Enter Pet Description".tr, _descriptionController),
                       _buildTextField(
-                          "Enter Pet Location", _LocationController),
+                          "Enter Pet Location".tr, _LocationController),
                       _buildTextField(
-                        "Enter Birthday (YYYY/MM/DD)",
+                        "Enter Birthday (YYYY/MM/DD)".tr,
                         requireValidation: false,
                         _birthdayController,
                         readOnly: true,
@@ -562,20 +562,20 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
                         children: [
                           Expanded(
                             child: _buildTextField(
-                                "Enter Weight (kg)", _weightController,
+                                "Enter Weight (kg)".tr, _weightController,
                                 requireValidation: false),
                           ),
                           SizedBox(width: 10),
                           Expanded(
                             child: _buildTextField(
-                                "Enter Height (cm)", _heightController,
+                                "Enter Height (cm)".tr, _heightController,
                                 requireValidation: false),
                           ),
                         ],
                       ),
 
                       _buildTextField(
-                          "Enter Microchip Number", _microchipController,
+                          "Enter Microchip Number".tr, _microchipController,
                           requireValidation: false),
 
                       Center(
@@ -585,7 +585,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content:
-                                      Text('Please enter a valid phone number'),
+                                      Text('Please enter a valid phone number'.tr),
                                   backgroundColor: Colors.black,
                                 ),
                               );
@@ -594,35 +594,35 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
 
                             if (_formKey.currentState!.validate()) {
                               final Map<String, dynamic> petData = {
-                                "name": _nameController.text,
-                                "breed": _selectedBreed,
-                                "gender": _selectedGender,
-                                "weight": _weightController.text,
-                                "height": _heightController.text,
-                                "microchip_number":
+                                "name".tr: _nameController.text,
+                                "breed".tr: _selectedBreed,
+                                "gender".tr: _selectedGender,
+                                "weight".tr: _weightController.text,
+                                "height".tr: _heightController.text,
+                                "microchip_number".tr:
                                     _microchipController.text.isNotEmpty
                                         ? _microchipController.text
                                         : null,
-                                "location": _LocationController.text,
-                                "neutered_or_spayed": _isSpayed == 'Yes',
-                                "date_of_birth": _apiFormattedDate ?? "",
-                                "description": _descriptionController.text,
-                                "dateOfBirth": _birthdayController.text,
+                                "location".tr: _LocationController.text,
+                                "neutered_or_spayed".tr: _isSpayed == 'Yes',
+                                "date_of_birth".tr: _apiFormattedDate ?? "",
+                                "description".tr: _descriptionController.text,
+                                "dateOfBirth".tr: _birthdayController.text,
                                 // "category": _selectedCategoryId,
                                 // "subcategory": _selectedSubcategoryId,
-                                "owner": userId,
-                                "mobile_number": _phoneNumber.phoneNumber ?? '',
+                                "owner".tr: userId,
+                                "mobile_number".tr: _phoneNumber.phoneNumber ?? '',
 
-                                "is_free": _isFree == 'Yes',
-                                "is_paid": _isFree == 'No',
-                                "isAvailable": _isAvailable,
-                                "isSoldout": _isSoldout,
+                                "is_free".tr: _isFree == 'Yes',
+                                "is_paid".tr: _isFree == 'No',
+                                "isAvailable".tr: _isAvailable,
+                                "isSoldout".tr: _isSoldout,
                               };
 
 // ✅ Add the image only if it’s a valid File
                               if (_profileImage != null &&
                                   _profileImage is File) {
-                                petData["pet_profile_image"] = _profileImage!;
+                                petData["pet_profile_image".tr] = _profileImage!;
                               }
 
                               print("Sending data: $petData");
@@ -641,7 +641,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
                             ),
                           ),
                           child: Text(
-                            "Save",
+                            "Save".tr,
                             style: TextStyle(
                               fontSize: screenHeight * 0.025,
                               fontWeight: FontWeight.w600,

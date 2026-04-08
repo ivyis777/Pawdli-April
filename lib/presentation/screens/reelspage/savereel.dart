@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -11,7 +12,7 @@ class ReelSaveHelper {
 
       if (!permission.isGranted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Storage permission required")),
+           SnackBar(content: Text("Storage permission required".tr)),
         );
         return;
       }
@@ -36,12 +37,12 @@ class ReelSaveHelper {
       await file.writeAsBytes(response.bodyBytes);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Video saved successfully")),
+         SnackBar(content: Text("Video saved successfully".tr)),
       );
     } catch (e) {
       print("SAVE VIDEO ERROR: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to save video")),
+         SnackBar(content: Text("Failed to save video".tr)),
       );
     }
   }

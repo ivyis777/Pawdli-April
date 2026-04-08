@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/presentation/screens/reelspage/createreelscamera.dart';
@@ -163,8 +164,8 @@ class _ReelsPageState extends State<ReelsPage> {
               // 📁 Upload Reel
               ListTile(
                 leading: const Icon(Icons.video_library, color: Colors.white),
-                title: const Text(
-                  "Upload Reel",
+                title:  Text(
+                  "Upload Reel".tr,
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 onTap: () async {
@@ -191,8 +192,8 @@ class _ReelsPageState extends State<ReelsPage> {
               // 📷 Open Camera
               ListTile(
                 leading: const Icon(Icons.videocam, color: Colors.white),
-                title: const Text(
-                  "Open Camera",
+                title:  Text(
+                  "Open Camera".tr,
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 onTap: () async {
@@ -250,8 +251,8 @@ class _ReelsPageState extends State<ReelsPage> {
               title: TextField(
                 autofocus: true,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  hintText: "Search",
+                decoration:  InputDecoration(
+                  hintText: "Search".tr,
                   hintStyle: TextStyle(color: Colors.white54),
                   border: InputBorder.none,
                 ),
@@ -832,15 +833,15 @@ class _ReelPlayerState extends State<ReelPlayer> {
 
                               // Inline "... more"
                               if (!isCaptionExpanded && isOverflowing)
-                                const TextSpan(
-                                  text: " …more",
+                                 TextSpan(
+                                  text: " …more".tr,
                                   style: moreStyle,
                                 ),
 
                               // Inline " less"
                               if (isCaptionExpanded)
-                                const TextSpan(
-                                  text: "  less",
+                                 TextSpan(
+                                  text: "  less".tr,
                                   style: moreStyle,
                                 ),
                             ],

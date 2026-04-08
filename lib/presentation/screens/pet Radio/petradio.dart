@@ -159,7 +159,7 @@ class _PetradioState extends State<Petradio> {
                                           SizedBox(
                                             width: screenWidth * 0.5,
                                             child: Text(
-                                              radioData.name ?? "Default Name",
+                                              radioData.name ?? "Default Name".tr,
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: FontFamily.Cairo,
@@ -179,7 +179,7 @@ class _PetradioState extends State<Petradio> {
                                             width: screenWidth * 0.5,
                                             child: Text(
                                               radioData.description ??
-                                                  "Default Description",
+                                                  "Default Description".tr,
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: FontFamily.Cairo,

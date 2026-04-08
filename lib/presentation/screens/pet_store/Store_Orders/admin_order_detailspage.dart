@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:intl/intl.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/model/admin_ordermodel.dart';
@@ -70,8 +71,8 @@ class AdminOrderDetailspage extends StatelessWidget {
                 onPressed: () => Navigator.maybePop(context),
               ),
 
-              title: const Text(
-                "Request Details",
+              title: Text(
+                "Request Details".tr,
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -96,35 +97,35 @@ class AdminOrderDetailspage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Order ID: ${order.orderId}",
+                  Text("Order ID: ${order.orderId}".tr,
                       style: const TextStyle(fontSize: 18)),
                   const SizedBox(height: 10),
-                  Text("User ID: ${order.user}"),
-                  Text("Total Amount: ₹${order.totalAmount}"),
-                  Text("Final Amount: ₹${order.finalAmount}"),
-                  Text("Status: ${order.status}"),
+                  Text("User ID: ${order.user}".tr),
+                  Text("Total Amount: ₹${order.totalAmount}".tr),
+                  Text("Final Amount: ₹${order.finalAmount}".tr),
+                  Text("Status: ${order.status}".tr),
                   const SizedBox(height: 10),
 
                   const Text("Shipping Address:",
                       style: TextStyle(fontWeight: FontWeight.bold)),
 
                   if (address != null) ...[
-                    Text("Name: ${address['name']}"),
-                    Text("Phone: ${address['phone']}"),
-                    Text("Email: ${address['email']}"),
-                    Text("Address: ${address['address']}"),
+                    Text("Name: ${address['name']}".tr),
+                    Text("Phone: ${address['phone']}".tr),
+                    Text("Email: ${address['email']}".tr),
+                    Text("Address: ${address['address']}".tr),
                   ] else
                     Text(order.shippingAddress ?? "N/A"),
 
                   const SizedBox(height: 10),
                   Text(
-                    "Created At: ${formatToIndianTime(order.createdAt)}",
+                    "Created At: ${formatToIndianTime(order.createdAt)}".tr,
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 20),
 
-                  const Text(
-                    "Order Items",
+                   Text(
+                    "Order Items".tr,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
 
@@ -174,10 +175,10 @@ class AdminOrderDetailspage extends StatelessWidget {
                                         fontSize: 14, fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(height: 4),
-                                  Text("Variant: ${item.variantName}"),
-                                  Text("Qty: ${item.quantity}"),
-                                  Text("Price: ₹${item.price}"),
-                                  Text("Total: ₹${item.totalPrice}"),
+                                  Text("Variant: ${item.variantName}".tr),
+                                  Text("Qty: ${item.quantity}".tr),
+                                  Text("Price: ₹${item.price}".tr),
+                                  Text("Total: ₹${item.totalPrice}".tr),
                                 ],
                               ),
                             ),

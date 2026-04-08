@@ -20,7 +20,7 @@ class _PodcastScreenState extends State<PodcastScreen> {
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          'Pet Podcast',
+          'Pet Podcast'.tr,
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -59,11 +59,11 @@ class _PodcastScreenState extends State<PodcastScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildCategoryButton('Live', Icons.live_tv),
-                    _buildCategoryButton('Podcast', Icons.podcasts),
-                    _buildCategoryButton('Explore', Icons.explore),
-                    _buildCategoryButton('Events', Icons.event),
-                    _buildCategoryButton('Library', Icons.library_music),
+                    _buildCategoryButton('Live'.tr, Icons.live_tv),
+                    _buildCategoryButton('Podcast'.tr, Icons.podcasts),
+                    _buildCategoryButton('Explore'.tr, Icons.explore),
+                    _buildCategoryButton('Events'.tr, Icons.event),
+                    _buildCategoryButton('Library'.tr, Icons.library_music),
                   ],
                 ),
               ),
@@ -188,7 +188,7 @@ Widget _buildExploreContent(BuildContext context) {
                 const SizedBox(height: 10),
                 // Podcast Title
                 Text(
-                  podcast.title ?? "No Title",
+                  podcast.title ?? "No Title".tr,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
@@ -259,7 +259,7 @@ Widget _buildPodcastCard(podcast) {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            podcast.title ?? "No Title",
+            podcast.title ?? "No Title".tr,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
         ),

@@ -82,7 +82,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
       uiSettings: [
         AndroidUiSettings(
-          toolbarTitle: 'Crop Image',
+          toolbarTitle: 'Crop Image'.tr,
           toolbarColor: Colours.primarycolour,
           toolbarWidgetColor: Colors.white,
           cropStyle: CropStyle.circle, // ✅ CIRCLE CROP (Android)
@@ -90,7 +90,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           lockAspectRatio: true,
         ),
         IOSUiSettings(
-          title: 'Crop Image',
+          title: 'Crop Image'.tr,
           aspectRatioLockEnabled: true,
         ),
       ],

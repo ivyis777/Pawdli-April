@@ -375,8 +375,8 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                                   ),
                                   
                                 );
-                                   print("Selected Slot IDs: $slotIds");
-        print("Selected Slot Dates: $dates");
+                                  print("Selected Slot IDs: $slotIds");
+                                  print ("Selected Slot Dates: $dates");
                               }
                             : null,
                             

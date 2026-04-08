@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/export.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/model/paymentverificationmodel.dart';
 import 'package:pawlli/gen/assests.gen.dart';
@@ -41,10 +42,10 @@ class _PaymentfailureState extends State<Paymentfailure> {
         : '₹ 0.00';
 
     orderId = paymentData?.orderId ?? widget.orderId;
-    date = paymentData?.date ?? 'Date not available';
-    paymentMethod = paymentData?.paymentMethod ?? 'Method not available';
+    date = paymentData?.date ?? 'Date not available'.tr;
+    paymentMethod = paymentData?.paymentMethod ?? 'Method not available'.tr;
     message =
-        widget.paymentVerifiedModel?.message ?? 'Payment Verification Failed';
+        widget.paymentVerifiedModel?.message ?? 'Payment Verification Failed'.tr;
 
     debugPrint(
         "✅ Final Assigned Values -> Amount: $amount, Order ID: $orderId, Date: $date, Payment Method: $paymentMethod, Message: $message");
@@ -76,7 +77,7 @@ class _PaymentfailureState extends State<Paymentfailure> {
           preferredSize: Size.fromHeight(screenHeight * 0.12),
           child: AppBar(
             title: Text(
-              'Payment',
+              'Payment'.tr,
               style: TextStyle(
                 fontSize: screenHeight * 0.03,
                 fontWeight: FontWeight.w600,
@@ -127,7 +128,7 @@ class _PaymentfailureState extends State<Paymentfailure> {
                         SizedBox(height: screenHeight * 0.02),
                         Center(
                           child: Text(
-                            message,
+                            message.tr,
                             style: TextStyle(
                               fontSize: screenHeight * 0.02,
                               fontWeight: FontWeight.w300,
@@ -151,10 +152,10 @@ class _PaymentfailureState extends State<Paymentfailure> {
                         SizedBox(height: screenHeight * 0.025),
                         Divider(color: Colours.textColour, thickness: 1.0),
                         SizedBox(height: screenHeight * 0.025),
-                        _buildInfoRow('Ref Number:', orderId, screenHeight),
-                        _buildInfoRow('Date:', date, screenHeight),
+                        _buildInfoRow('Ref Number:'.tr, orderId, screenHeight),
+                        _buildInfoRow('Date:'.tr, date, screenHeight),
                         _buildInfoRow(
-                            'Payment Method:', paymentMethod, screenHeight),
+                            'Payment Method:'.tr, paymentMethod, screenHeight),
                         SizedBox(height: screenHeight * 0.017),
                         Align(
                           alignment: Alignment
@@ -177,7 +178,7 @@ class _PaymentfailureState extends State<Paymentfailure> {
                               ),
                             ),
                             child: Text(
-                              "Retry",
+                              "Retry".tr,
                               style: TextStyle(
                                 fontSize: screenHeight * 0.025,
                                 fontWeight: FontWeight.w600,

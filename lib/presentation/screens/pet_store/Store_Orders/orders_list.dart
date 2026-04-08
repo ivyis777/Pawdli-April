@@ -74,8 +74,8 @@ Color getStatusColor(String status) {
                 onPressed: () => Navigator.maybePop(context),
               ),
 
-              title: const Text(
-                "Order Requests", // change text if needed
+              title:  Text(
+                "Order Requests".tr, // change text if needed
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -93,7 +93,7 @@ Color getStatusColor(String status) {
 
         /// 🔹 EMPTY
         if (controller.orderList.isEmpty) {
-          return const Center(child: Text("No Orders Found"));
+          return  Center(child: Text("No Orders Found".tr));
         }
 
         /// 🔹 LIST
@@ -111,15 +111,15 @@ Color getStatusColor(String status) {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ListTile(
-                  title: Text("Order No: ${order.orderId}"),
+                  title: Text("Order No: ${order.orderId}".tr),
 
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Amount: ₹${order.finalAmount}"),
+                      Text("Amount: ₹${order.finalAmount}".tr),
                       const SizedBox(height: 4),
                       Text(
-                        "Date: ${formatToIndianTime(order.createdAt)}",
+                        "Date: ${formatToIndianTime(order.createdAt)}".tr,
                         style: const TextStyle(fontSize: 12, color: Colors.black54),
                       ),
                     ],
@@ -137,7 +137,7 @@ Color getStatusColor(String status) {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          order.status.capitalizeFirst ?? "",
+                          order.status.capitalizeFirst ?? "".tr,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,

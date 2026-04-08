@@ -31,11 +31,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
   String selectedSort = "Popular";
 
   final List<String> sortOptions = [
-    "Popular",
-    "Newest",
-    "Customer Review",
-    "Price: High to Low",
-    "Price: Low to High",
+    "Popular".tr,
+    "Newest".tr,
+    "Customer Review".tr,
+    "Price: High to Low".tr,
+    "Price: Low to High".tr,
   ];
 
   @override
@@ -57,8 +57,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
         return Padding(
           padding: const EdgeInsets.all(16),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Center(
-              child: Text("Sort By",
+             Center(
+              child: Text("Sort By".tr,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 20),
@@ -134,7 +134,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         ? widget.searchQuery! // ✅ SHOW SEARCH TEXT
                         : (storeProductController
                                 .selectedSubCategoryName.value.isEmpty
-                            ? "Products"
+                            ? "Products".tr
                             : storeProductController
                                 .selectedSubCategoryName.value),
                     style: TextStyle(
@@ -155,7 +155,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   child: TextField(
                     onChanged: controller.search,
                     decoration: InputDecoration(
-                      hintText: 'Search for Products',
+                      hintText: 'Search for Products'.tr,
                       prefixIcon: Icon(
                         Icons.search,
                         color: Colours.textColour,
@@ -217,7 +217,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(children: [
-                    const Text("Sort by:",
+                     Text("Sort by:".tr,
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w600)),
                     const SizedBox(width: 5),
@@ -484,8 +484,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   color: Colors.black.withOpacity(0.8),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text(
-                  "OUT OF STOCK",
+                child: Text(
+                  "OUT OF STOCK".tr,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12,

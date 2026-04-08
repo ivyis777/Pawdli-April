@@ -194,7 +194,7 @@ class _EditPetPageState extends State<EditPetPage> {
       aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
       uiSettings: [
         AndroidUiSettings(
-          toolbarTitle: 'Crop Image',
+          toolbarTitle: 'Crop Image'.tr,
           toolbarColor: Colours.primarycolour,
           toolbarWidgetColor: Colors.white,
           cropStyle: CropStyle.circle, // ✅ CIRCLE CROP (Android)
@@ -202,7 +202,7 @@ class _EditPetPageState extends State<EditPetPage> {
           lockAspectRatio: true,
         ),
         IOSUiSettings(
-          title: 'Crop Image',
+          title: 'Crop Image'.tr,
           aspectRatioLockEnabled: true,
         ),
       ],
@@ -223,7 +223,7 @@ class _EditPetPageState extends State<EditPetPage> {
             children: [
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title: const Text('Take a Picture'),
+                title:  Text('Take a Picture'.tr),
                 onTap: () async {
                   Navigator.pop(sheetContext); // ✅ CLOSE SHEET FIRST
 
@@ -244,7 +244,7 @@ class _EditPetPageState extends State<EditPetPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.image),
-                title: const Text('Upload from Gallery'),
+                title: Text('Upload from Gallery'.tr),
                 onTap: () async {
                   Navigator.pop(sheetContext); // ✅ CLOSE SHEET FIRST
 
@@ -327,7 +327,7 @@ class _EditPetPageState extends State<EditPetPage> {
         onTap: onTap,
         validator: (value) {
           if (requireValidation && (value == null || value.trim().isEmpty)) {
-            return 'Please enter this field';
+            return 'Please enter this field'.tr;
           }
           return null;
         },
@@ -395,7 +395,7 @@ class _EditPetPageState extends State<EditPetPage> {
             });
           },
           decoration: InputDecoration(
-            labelText: 'Select Type',
+            labelText: 'Select Type'.tr,
             labelStyle:
                 TextStyle(fontWeight: FontWeight.bold, color: Colors.brown),
             border: OutlineInputBorder(
@@ -458,7 +458,7 @@ class _EditPetPageState extends State<EditPetPage> {
             });
           },
           decoration: InputDecoration(
-            labelText: 'Select Breed',
+            labelText: 'Select Breed'.tr,
             labelStyle:
                 TextStyle(fontWeight: FontWeight.bold, color: Colors.brown),
             border: OutlineInputBorder(
@@ -485,7 +485,7 @@ class _EditPetPageState extends State<EditPetPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Text(
-              'Gender:',
+              'Gender:'.tr,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             ToggleSwitch(
@@ -496,7 +496,7 @@ class _EditPetPageState extends State<EditPetPage> {
               inactiveBgColor: Colors.grey,
               inactiveFgColor: Colors.white,
               totalSwitches: 2,
-              labels: ['Male', 'Female'],
+              labels: ['Male'.tr, 'Female'.tr],
               icons: [FontAwesomeIcons.mars, FontAwesomeIcons.venus],
               activeBgColors: [
                 [Colours.primarycolour],
@@ -522,7 +522,7 @@ class _EditPetPageState extends State<EditPetPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Text(
-              'Neutered/Spayed:',
+              'Neutered/Spayed:'.tr,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             ToggleSwitch(
@@ -537,7 +537,7 @@ class _EditPetPageState extends State<EditPetPage> {
               inactiveFgColor: Colors.white,
               initialLabelIndex: _selectedSpayedIndex ?? 0,
               totalSwitches: 2,
-              labels: ['Yes', 'No'],
+              labels: ['Yes'.tr, 'No'.tr],
               radiusStyle: true,
               onToggle: (index) {
                 setState(() {
@@ -571,7 +571,7 @@ class _EditPetPageState extends State<EditPetPage> {
       Column(children: [
         AppBar(
           title: Text(
-            'Edit Pet',
+            'Edit Pet'.tr,
             style: TextStyle(
               fontSize: screenHeight * 0.035,
               fontWeight: FontWeight.w600,
@@ -670,14 +670,14 @@ class _EditPetPageState extends State<EditPetPage> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  _buildTextField("Enter Pet Name", _nameController),
+                  _buildTextField("Enter Pet Name".tr, _nameController),
                   _buildTypeDropdown(),
                   _buildBreedDropdown(),
                   _buildTextField(
-                      "Enter Pet Description", _descriptionController),
-                  _buildTextField("Enter Pet Location", _LocationController),
+                      "Enter Pet Description".tr, _descriptionController),
+                  _buildTextField("Enter Pet Location".tr, _LocationController),
                   _buildTextField(
-                    "Enter Birthday (yyyy/mm/dd)",
+                    "Enter Birthday (yyyy/mm/dd)".tr,
                     _birthdayController,
                     readOnly: true,
                     onTap: () => _selectDate(context),
@@ -692,15 +692,15 @@ class _EditPetPageState extends State<EditPetPage> {
                     children: [
                       Expanded(
                           child: _buildTextField(
-                              "Enter Weight (kg)", _weightController)),
+                              "Enter Weight (kg)".tr, _weightController)),
                       SizedBox(width: 10),
                       Expanded(
                           child: _buildTextField(
-                              "Enter Height (cm)", _heightController)),
+                              "Enter Height (cm)".tr, _heightController)),
                     ],
                   ),
                   _buildTextField(
-                      "Enter Microchip Number", _microchipController,
+                      "Enter Microchip Number".tr, _microchipController,
                       requireValidation: false),
                   SizedBox(height: 20),
                   Center(
@@ -738,7 +738,7 @@ class _EditPetPageState extends State<EditPetPage> {
                               ),
                             ),
                             child: Text(
-                              "Update",
+                              "Update".tr,
                               style: TextStyle(
                                 fontSize: screenHeight * 0.025,
                                 fontWeight: FontWeight.w600,
@@ -758,7 +758,7 @@ class _EditPetPageState extends State<EditPetPage> {
 
   Future<UpdatePetModel?> _updatePetProfile() async {
     final model = UpdatePetModel(
-      message: "Updating...",
+      message: "Updating...".tr,
       data: PetData(
         petId: widget.PetId!,
         categoryName: _selectedType ?? '',

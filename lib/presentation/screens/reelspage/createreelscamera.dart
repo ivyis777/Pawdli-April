@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 class CreateReelCameraPage extends StatefulWidget {
   const CreateReelCameraPage({super.key});
@@ -66,17 +67,17 @@ class _CreateReelCameraPageState extends State<CreateReelCameraPage> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.black,
-        title: const Text("Discard video?", style: TextStyle(color: Colors.white)),
-        content: const Text("Your recording will be lost.",
+        title:  Text("Discard video?".tr, style: TextStyle(color: Colors.white)),
+        content:  Text("Your recording will be lost.".tr,
             style: TextStyle(color: Colors.white70)),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text("Cancel")),
+              child:  Text("Cancel".tr)),
           TextButton(
               onPressed: () => Navigator.pop(context, true),
               child:
-                  const Text("Discard", style: TextStyle(color: Colors.red))),
+                   Text("Discard".tr, style: TextStyle(color: Colors.red))),
         ],
       ),
     );

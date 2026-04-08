@@ -194,14 +194,14 @@ class _PawlliRadioState extends State<PawlliRadio> {
       builder: (context) {
         return AlertDialog(
           title: Text(
-            "Session Not Started",
+            "Session Not Started".tr,
             style: TextStyle(
               fontSize: 22, // Bigger font for title
               fontWeight: FontWeight.bold,
             ),
           ),
           content: Text(
-            "The session starts at $startTime on $date.",
+            "The session starts at $startTime on $date.".tr,
             style: TextStyle(
               fontSize: 18, // Bigger font for content
             ),
@@ -211,7 +211,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
               onPressed: () =>
                   Navigator.of(context).pop(), // Only closes dialog on OK tap
               child: Text(
-                "OK",
+                "OK".tr,
                 style: TextStyle(fontSize: 18),
               ),
             ),
@@ -239,7 +239,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
   ) async {
     // Validate user ID
     if (user_id == null) {
-      Fluttertoast.showToast(msg: "User ID not found! Please login again.");
+      Fluttertoast.showToast(msg: "User ID not found! Please login again.".tr);
       return;
     }
 
@@ -249,8 +249,8 @@ class _PawlliRadioState extends State<PawlliRadio> {
         amount == "0.00" ||
         amount == "₹0.00") {
       Get.snackbar(
-        "Success",
-        "🎉 Slot booked successfully!",
+        "Success".tr,
+        "🎉 Slot booked successfully!".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colours.primarycolour,
         colorText: Colours.brownColour,
@@ -302,12 +302,12 @@ class _PawlliRadioState extends State<PawlliRadio> {
           final responseData = json.decode(response.body);
           final errorMessage = responseData['error'] ??
               responseData['message'] ??
-              "Something went wrong.";
+              "Something went wrong.".tr;
           Fluttertoast.showToast(msg: "Error: $errorMessage");
         }
       } catch (e) {
         print("❌ Exception booking free slot: $e");
-        Fluttertoast.showToast(msg: "Failed to book slot. Please try again.");
+        Fluttertoast.showToast(msg: "Failed to book slot. Please try again.".tr);
       }
       return; // Exit for free slots
     }
@@ -358,13 +358,13 @@ class _PawlliRadioState extends State<PawlliRadio> {
           print("✅ Order created successfully: $_orderId");
           openCheckout();
         } else {
-          Fluttertoast.showToast(msg: "Order ID missing. Try again.");
+          Fluttertoast.showToast(msg: "Order ID missing. Try again.".tr);
         }
       } else {
         // ⚠️ Use fallback message handling
         final errorMessage = responseData['error'] ??
             responseData['message'] ??
-            "Unknown error occurred.";
+            "Unknown error occurred.".tr;
         print("⚠️ API Error: $errorMessage");
 
         Fluttertoast.showToast(msg: "Error: $errorMessage");
@@ -377,13 +377,13 @@ class _PawlliRadioState extends State<PawlliRadio> {
       }
     } catch (e) {
       print("🚨 Exception during order creation: $e");
-      Fluttertoast.showToast(msg: "Failed to create order. Check internet.");
+      Fluttertoast.showToast(msg: "Failed to create order. Check internet.".tr);
     }
   }
 
   void openCheckout() {
     if (_orderId == null || _orderId!.isEmpty) {
-      Fluttertoast.showToast(msg: "Order ID is missing. Please try again.");
+      Fluttertoast.showToast(msg: "Order ID is missing. Please try again.".tr);
       return;
     }
 
@@ -408,7 +408,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
       _razorpay.open(options);
     } catch (e) {
       debugPrint(' Razorpay open error: $e');
-      Fluttertoast.showToast(msg: "Payment failed. Please try again.");
+      Fluttertoast.showToast(msg: "Payment failed. Please try again.".tr);
     }
   }
 
@@ -420,8 +420,8 @@ class _PawlliRadioState extends State<PawlliRadio> {
       debugPrint("  Signature: ${response.signature ?? 'N/A'}");
 
       Get.snackbar(
-        "Success",
-        "Payment Successful!",
+        "Success".tr,
+        "Payment Successful!".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colours.primarycolour,
         colorText: Colours.secondarycolour,
@@ -481,8 +481,8 @@ class _PawlliRadioState extends State<PawlliRadio> {
     } catch (e) {
       debugPrint("❗ Error handling payment success: $e");
       Get.snackbar(
-        "Error",
-        "Payment processing error: $e",
+        "Error".tr,
+        "Payment processing error: $e".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colours.primarycolour,
         colorText: Colours.seachbarcolour,
@@ -533,7 +533,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     Fluttertoast.showToast(
-        msg: "💳 External Wallet Selected: ${response.walletName}");
+        msg: "💳 External Wallet Selected: ${response.walletName}".tr);
   }
 
   Map<String, dynamic>? _parseJsonSafely(String? jsonString) {
@@ -625,10 +625,10 @@ class _PawlliRadioState extends State<PawlliRadio> {
     final result =
         Get.find<ListenerPaythroghwalletController>().paymentResult.value;
 
-    if (result?.message == "Insufficient wallet balance.") {
+    if (result?.message == "Insufficient wallet balance.".tr) {
       Get.snackbar(
-        "Insufficient Balance",
-        "You don’t have enough wallet balance to complete this transaction.",
+        "Insufficient Balance".tr,
+        "You don’t have enough wallet balance to complete this transaction.".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -641,8 +641,8 @@ class _PawlliRadioState extends State<PawlliRadio> {
 
     if (result != null && result.status == "success") {
       Get.snackbar(
-        "Success",
-        "Thanks for booking the slot!",
+        "Success".tr,
+        "Thanks for booking the slot!".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.green,
         colorText: Colors.white,
@@ -663,8 +663,8 @@ class _PawlliRadioState extends State<PawlliRadio> {
     } else {
       Get.showSnackbar(
         GetSnackBar(
-          title: "Error",
-          message: result?.message ?? "Payment failed",
+          title: "Error".tr,
+          message: result?.message ?? "Payment failed".tr,
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.red,
           duration: const Duration(seconds: 3),
@@ -948,7 +948,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
         } else if (program.type == "live") {
           await _handleLiveProgram(program);
         } else {
-          Fluttertoast.showToast(msg: "Invalid program type");
+          Fluttertoast.showToast(msg: "Invalid program type".tr);
         }
       },
       child: Padding(
@@ -1070,7 +1070,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                   SizedBox(height: 15),
                   if (languages.isNotEmpty)
                     Text(
-                      "Languages: $languages",
+                      "Languages: $languages".tr,
                       style:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                     ),
@@ -1089,7 +1089,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                         print(
                             "UI Wallet Balance: ${walletBalanceController.walletBalanceAmount.value}");
                         return Text(
-                          'Wallet Balance: ₹ ${walletBalanceController.walletBalanceAmount.value}',
+                          'Wallet Balance: ₹ ${walletBalanceController.walletBalanceAmount.value}'.tr,
                           style: TextStyle(
                             fontSize: screenHeight * 0.015,
                             fontWeight: FontWeight.w400,
@@ -1115,13 +1115,13 @@ class _PawlliRadioState extends State<PawlliRadio> {
                         );
                       } else {
                         Navigator.pop(context, {
-                          'title': title,
-                          'subtitle': subtitle,
-                          'amount': amount,
-                          'languages': languages,
-                          'date': date,
-                          'program_type': programType,
-                          "booking_id": booking_id
+                          'title'.tr: title,
+                          'subtitle'.tr: subtitle,
+                          'amount'.tr: amount,
+                          'languages'.tr: languages,
+                          'date'.tr: date,
+                          'program_type'.tr: programType,
+                          "booking_id".tr: booking_id
                         });
                       }
                     },
@@ -1176,11 +1176,11 @@ class _PawlliRadioState extends State<PawlliRadio> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Session Failed'),
-          content: Text('Would you like to rejoin the session?'),
+          title: Text('Session Failed'.tr),
+          content: Text('Would you like to rejoin the session?'.tr),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cancel'.tr),
               onPressed: () {
                 setState(() {
                   _isDialogShowing = false;
@@ -1189,7 +1189,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
               },
             ),
             TextButton(
-              child: Text('Rejoin'),
+              child: Text('Rejoin'.tr),
               onPressed: () async {
                 setState(() {
                   _isDialogShowing = false;
@@ -1309,7 +1309,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
 
       if (result == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to start session. Please try again.')),
+          SnackBar(content: Text('Failed to start session. Please try again.'.tr)),
         );
         return;
       }
@@ -1323,7 +1323,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
           SnackBar(
               content: Text(responseData['message'] ??
                   responseData['error'] ??
-                  'Failed to start session')),
+                  'Failed to start session'.tr)),
         );
         return;
       }
@@ -1363,7 +1363,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
   Future<void> handleJoinCall(int userId, int? sessionId) async {
     if (sessionId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Session ID not available. Please wait.')),
+         SnackBar(content: Text('Session ID not available. Please wait.'.tr)),
       );
       return;
     }
@@ -1386,7 +1386,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content:
-                Text(data?['error'] ?? 'Host have not joined yet.Please wait.'),
+                Text(data?['error'] ?? 'Host have not joined yet.Please wait.'.tr),
           ),
         );
         return;
@@ -1405,7 +1405,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
 
       if (channelName == null || token == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Missing call details from server.')),
+          SnackBar(content: Text('Missing call details from server.'.tr)),
         );
         return;
       }
@@ -1429,7 +1429,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
       debugPrint('Error joining call: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error joining: ${e.toString()}')),
+          SnackBar(content: Text('Error joining: ${e.toString()}'.tr)),
         );
       }
     } finally {
@@ -1445,7 +1445,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
     final url = program.recordedUrl;
 
     if (url == null || url.isEmpty) {
-      Fluttertoast.showToast(msg: "Recorded content not available");
+      Fluttertoast.showToast(msg: "Recorded content not available".tr);
       return;
     }
 
@@ -1486,7 +1486,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
     // ---------------- LISTENER ----------------
     if (sessionId == null) {
       Fluttertoast.showToast(
-        msg: "Host has not started the session yet",
+        msg: "Host has not started the session yet".tr,
       );
       return;
     }

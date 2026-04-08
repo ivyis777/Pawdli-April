@@ -55,17 +55,17 @@ class _PetstorePageState extends State<PetstorePage> {
 
   // Map category names to images
   final Map<String, String> categoryImages = {
-    'Cloths':
+    'Cloths'.tr:
         'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/cloths.png',
-    'Accessories':
+    'Accessories'.tr:
         'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/accessories.png',
-    'Food':
+    'Food'.tr:
         'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/food.png',
-    'Grooming':
+    'Grooming'.tr:
         'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Grooming.png',
-    'Toys':
+    'Toys'.tr:
         'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Toys.png',
-    'Unknown': 'assets/icons/default.png',
+    'Unknown'.tr: 'assets/icons/default.png',
   };
 
   // -------------------------------
@@ -177,7 +177,7 @@ class _PetstorePageState extends State<PetstorePage> {
             fillColor: Colours.seachbarcolour,
             hintText: categoryHints.isEmpty
                 ? ''
-                : 'Paw ${categoryHints[_categoryHintIndex]}',
+                : 'Paw ${categoryHints[_categoryHintIndex]}'.tr,
             hintStyle: TextStyle(
               color: Colours.textColour,
               fontFamily: FontFamily.Cairo,
@@ -235,7 +235,7 @@ class _PetstorePageState extends State<PetstorePage> {
         fillColor: Colours.seachbarcolour,
         hintText: categoryHints.isEmpty
             ? ''
-            : 'Paw ${categoryHints[_categoryHintIndex]}',
+            : 'Paw ${categoryHints[_categoryHintIndex]}'.tr,
         prefixIcon: const Icon(Icons.search, size: 20),
       ),
     );
@@ -513,7 +513,7 @@ class _PetstorePageState extends State<PetstorePage> {
       final subs = _subCategoryController.subCategories;
 
       if (subs.isEmpty) {
-        return const Center(child: Text('No subcategories available'));
+        return  Center(child: Text('No subcategories available'.tr));
       }
 
       return Column(

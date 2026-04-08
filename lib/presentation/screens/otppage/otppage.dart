@@ -91,9 +91,9 @@ class _OTPPageState extends State<OTPPage> {
   }
 
   String? otpValidation(String text) {
-    if (text.isEmpty) return 'Please enter your OTP';
+    if (text.isEmpty) return 'Please enter your OTP'.tr;
     if (text.length != 4 || int.tryParse(text) == null) {
-      return 'OTP must be a 4-digit number';
+      return 'OTP must be a 4-digit number'.tr;
     }
     return null;
   }
@@ -124,7 +124,7 @@ class _OTPPageState extends State<OTPPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'OTP Verification',
+                      'OTP Verification'.tr,
                       style: TextStyle(
                         fontSize: isSmallScreen ? 25 : 27,
                         fontWeight: FontWeight.w500,
@@ -133,7 +133,7 @@ class _OTPPageState extends State<OTPPage> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Check your mail. We have sent you the',
+                      'Check your mail. We have sent you the'.tr,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: isSmallScreen ? 15 : 18,
@@ -142,7 +142,7 @@ class _OTPPageState extends State<OTPPage> {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'PIN for ${widget.email}',
+                      'PIN for ${widget.email}'.tr,
                       style: TextStyle(
                         fontSize: isSmallScreen ? 14 : 16,
                         fontWeight: FontWeight.w500,
@@ -188,7 +188,7 @@ class _OTPPageState extends State<OTPPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Didn't receive the OTP?",
+                          "Didn't receive the OTP?".tr,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 16 : 18,
                             color: Colours.black,
@@ -223,7 +223,7 @@ class _OTPPageState extends State<OTPPage> {
                                 }
                               : null,
                           child: Text(
-                            'Resend',
+                            'Resend'.tr,
                             style: TextStyle(
                               color: _start == 0
                                   ? Colours.black
@@ -250,7 +250,7 @@ class _OTPPageState extends State<OTPPage> {
                              if (error != null) {
                                     WidgetsBinding.instance.addPostFrameCallback((_) {
                                       Get.snackbar(
-                                        "Error",
+                                        "Error".tr,
                                         error,
                                         snackPosition: SnackPosition.TOP,
                                       );
@@ -289,8 +289,8 @@ class _OTPPageState extends State<OTPPage> {
                             )
                           : Text(
                               widget.authType == "signup"
-                                  ? "Register"
-                                  : "Login",
+                                  ? "Register".tr
+                                  : "Login".tr,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,

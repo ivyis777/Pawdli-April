@@ -19,7 +19,7 @@ class LoginController extends GetxController {
     required String otp,
   }) async {
     if (isLoading.value) {
-      return (success: false, message: "Login already in progress");
+      return (success: false, message: "Login already in progress".tr);
     }
 
     try {
@@ -73,7 +73,7 @@ class LoginController extends GetxController {
 
         return (
           success: true,
-          message: response.message ?? 'Login successful',
+          message: response.message ?? 'Login successful'.tr,
         );
       }
 
@@ -89,7 +89,7 @@ class LoginController extends GetxController {
       return (
         success: false,
         message: _handleLoginError(
-          'NETWORK_ERROR',
+          'NETWORK_ERROR'.tr,
           serverMessage: e.toString(),
         ),
       );
@@ -105,39 +105,39 @@ class LoginController extends GetxController {
 
     // ✅ PRIORITY: CHECK SERVER MESSAGE FIRST
     if (msg.contains('otp')) {
-      return 'Entered wrong OTP.';
+      return 'Entered wrong OTP.'.tr;
     }
 
     if (msg.contains('not registered') || msg.contains('not found')) {
-      return 'This email is not registered. Please sign up first.';
+      return 'This email is not registered. Please sign up first.'.tr;
     }
 
     if (msg.contains('invalid')) {
-      return 'Invalid details.';
+      return 'Invalid details.'.tr;
     }
 
     // ✅ FALLBACK USING CODE
     switch (code) {
       case "EMAIL_NOT_FOUND":
       case "404":
-        return 'This email is not registered. Please sign up first.';
+        return 'This email is not registered. Please sign up first.'.tr;
 
       case "402":
       case "INVALID_OTP":
       case "OTP_INVALID":
-        return 'Entered wrong OTP.';
+        return 'Entered wrong OTP.'.tr;
 
       case "403":
-        return 'Invalid details.';
+        return 'Invalid details.'.tr;
 
       case "500":
-        return 'Server error. Please try again later.';
+        return 'Server error. Please try again later.'.tr;
 
       case "NETWORK_ERROR":
-        return 'Network error. Please check your connection.';
+        return 'Network error. Please check your connection.'.tr;
 
       default:
-        return serverMessage ?? 'Login failed. Please try again.';
+        return serverMessage ?? 'Login failed. Please try again.'.tr;
     }
   }
 
@@ -151,7 +151,7 @@ class LoginController extends GetxController {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
-        return (success: false, message: "Google sign-in cancelled");
+        return (success: false, message: "Google sign-in cancelled".tr);
       }
 
       final email = googleUser.email;
@@ -187,7 +187,7 @@ class LoginController extends GetxController {
         //   print("⚠️ FCM subscribe skipped: $e");
         // }
         print("✅ GOOGLE LOGIN SUCCESS RETURNING TRUE");
-        return (success: true, message: "Login successful");
+        return (success: true, message: "Login successful".tr);
       }
 
       print("❌ GOOGLE LOGIN FAILED CONDITION");
@@ -195,10 +195,10 @@ class LoginController extends GetxController {
       print("data: ${response.data}");
       print("tokens: ${response.data?.tokens}");
 
-      return (success: false, message: response.message ?? "Login failed");
+      return (success: false, message: response.message ?? "Login failed".tr);
     } catch (e) {
       print("❌ GOOGLE LOGIN ERROR: $e");
-      return (success: false, message: "Google login failed");
+      return (success: false, message: "Google login failed".tr);
     } finally {
       isLoading.value = false;
     }

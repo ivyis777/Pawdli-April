@@ -139,8 +139,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Future<void> addToCart() async {
     if (selectedVariant == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please select a product variant"),
+         SnackBar(
+          content: Text("Please select a product variant".tr),
           backgroundColor: Colors.red,
         ),
       );
@@ -196,11 +196,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       cartController.hideCartBadge();
 
       showTopSingleLinePopup(
-        message: "Added to cart",
+        message: "Added to cart".tr,
       );
     } else {
       showTopSingleLinePopup(
-        message: "Failed to add cart",
+        message: "Failed to add cart".tr,
       );
     }
   }
@@ -335,7 +335,7 @@ https://pawlli.app/product/$productId
           label: isAddingToCart
               ? const CircularProgressIndicator(color: Colors.white)
               : Text(
-                  isOutOfStock ? 'OUT OF STOCK' : 'ADD TO CART',
+                  isOutOfStock ? 'OUT OF STOCK'.tr : 'ADD TO CART'.tr,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -426,8 +426,8 @@ https://pawlli.app/product/$productId
                         child: CircularProgressIndicator(),
                       )
                     : variants.isEmpty
-                        ? const Text(
-                            "No variants available",
+                        ?  Text(
+                            "No variants available".tr,
                             style: TextStyle(color: Colors.red),
                           )
                         : Wrap(
@@ -438,7 +438,7 @@ https://pawlli.app/product/$productId
 
                               return ChoiceChip(
                                 label: Text(
-                                  variant.variantName ?? "Variant",
+                                  variant.variantName ?? "Variant".tr,
                                 ),
                                 selected: isSelected,
                                 onSelected: (_) {
@@ -502,7 +502,7 @@ https://pawlli.app/product/$productId
                           Padding(
                             padding: const EdgeInsets.only(top: 4),
                             child: Text(
-                              'You save ₹${discountAmount.toStringAsFixed(0)}',
+                              'You save ₹${discountAmount.toStringAsFixed(0)}'.tr,
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -512,8 +512,8 @@ https://pawlli.app/product/$productId
                           ),
                         const SizedBox(width: 8),
                         if (isOutOfStock)
-                          const Text(
-                            "Out of stock",
+                           Text(
+                            "Out of stock".tr,
                             style: TextStyle(
                               color: Colors.red,
                               fontWeight: FontWeight.w600,
@@ -521,7 +521,7 @@ https://pawlli.app/product/$productId
                           )
                         else if (availableStock <= 5)
                           Text(
-                            "Only $availableStock left",
+                            "Only $availableStock left".tr,
                             style: const TextStyle(
                               color: Colors.orange,
                               fontWeight: FontWeight.w600,
@@ -594,8 +594,8 @@ https://pawlli.app/product/$productId
 // PRODUCT DETAILS SECTION
 // ============================
 
-                const Text(
-                  "Product Details",
+                 Text(
+                  "Product Details".tr,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -605,23 +605,23 @@ https://pawlli.app/product/$productId
                 const SizedBox(height: 10),
 
 // Product-level details
-                _buildDetailRow("Brand", product.productBrand),
-                _buildDetailRow("Pet Type", product.petType),
-                _buildDetailRow("Age Group", product.ageGroup),
+                _buildDetailRow("Brand".tr, product.productBrand),
+                _buildDetailRow("Pet Type".tr, product.petType),
+                _buildDetailRow("Age Group".tr, product.ageGroup),
 
 // Variant-level details (IMPORTANT)
                 _buildDetailRow(
-                  "Weight",
+                  "Weight".tr,
                   selectedVariant?.productWeightKg,
                 ),
 
                 _buildDetailRow(
-                  "Dimensions",
+                  "Dimensions".tr,
                   selectedVariant?.productDimensionsCm,
                 ),
 
                 _buildDetailRow(
-                  "SKU",
+                  "SKU".tr,
                   selectedVariant?.variantSku,
                 ),
 

@@ -110,7 +110,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
       _razorpay.open(options);
     } catch (e) {
       debugPrint("❗ Error in _startRazorpayPayment: $e");
-      Get.snackbar("Error", "Something went wrong while initiating payment.");
+      Get.snackbar("Error".tr, "Something went wrong while initiating payment.".tr);
     }
   }
 
@@ -122,8 +122,8 @@ class _MyWalletPageState extends State<MyWalletPage> {
       debugPrint("  Signature: ${response.signature ?? 'N/A'}");
 
       Get.snackbar(
-        "Success",
-        "Payment Successful!",
+        "Success".tr,
+        "Payment Successful!".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colours.primarycolour,
         colorText: Colours.secondarycolour,
@@ -176,10 +176,10 @@ class _MyWalletPageState extends State<MyWalletPage> {
         );
       }
     } catch (e) {
-      debugPrint("❗ Error handling payment success: $e");
+      debugPrint("❗ Error handling payment success: $e".tr);
       Get.snackbar(
-        "Error",
-        "Payment processing error: $e",
+        "Error".tr,
+        "Payment processing error: $e".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colours.primarycolour,
         colorText: Colours.secondarycolour,
@@ -233,7 +233,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     Fluttertoast.showToast(
-        msg: "💳 External Wallet Selected: ${response.walletName}");
+        msg: "💳 External Wallet Selected: ${response.walletName}".tr);
   }
 
   @override
@@ -295,7 +295,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                         children: [
                           Obx(() {
                             print(
-                                "UI Wallet Balance: ${walletController.walletBalanceAmount.value}");
+                                "UI Wallet Balance: ${walletController.walletBalanceAmount.value}".tr);
 
                             String balance =
                                 walletController.walletBalanceAmount.value;
@@ -398,7 +398,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                   _startRazorpayPayment(amount);
                                 } else {
                                   Get.snackbar(
-                                    "Error",
+                                    "Error".tr,
                                     "",
                                     backgroundColor: Colours.primarycolour,
                                     colorText: Colors.white,

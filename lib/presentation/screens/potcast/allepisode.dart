@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/utils.dart';
 
 class Allepisode extends StatefulWidget {
   final String imagePath;
@@ -70,7 +71,7 @@ class _AllepisodeState extends State<Allepisode> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "The Honest Bunch",
+                        "The Honest Bunch".tr,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -79,11 +80,11 @@ class _AllepisodeState extends State<Allepisode> {
                       ),
                       SizedBox(height: 4),
                       Text(
-                        "Nedu",
+                        "Nedu".tr,
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.grey),
                       ),
                       Text(
-                        "1.2m listeners   240 Episodes",
+                        "1.2m listeners   240 Episodes".tr,
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.grey),
                       ),
                     ],
@@ -98,7 +99,7 @@ class _AllepisodeState extends State<Allepisode> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "A Nigerian podcast hosted by FK Abudu and Jola Ayeye, covering relatable millennial experiences, pop culture, and societal issues.",
+                    "A Nigerian podcast hosted by FK Abudu and Jola Ayeye, covering relatable millennial experiences, pop culture, and societal issues.".tr,
                     style: TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                   SizedBox(height: 10),
@@ -113,7 +114,7 @@ class _AllepisodeState extends State<Allepisode> {
                             minimumSize: Size(double.infinity, 50),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           ),
-                          child: Text("FOLLOW", style: TextStyle(color: Colors.white, fontSize: 16)),
+                          child: Text("FOLLOW".tr, style: TextStyle(color: Colors.white, fontSize: 16)),
                         ),
                       ),
                       SizedBox(width: 10),
@@ -130,11 +131,11 @@ class _AllepisodeState extends State<Allepisode> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Episodes",
+                        "Episodes".tr,
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        "All Episodes",
+                        "All Episodes".tr,
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
                       ),
                     ],

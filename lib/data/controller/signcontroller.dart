@@ -62,8 +62,8 @@ class SignupController extends GetxController {
         Get.offAll(() => MainLayout());
       } else {
         Get.snackbar(
-          "Signup Failed",
-          response.message ?? "Invalid OTP",
+          "Signup Failed".tr,
+          response.message ?? "Invalid OTP".tr,
         );
       }
     } catch (e) {

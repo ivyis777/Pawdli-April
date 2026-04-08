@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/utils.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/model/paymentverificationmodel.dart';
 import 'package:pawlli/gen/assests.gen.dart';
@@ -76,7 +77,7 @@ class _TherapyPaymentfailureState extends State<TherapyPaymentfailure> {
           preferredSize: Size.fromHeight(screenHeight * 0.12),
           child: AppBar(
             title: Text(
-              'Payment',
+              'Payment'.tr,
               style: TextStyle(
                 fontSize: screenHeight * 0.03,
                 fontWeight: FontWeight.w600,
@@ -151,10 +152,10 @@ class _TherapyPaymentfailureState extends State<TherapyPaymentfailure> {
                         SizedBox(height: screenHeight * 0.025),
                         Divider(color: Colours.textColour, thickness: 1.0),
                         SizedBox(height: screenHeight * 0.025),
-                        _buildInfoRow('Ref Number:', orderId, screenHeight),
-                        _buildInfoRow('Date:', date, screenHeight),
+                        _buildInfoRow('Ref Number:'.tr, orderId, screenHeight),
+                        _buildInfoRow('Date:'.tr, date, screenHeight),
                         _buildInfoRow(
-                            'Payment Method:', paymentMethod, screenHeight),
+                            'Payment Method:'.tr, paymentMethod, screenHeight),
                         SizedBox(height: screenHeight * 0.017),
                         Align(
                           alignment: Alignment
@@ -177,7 +178,7 @@ class _TherapyPaymentfailureState extends State<TherapyPaymentfailure> {
                               ),
                             ),
                             child: Text(
-                              "Retry",
+                              "Retry".tr,
                               style: TextStyle(
                                 fontSize: screenHeight * 0.025,
                                 fontWeight: FontWeight.w600,

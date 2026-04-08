@@ -162,7 +162,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                               ),
                               SizedBox(height: screenHeight * 0.01),
                               Text(
-                                'Total Amount: ₹$_totalAmount',
+                                'Total Amount: ₹$_totalAmount'.tr,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: screenHeight * 0.018,

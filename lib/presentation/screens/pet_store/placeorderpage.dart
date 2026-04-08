@@ -178,7 +178,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
     final coupon = await CouponService.getCouponByCode(code);
 
     if (coupon == null) {
-      Fluttertoast.showToast(msg: "Invalid coupon");
+      Fluttertoast.showToast(msg: "Invalid coupon".tr);
       return;
     }
 
@@ -214,7 +214,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       couponDiscount = discount;
     });
 
-    Fluttertoast.showToast(msg: "Coupon Applied");
+    Fluttertoast.showToast(msg: "Coupon Applied".tr);
     _calculateTotals();
   }
 
@@ -350,7 +350,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
     final checkoutRes = checkoutController.checkoutResponse;
 
     if (checkoutRes == null) {
-      Fluttertoast.showToast(msg: "Payment verification failed");
+      Fluttertoast.showToast(msg: "Payment verification failed".tr);
       return;
     }
 
@@ -364,7 +364,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
     );
 
     if (verify.paymentStatus == "success") {
-      Fluttertoast.showToast(msg: "Order placed successfully");
+      Fluttertoast.showToast(msg: "Order placed successfully".tr);
       await cartController.loadCart();
       await walletBalanceController.fetchWalletBalance(int.parse(userId!));
       Get.to(() => OrdersPage());
@@ -388,7 +388,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       }
     }
 
-    Fluttertoast.showToast(msg: "Payment Failed");
+    Fluttertoast.showToast(msg: "Payment Failed".tr);
 
     Get.to(() => Paymentfailure(
           orderId: razorpayOrderId ?? "",
@@ -426,14 +426,14 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
   // ================================================================
   void _onProceed() async {
     if (addressController.selectedAddress.value == null) {
-      Fluttertoast.showToast(msg: "Please select address");
+      Fluttertoast.showToast(msg: "Please select address".tr);
       return;
     }
 
     // 🔴 COD validation
     if (selectedPaymentMethod == "cod" && payableAmount > 1500) {
       Fluttertoast.showToast(
-          msg: "Cash on Delivery available only below ₹1500");
+          msg: "Cash on Delivery available only below ₹1500".tr);
       return;
     }
 
@@ -443,18 +443,18 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
         context: context,
         barrierDismissible: false,
         builder: (_) => AlertDialog(
-          title: const Text("Confirm Cash on Delivery"),
-          content: const Text(
-            "You will pay cash when the order is delivered.\n\nDo you want to continue?",
+          title:  Text("Confirm Cash on Delivery".tr),
+          content:  Text(
+            "You will pay cash when the order is delivered.\n\nDo you want to continue?".tr,
           ),
           actions: [
             TextButton(
               onPressed: () => Get.back(result: false),
-              child: const Text("Cancel"),
+              child:  Text("Cancel".tr),
             ),
             ElevatedButton(
               onPressed: () => Get.back(result: true),
-              child: const Text("Confirm"),
+              child:  Text("Confirm".tr),
             ),
           ],
         ),
@@ -473,10 +473,10 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       walletAmountUsed: usedWalletAmount,
       couponCode: appliedCoupon,
       shippingAddress: {
-        "name": selectedAddress?.name,
-        "phone": selectedAddress?.phone,
-        "email": selectedAddress?.email,
-        "address": selectedAddress?.address,
+        "name".tr: selectedAddress?.name,
+        "phone".tr: selectedAddress?.phone,
+        "email".tr: selectedAddress?.email,
+        "address".tr: selectedAddress?.address,
       },
     );
     final res = checkoutController.checkoutResponse;
@@ -484,7 +484,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
 
     // ✅ CASE 1: COD success
     if (selectedPaymentMethod == "cod") {
-      Fluttertoast.showToast(msg: "Order placed (Cash on Delivery)");
+      Fluttertoast.showToast(msg: "Order placed (Cash on Delivery)".tr);
       await cartController.loadCart();
       await walletBalanceController
           .fetchWalletBalance(int.parse(userId!)); // ⭐ ADD
@@ -494,7 +494,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
 
     // ✅ CASE 2: Wallet + Coupon fully paid (NO Razorpay)
     if ((res.razorpayRequired ?? 0) <= 0) {
-      Fluttertoast.showToast(msg: res.message ?? "Order placed");
+      Fluttertoast.showToast(msg: res.message ?? "Order placed".tr);
       await cartController.loadCart();
       await walletBalanceController
           .fetchWalletBalance(int.parse(userId!)); // ⭐ ADD
@@ -548,8 +548,8 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () => Navigator.maybePop(context),
               ),
-              title: const Text(
-                "Place Order",
+              title:  Text(
+                "Place Order".tr,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
@@ -622,7 +622,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    item.storeProductName ?? "Product",
+                                    item.storeProductName ?? "Product".tr,
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
@@ -631,12 +631,12 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    item.variantName ?? "Variant",
+                                    item.variantName ?? "Variant".tr,
                                     style: const TextStyle(
                                         fontSize: 13, color: Colors.grey),
                                   ),
                                   const SizedBox(height: 6),
-                                  Text("Quantity: $qty"),
+                                  Text("Quantity: $qty".tr),
                                 ],
                               ),
                             ),
@@ -672,12 +672,12 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
               padding: const EdgeInsets.all(15),
               child: Column(
                 children: [
-                  _priceRow("Subtotal", "₹${subtotal.toStringAsFixed(2)}"),
-                  _priceRow("Wallet Used",
+                  _priceRow("Subtotal".tr, "₹${subtotal.toStringAsFixed(2)}"),
+                  _priceRow("Wallet Used".tr,
                       "-₹${usedWalletAmount.toStringAsFixed(2)}"),
-                  _priceRow("Coupon Discount",
+                  _priceRow("Coupon Discount".tr,
                       "-₹${couponDiscount.toStringAsFixed(2)}"),
-                  _priceRow("Delivery Charges", "₹0.00"),
+                  _priceRow("Delivery Charges".tr, "₹0.00"),
 
                   // ✅ TOTAL SAVINGS
                   if (totalSavings > 0)
@@ -686,8 +686,8 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            "Total Savings",
+                           Text(
+                            "Total Savings".tr,
                             style: TextStyle(
                               color: Colors.green,
                               fontWeight: FontWeight.w600,
@@ -704,7 +704,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                       ),
                     ),
                   const Divider(),
-                  _priceRow("PAYABLE", "₹${payableAmount.toStringAsFixed(2)}",
+                  _priceRow("PAYABLE".tr, "₹${payableAmount.toStringAsFixed(2)}",
                       bold: true),
                 ],
               ),
@@ -725,7 +725,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
               value: walletEnabled ? useWallet : false,
               activeColor: Colors.blue,
               title: Text(
-                "Use Wallet (₹${walletBalance.toStringAsFixed(2)})",
+                "Use Wallet (₹${walletBalance.toStringAsFixed(2)})".tr,
                 style: TextStyle(
                   color: walletEnabled ? Colors.black : Colors.grey,
                 ),
@@ -755,10 +755,10 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                       ? const CircularProgressIndicator(color: Colors.white)
                       : Text(
                           payableAmount == 0
-                              ? "PAY USING WALLET"
+                              ? "PAY USING WALLET".tr
                               : selectedPaymentMethod == "cod"
-                                  ? "PROCEED"
-                                  : "PAY ₹${payableAmount.toStringAsFixed(2)}",
+                                  ? "PROCEED".tr
+                                  : "PAY ₹${payableAmount.toStringAsFixed(2)}".tr,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -789,7 +789,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text("Deliver To",
+                   Text("Deliver To".tr,
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   GestureDetector(
@@ -797,8 +797,8 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                       final result = await Get.to(() => AddressListPage());
                       if (result == true) setState(() {});
                     },
-                    child: const Text(
-                      "Change Delivery Address",
+                    child:  Text(
+                      "Change Delivery Address".tr,
                       style: TextStyle(
                           color: Colors.grey, fontWeight: FontWeight.bold),
                     ),
@@ -807,7 +807,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
               ),
               const SizedBox(height: 10),
               addr == null
-                  ? const Text("No address selected",
+                  ?  Text("No address selected".tr,
                       style: TextStyle(color: Colors.grey))
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -847,8 +847,8 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Apply Coupon",
+           Text(
+            "Apply Coupon".tr,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
@@ -856,7 +856,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
             controller: couponController,
             readOnly: couponApplied,
             decoration: InputDecoration(
-              hintText: "Enter coupon code",
+              hintText: "Enter coupon code".tr,
               suffixIcon: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -865,7 +865,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                     TextButton(
                       onPressed: _applyCoupon,
                       child: Text(
-                        "APPLY",
+                        "APPLY".tr,
                         style: TextStyle(
                           color: Colours.primarycolour,
                           fontWeight: FontWeight.bold,
@@ -877,8 +877,8 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                   if (couponApplied)
                     TextButton(
                       onPressed: _removeCoupon,
-                      child: const Text(
-                        "REMOVE",
+                      child:  Text(
+                        "REMOVE".tr,
                         style: TextStyle(
                           color: Colors.red,
                           fontWeight: FontWeight.bold,
@@ -893,7 +893,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
-                "Coupon applied: -₹${couponDiscount.toStringAsFixed(2)}",
+                "Coupon applied: -₹${couponDiscount.toStringAsFixed(2)}".tr,
                 style: const TextStyle(
                   color: Colors.green,
                   fontWeight: FontWeight.w600,
@@ -925,7 +925,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
               if (v == null) return;
               setState(() => selectedPaymentMethod = v);
             },
-            title: const Text("Payment"),
+            title: Text("Payment".tr),
           ),
           RadioListTile<String>(
             value: "cod",

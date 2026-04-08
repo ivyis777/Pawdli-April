@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:pawlli/gen/assests.gen.dart';
 
 class Commonui extends StatelessWidget {
@@ -25,7 +26,7 @@ class Commonui extends StatelessWidget {
               width: screenWidth * 0.42,
               height: screenHeight * 0.09,
               errorBuilder: (context, error, stackTrace) {
-                return Center(child: Text('Error loading first image'));
+                return Center(child: Text('Error loading first image'.tr));
               },
             ),
           ),
@@ -39,7 +40,7 @@ class Commonui extends StatelessWidget {
                 height: screenHeight * 0.11,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return Center(child: Text('Error loading second image'));
+                  return Center(child: Text('Error loading second image'.tr));
                 },
               ),
             ),

@@ -112,8 +112,8 @@ class _MainLayoutState extends State<MainLayout> {
                 color: Colours.brownColour,
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Exit App?',
+               Text(
+                'Exit App?'.tr,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -121,8 +121,8 @@ class _MainLayoutState extends State<MainLayout> {
                 ),
               ),
               const SizedBox(height: 12),
-              const Text(
-                'Are you sure you want to exit the app?',
+               Text(
+                'Are you sure you want to exit the app?'.tr,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
@@ -141,7 +141,7 @@ class _MainLayoutState extends State<MainLayout> {
                             borderRadius: BorderRadius.circular(12)),
                       ),
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('No'),
+                      child:  Text('No'.tr),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -154,7 +154,7 @@ class _MainLayoutState extends State<MainLayout> {
                             borderRadius: BorderRadius.circular(12)),
                       ),
                       onPressed: () => Navigator.of(context).pop(true),
-                      child: const Text('Yes'),
+                      child:  Text('Yes'.tr),
                     ),
                   ),
                 ],

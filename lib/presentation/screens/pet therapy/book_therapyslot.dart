@@ -148,13 +148,13 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
   Future<void> createOrder() async {
     if (userId == null || userId == 0) {
-      Fluttertoast.showToast(msg: "User ID not found! Please login again.");
+      Fluttertoast.showToast(msg: "User ID not found! Please login again.".tr);
       return;
     }
 
     if (widget.selectedSlotIds == null || widget.selectedSlotIds.isEmpty) {
       Fluttertoast.showToast(
-          msg: "No slots selected. Please choose at least one slot.");
+          msg: "No slots selected. Please choose at least one slot.".tr);
       return;
     }
 
@@ -229,8 +229,8 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           Get.snackbar(
-            "Success",
-            "🎉 Slot booked successfully!",
+            "Success".tr,
+            "🎉 Slot booked successfully!".tr,
             snackPosition: SnackPosition.TOP,
             backgroundColor: Colours.primarycolour,
             colorText: Colours.brownColour,
@@ -242,12 +242,12 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
           final responseData = json.decode(response.body);
           final errorMessage = responseData['error'] ??
               responseData['message'] ??
-              "Something went wrong.";
+              "Something went wrong.".tr;
           Fluttertoast.showToast(msg: "Error: $errorMessage");
         }
       } catch (e) {
         print("❌ Exception booking free slot: $e");
-        Fluttertoast.showToast(msg: "Failed to book slot. Please try again.");
+        Fluttertoast.showToast(msg: "Failed to book slot. Please try again.".tr);
       }
       return;
     }
@@ -275,23 +275,23 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
           print("✅ Order created successfully: $_orderId");
           openCheckout();
         } else {
-          Fluttertoast.showToast(msg: "Order ID missing. Try again.");
+          Fluttertoast.showToast(msg: "Order ID missing. Try again.".tr);
         }
       } else {
         final errorMessage = responseData['error'] ??
             responseData['message'] ??
-            "Unknown error occurred.";
+            "Unknown error occurred.".tr;
         Fluttertoast.showToast(msg: "Error: $errorMessage");
       }
     } catch (e) {
       print("🚨 Exception during order creation: $e");
-      Fluttertoast.showToast(msg: "Failed to create order. Check internet.");
+      Fluttertoast.showToast(msg: "Failed to create order. Check internet.".tr);
     }
   }
 
   void openCheckout() {
     if (_orderId == null || _orderId!.isEmpty) {
-      Fluttertoast.showToast(msg: "Order ID is missing. Please try again.");
+      Fluttertoast.showToast(msg: "Order ID is missing. Please try again.".tr);
       return;
     }
 
@@ -329,8 +329,8 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
       debugPrint("  Signature: ${response.signature ?? 'N/A'}");
 
       Get.snackbar(
-        "Success",
-        "Payment Successful!",
+        "Success".tr,
+        "Payment Successful!".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colours.primarycolour,
         colorText: Colours.secondarycolour,
@@ -386,8 +386,8 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
     } catch (e) {
       debugPrint("❗ Error handling payment success: $e");
       Get.snackbar(
-        "Error",
-        "Payment processing error: $e",
+        "Error".tr,
+        "Payment processing error: $e".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colours.primarycolour,
         colorText: Colours.seachbarcolour,
@@ -461,13 +461,13 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
   Future<void> createOrderThroughWallet() async {
     if (userId == null || userId == 0) {
-      Fluttertoast.showToast(msg: "User ID not found! Please login again.");
+      Fluttertoast.showToast(msg: "User ID not found! Please login again.".tr);
       return;
     }
 
     if (widget.selectedSlots == null || widget.selectedSlots.isEmpty) {
       Fluttertoast.showToast(
-          msg: "No slots selected. Please choose at least one slot.");
+          msg: "No slots selected. Please choose at least one slot.".tr);
       return;
     }
 
@@ -532,8 +532,8 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
     if (result?.message == "Insufficient wallet balance.") {
       Get.snackbar(
-        "Insufficient Balance",
-        "You don’t have enough wallet balance to complete this transaction.",
+        "Insufficient Balance".tr,
+        "You don’t have enough wallet balance to complete this transaction.".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -546,8 +546,8 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
     if (result != null && result.status == "success") {
       Get.snackbar(
-        "Success",
-        "🎉 Thanks for booking the slot with Wallet!",
+        "Success".tr,
+        "🎉 Thanks for booking the slot with Wallet!".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.green,
         colorText: Colors.white,
@@ -563,8 +563,8 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
       );
     } else {
       Get.snackbar(
-        "Error",
-        result?.message ?? "Payment failed",
+        "Error".tr,
+        result?.message ?? "Payment failed".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -862,12 +862,12 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                               children: [
                                 Expanded(
                                   child: _buildTextField(
-                                      "Enter First Name", _FirstNameController),
+                                      "Enter First Name".tr, _FirstNameController),
                                 ),
                                 SizedBox(width: 10),
                                 Expanded(
                                   child: _buildTextField(
-                                      "Enter Last Name", _SecondNameController),
+                                      "Enter Last Name".tr, _SecondNameController),
                                 ),
                               ],
                             ),

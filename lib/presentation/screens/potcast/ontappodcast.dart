@@ -67,14 +67,14 @@ class _AllepisodeState extends State<Allepisode> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      podcastInfo?.title ?? "Podcast",
+                      podcastInfo?.title ?? "Podcast".tr,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      controller.episodes.first.guest?.name ?? "Unknown Host",
+                      controller.episodes.first.guest?.name ?? "Unknown Host".tr,
                       style: const TextStyle(
                           fontSize: 14, color: Colors.black54),
                     ),
@@ -95,9 +95,9 @@ class _AllepisodeState extends State<Allepisode> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
-                  children: const [
+                  children:  [
                     Text(
-                      "All Episodes",
+                      "All Episodes".tr,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -238,7 +238,7 @@ Padding(
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("No video available for this episode")),
+                     SnackBar(content: Text("No video available for this episode".tr)),
                   );
                 }
               },

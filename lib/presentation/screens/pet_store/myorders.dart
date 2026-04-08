@@ -12,11 +12,11 @@ class OrdersPage extends StatelessWidget {
   final MyOrdersController controller = Get.find<MyOrdersController>();
 
   final filterNames = {
-    OrderFilter.all: "All",
-    OrderFilter.ordered: "Ordered",
-    OrderFilter.shipping: "Shipping",
-    OrderFilter.delivered: "Delivered",
-    OrderFilter.cancelled: "Cancelled",
+    OrderFilter.all: "All".tr,
+    OrderFilter.ordered: "Ordered".tr,
+    OrderFilter.shipping: "Shipping".tr,
+    OrderFilter.delivered: "Delivered".tr,
+    OrderFilter.cancelled: "Cancelled".tr,
   };
 
   @override
@@ -55,8 +55,8 @@ class OrdersPage extends StatelessWidget {
                 onPressed: () => Navigator.maybePop(context),
               ),
 
-              title: const Text(
-                "My Orders",
+              title:  Text(
+                "My Orders".tr,
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -80,7 +80,7 @@ class OrdersPage extends StatelessWidget {
       }
 
       if (controller.filteredOrders.isEmpty) {
-        return const Center(child: Text("No Orders Found"));
+        return  Center(child: Text("No Orders Found".tr));
       }
 
       return ListView.builder(
@@ -96,33 +96,33 @@ class OrdersPage extends StatelessWidget {
 
     // 🔴 FIRST PRIORITY — Cancelled
     if (status == "cancelled" || status == "order cancelled") {
-      return "Cancel";
+      return "Cancel".tr;
     }
 
     // 🟢 Delivered
     if (status == "delivered") {
-      return "Delivered";
+      return "Delivered".tr;
     }
 
     // 🟢 Razorpay payment completed
     if (order.razorpayPaymentId != null &&
         order.razorpayPaymentId!.isNotEmpty) {
-      return "Confirmed";
+      return "Confirmed".tr;
     }
 
     // 🟢 Wallet-paid orders
     if (order.finalAmount > 0 &&
         order.razorpayOrderId == null &&
         order.razorpayPaymentId == null) {
-      return "Confirmed";
+      return "Confirmed".tr;
     }
 
     // 🟡 COD orders
     if (status == "pending") {
-      return "Confirmed";
+      return "Confirmed".tr;
     }
 
-    return order.orderStatus.capitalize ?? "Pending";
+    return order.orderStatus.capitalize ?? "Pending".tr;
   }
 
   Widget _orderCard(Order order, BuildContext context) {
@@ -223,14 +223,14 @@ class OrdersPage extends StatelessWidget {
                     const SizedBox(height: 5),
 
                     Text(
-                      "Order: ${order.orderId}",
+                      "Order: ${order.orderId}".tr,
                       style: TextStyle(color: Colors.grey[700]),
                     ),
 
                     const SizedBox(height: 4),
 
                     Text(
-                      "Amount: ₹${order.finalAmount}",
+                      "Amount: ₹${order.finalAmount}".tr,
                       style: const TextStyle(
                           fontWeight: FontWeight.w500, fontSize: 13),
                     ),

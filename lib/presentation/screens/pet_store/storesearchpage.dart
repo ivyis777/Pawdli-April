@@ -119,7 +119,7 @@ class StoreSearchPage extends StatelessWidget {
                       filled: true,
                       fillColor:
                           Colours.seachbarcolour,
-                      hintText: "Search products...",
+                      hintText: "Search products...".tr,
 
                       prefixIcon: Icon(
                         Icons.search,
@@ -205,8 +205,8 @@ class StoreSearchPage extends StatelessWidget {
                         MainAxisAlignment
                             .spaceBetween,
                     children: [
-                      const Text(
-                        "Recent Searches",
+                       Text(
+                        "Recent Searches".tr,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight:
@@ -221,7 +221,7 @@ class StoreSearchPage extends StatelessWidget {
                               .clear();
                         },
                         child: Text(
-                          "Clear",
+                          "Clear".tr,
                           style: TextStyle(
                             color: Colours
                                 .primarycolour,
@@ -330,9 +330,9 @@ class StoreSearchPage extends StatelessWidget {
 
                 // 🔹 No results
                 if (controller.products.isEmpty) {
-                  return const Center(
+                  return  Center(
                     child: Text(
-                      "No products found",
+                      "No products found".tr,
                       style:
                           TextStyle(fontSize: 16),
                     ),

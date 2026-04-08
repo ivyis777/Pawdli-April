@@ -66,7 +66,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
             children: [
               AppBar(
                 title: Text(
-                  'Adoptions',
+                  'Adoptions'.tr,
                   style: TextStyle(
                     fontSize: screenHeight * 0.035,
                     fontWeight: FontWeight.w600,
@@ -86,7 +86,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                   }
 
                   if (_controller.adoptionPets.isEmpty) {
-                    return const Center(child: Text("No pets found."));
+                    return  Center(child: Text("No pets found.".tr));
                   }
 
                   final sortedPets = [..._controller.adoptionPets];
@@ -173,7 +173,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                   ),
                 );
               } else {
-                Get.snackbar("Error", "Pet ID is missing.");
+                Get.snackbar("Error", "Pet ID is missing.".tr);
               }
             },
             child: Stack(
@@ -198,7 +198,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        'SOLD OUT',
+                        'SOLD OUT'.tr,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: screenWidth * 0.035,
@@ -248,10 +248,10 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                       ),
                       Text(
                         pet.isFree == true
-                            ? "Type: Free"
+                            ? "Type: Free".tr
                             : pet.isPaid == true
-                                ? "Type: Paid"
-                                : "Type: Not specified",
+                                ? "Type: Paid".tr
+                                : "Type: Not specified".tr,
                         style: TextStyle(
                           color: Colours.secondarycolour,
                           fontFamily: FontFamily.Cairo,
@@ -263,7 +263,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                       SizedBox(
                         width: screenWidth * 0.55,
                         child: Text(
-                          pet.description ?? "No description",
+                          pet.description ?? "No description".tr,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -282,7 +282,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
-                              pet.location ?? "Unknown",
+                              pet.location ?? "Unknown".tr,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(

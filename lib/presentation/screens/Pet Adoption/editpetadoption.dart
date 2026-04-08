@@ -226,7 +226,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
       aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
       uiSettings: [
         AndroidUiSettings(
-          toolbarTitle: 'Crop Image',
+          toolbarTitle: 'Crop Image'.tr,
           toolbarColor: Colours.primarycolour,
           toolbarWidgetColor: Colors.white,
           cropStyle: CropStyle.circle, // ✅ CIRCLE CROP (Android)
@@ -234,7 +234,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
           lockAspectRatio: true,
         ),
         IOSUiSettings(
-          title: 'Crop Image',
+          title: 'Crop Image'.tr,
           aspectRatioLockEnabled: true,
         ),
       ],
@@ -255,7 +255,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
             children: [
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title: const Text('Take a Picture'),
+                title:  Text('Take a Picture'.tr),
                 onTap: () async {
                   Navigator.pop(sheetContext); // ✅ CLOSE SHEET FIRST
 
@@ -276,7 +276,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.image),
-                title: const Text('Upload from Gallery'),
+                title:  Text('Upload from Gallery'.tr),
                 onTap: () async {
                   Navigator.pop(sheetContext); // ✅ CLOSE SHEET FIRST
 
@@ -358,7 +358,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
         onTap: onTap,
         validator: (value) {
           if (requireValidation && (value == null || value.trim().isEmpty)) {
-            return 'Please enter this field';
+            return 'Please enter this field'.tr;
           }
           return null;
         },
@@ -387,7 +387,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Text(
-              'Gender:',
+              'Gender:'.tr,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             ToggleSwitch(
@@ -398,7 +398,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
               inactiveBgColor: Colors.grey,
               inactiveFgColor: Colors.white,
               totalSwitches: 2,
-              labels: ['Male', 'Female'],
+              labels: ['Male'.tr, 'Female'.tr],
               icons: [FontAwesomeIcons.mars, FontAwesomeIcons.venus],
               activeBgColors: [
                 [Colours.primarycolour],
@@ -424,7 +424,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Text(
-              'Neutered/Spayed:',
+              'Neutered/Spayed:'.tr,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             ToggleSwitch(
@@ -439,7 +439,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
               inactiveFgColor: Colors.white,
               initialLabelIndex: _selectedSpayedIndex ?? 0,
               totalSwitches: 2,
-              labels: ['Yes', 'No'],
+              labels: ['Yes'.tr, 'No'.tr],
               radiusStyle: true,
               onToggle: (index) {
                 setState(() {
@@ -460,7 +460,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(
-            'Free:',
+            'Free:'.tr,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           ToggleSwitch(
@@ -475,7 +475,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
             inactiveFgColor: Colors.white,
             initialLabelIndex: _isFree == 'Yes' ? 0 : 1,
             totalSwitches: 2,
-            labels: ['Yes', 'No'],
+            labels: ['Yes'.tr, 'No'.tr],
             radiusStyle: true,
             onToggle: (index) {
               setState(() {
@@ -496,7 +496,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(
-            'Status:',
+            'Status:'.tr,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           ToggleSwitch(
@@ -511,7 +511,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
             inactiveFgColor: Colors.white,
             initialLabelIndex: _isAvailable ? 0 : 1,
             totalSwitches: 2,
-            labels: ['Available', 'Sold'],
+            labels: ['Available'.tr, 'Sold'.tr],
             radiusStyle: true,
             onToggle: (index) {
               setState(() {
@@ -547,7 +547,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
       Column(children: [
         AppBar(
           title: Text(
-            'Edit Pet',
+            'Edit Pet'.tr,
             style: TextStyle(
               fontSize: screenHeight * 0.035,
               fontWeight: FontWeight.w600,
@@ -642,7 +642,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  _buildTextField("Enter Pet Name", _nameController,
+                  _buildTextField("Enter Pet Name".tr, _nameController,
                       requireValidation: false),
                   SizedBox(height: 15),
                   InternationalPhoneNumberInput(
@@ -657,8 +657,8 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
                             isValid; // ✅ <-- This is what was missing
                       });
                       print(isValid
-                          ? '✅ Valid phone number'
-                          : '❌ Invalid phone number');
+                          ? '✅ Valid phone number'.tr
+                          : '❌ Invalid phone number'.tr);
                     },
                     selectorConfig: SelectorConfig(
                       selectorType: PhoneInputSelectorType.DIALOG,
@@ -668,12 +668,12 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
                     initialValue: _phoneNumber,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your phone number';
+                        return 'Please enter your phone number'.tr;
                       }
                       return null;
                     },
                     inputDecoration: InputDecoration(
-                      labelText: 'Phone Number',
+                      labelText: 'Phone Number'.tr,
                       labelStyle: TextStyle(color: Colors.brown[600]),
                       border: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.brown),
@@ -691,10 +691,10 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
 //                         _buildBreedDropdown(),
 
                   _buildTextField(
-                      "Enter Pet Description", _descriptionController),
-                  _buildTextField("Enter Pet Location", _LocationController),
+                      "Enter Pet Description".tr, _descriptionController),
+                  _buildTextField("Enter Pet Location".tr, _LocationController),
                   _buildTextField(
-                    "Enter Birthday(yyyy/mm/dd)",
+                    "Enter Birthday(yyyy/mm/dd)".tr,
                     requireValidation: false,
                     _birthdayController,
                     readOnly: true,
@@ -712,17 +712,17 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
                     children: [
                       Expanded(
                           child: _buildTextField(
-                              "Enter Weight (kg)", _weightController,
+                              "Enter Weight (kg)".tr, _weightController,
                               requireValidation: false)),
                       SizedBox(width: 10),
                       Expanded(
                           child: _buildTextField(
-                              "Enter Height (cm)", _heightController,
+                              "Enter Height (cm)".tr, _heightController,
                               requireValidation: false)),
                     ],
                   ),
                   _buildTextField(
-                      "Enter Microchip Number", _microchipController,
+                      "Enter Microchip Number".tr, _microchipController,
                       requireValidation: false),
                   SizedBox(height: 20),
                   Center(
@@ -734,7 +734,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                        'Please enter a valid phone number'),
+                                        'Please enter a valid phone number'.tr),
                                     backgroundColor: Colors.black,
                                   ),
                                 );
@@ -771,7 +771,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
                               ),
                             ),
                             child: Text(
-                              "Update",
+                              "Update".tr,
                               style: TextStyle(
                                 fontSize: screenHeight * 0.025,
                                 fontWeight: FontWeight.w600,

@@ -63,7 +63,7 @@ class _AdoptionPetsState extends State<AdoptionPets> {
                 children: [
                   AppBar(
                     title: Text(
-                      'Adoptions',
+                      'Adoptions'.tr,
                       style: TextStyle(
                         fontSize: screenHeight * 0.035,
                         fontWeight: FontWeight.w600,
@@ -83,7 +83,7 @@ class _AdoptionPetsState extends State<AdoptionPets> {
                       }
 
                       if (_controller.adoptionPets.isEmpty) {
-                        return const Center(child: Text("No pets found."));
+                        return  Center(child: Text("No pets found.".tr));
                       }
 
                       final sortedPets = [..._controller.adoptionPets];
@@ -138,7 +138,7 @@ class _AdoptionPetsState extends State<AdoptionPets> {
       final m = pet.ageDetails!.months ?? 0;
       final d = pet.ageDetails!.days ?? 0;
 
-      return "Age | ${y}y ${m}m ${d}d";
+      return "Age | ${y}y ${m}m ${d}d".tr;
     }
 
     // ✅ 2. FALLBACK TO DOB
@@ -156,13 +156,13 @@ class _AdoptionPetsState extends State<AdoptionPets> {
           months += 12;
         }
 
-        return "Age | ${years}y ${months}m";
+        return "Age | ${years}y ${months}m".tr;
       } catch (_) {
-        return "Age | N/A";
+        return "Age | N/A".tr;
       }
     }
 
-    return "Age | N/A";
+    return "Age | N/A".tr;
   }
 
   Widget buildPetCard(
@@ -190,7 +190,7 @@ class _AdoptionPetsState extends State<AdoptionPets> {
                   ),
                 );
               } else {
-                Get.snackbar("Error", "Pet ID is missing.");
+                Get.snackbar("Error", "Pet ID is missing.".tr);
               }
               print(petId);
             },
@@ -216,7 +216,7 @@ class _AdoptionPetsState extends State<AdoptionPets> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        'SOLD OUT',
+                        'SOLD OUT'.tr,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: screenWidth * 0.035,
@@ -237,8 +237,8 @@ class _AdoptionPetsState extends State<AdoptionPets> {
                         children: [
                           Text(
                             isSold
-                                ? "Sold"
-                                : (pet.mobileNumber ?? "Not Provided"),
+                                ? "Sold".tr
+                                : (pet.mobileNumber ?? "Not Provided".tr),
                             style: TextStyle(
                               color: Colours.secondarycolour,
                               fontFamily: FontFamily.Cairo,
@@ -261,10 +261,10 @@ class _AdoptionPetsState extends State<AdoptionPets> {
                       const SizedBox(height: 1),
                       Text(
                         pet.isFree == true
-                            ? "Type: Free"
+                            ? "Type: Free".tr
                             : pet.isPaid == true
-                                ? "Type: Paid"
-                                : "Type: Not specified",
+                                ? "Type: Paid".tr
+                                : "Type: Not specified".tr,
                         style: TextStyle(
                           color: Colours.secondarycolour,
                           fontFamily: FontFamily.Cairo,
@@ -274,7 +274,7 @@ class _AdoptionPetsState extends State<AdoptionPets> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        pet.description ?? "No description",
+                        pet.description ?? "No description".tr,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -292,7 +292,7 @@ class _AdoptionPetsState extends State<AdoptionPets> {
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
-                              pet.location ?? "Unknown",
+                              pet.location ?? "Unknown".tr,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(

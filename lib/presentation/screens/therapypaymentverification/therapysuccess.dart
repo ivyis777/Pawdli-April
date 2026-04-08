@@ -69,7 +69,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
           preferredSize: Size.fromHeight(screenHeight * 0.12),
           child: AppBar(
             title: Text(
-              'Payment',
+              'Payment'.tr,
               style: TextStyle(
                 fontSize: screenHeight * 0.03,
                 fontWeight: FontWeight.w600,
@@ -88,7 +88,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError || snapshot.data == null) {
-              return const Center(child: Text("Payment verification failed."));
+              return  Center(child: Text("Payment verification failed.".tr));
             }
 
             var paymentData = snapshot.data!;
@@ -131,7 +131,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                             SizedBox(height: screenHeight * 0.02),
                             Center(
                               child: Text(
-                                paymentData.message ?? 'Payment Success!',
+                                paymentData.message ?? 'Payment Success!'.tr,
                                 style: TextStyle(
                                   fontSize: screenHeight * 0.02,
                                   fontWeight: FontWeight.w300,
@@ -166,7 +166,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Ref Number: ',
+                                      'Ref Number: '.tr,
                                       style: TextStyle(
                                         fontSize: screenHeight * 0.022,
                                         color: Colours.darkgreyColour,
@@ -197,7 +197,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Date:',
+                                      'Date:'.tr,
                                       style: TextStyle(
                                         fontSize: screenHeight * 0.022,
                                         color: Colours.darkgreyColour,
@@ -225,7 +225,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Payment Method:',
+                                      'Payment Method:'.tr,
                                       style: TextStyle(
                                         fontSize: screenHeight * 0.022,
                                         color: Colours.darkgreyColour,
@@ -266,7 +266,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                                 ),
                               ),
                               child: Text(
-                                "Done",
+                                "Done".tr,
                                 style: TextStyle(
                                   fontSize: screenHeight * 0.025,
                                   fontWeight: FontWeight.w600,

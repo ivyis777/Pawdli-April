@@ -32,15 +32,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   Future<void> _downloadInvoice() async {
     try {
-      Get.snackbar("Please wait", "Downloading invoice...");
+      Get.snackbar("Please wait", "Downloading invoice...".tr);
 
       await StoreCheckoutService.downloadInvoice(
         orderId: widget.order.orderId.toString(),
       );
 
-      Get.snackbar("Success", "Invoice downloaded");
+      Get.snackbar("Success", "Invoice downloaded".tr);
     } catch (e) {
-      Get.snackbar("Error", "Failed to download invoice");
+      Get.snackbar("Error", "Failed to download invoice".tr);
     }
   }
 
@@ -49,17 +49,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Cancel Order"),
+          title:  Text("Cancel Order".tr),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text("Please provide reason for cancellation"),
+               Text("Please provide reason for cancellation".tr),
               const SizedBox(height: 10),
               TextField(
                 controller: _reasonController,
                 maxLines: 3,
-                decoration: const InputDecoration(
-                  hintText: "Enter reason",
+                decoration:  InputDecoration(
+                  hintText: "Enter reason".tr,
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -68,12 +68,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("Close"),
+              child:  Text("Close".tr),
             ),
             ElevatedButton(
               onPressed: () async {
                 if (_reasonController.text.trim().isEmpty) {
-                  Get.snackbar("Error", "Reason is required");
+                  Get.snackbar("Error", "Reason is required".tr);
                   return;
                 }
 
@@ -93,14 +93,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     currentStatus = "Order Cancelled";
                   });
 
-                  Get.snackbar("Success", "Order cancelled successfully");
+                  Get.snackbar("Success", "Order cancelled successfully".tr);
                 } else {
-                  Get.snackbar("Error", "Failed to cancel order");
+                  Get.snackbar("Error", "Failed to cancel order".tr);
                 }
               },
               child: isLoading
                   ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text("Confirm"),
+                  :  Text("Confirm".tr),
             ),
           ],
         );
@@ -130,7 +130,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               style:
                   const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 6),
-          const Text("No address provided"),
+           Text("No address provided".tr),
         ],
       );
     }
@@ -145,14 +145,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              address['name'] ?? "",
+              address['name'.tr] ?? "",
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 4),
-            Text(address['phone'] ?? ""),
+            Text(address['phone'.tr] ?? ""),
             // Text(address['email'] ?? ""),
             const SizedBox(height: 6),
-            Text(address['address'] ?? ""),
+            Text(address['address'.tr] ?? ""),
           ],
         ),
       ],
@@ -189,7 +189,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             // ✅ APP BAR ON TOP
             AppBar(
               centerTitle: true,
-              title: const Text("Order Details"),
+              title:  Text("Order Details".tr),
               backgroundColor: Colors.transparent, // important
               foregroundColor: Colours.brownColour,
               elevation: 0,
@@ -206,18 +206,18 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   },
                   itemBuilder: (context) => [
                     // ⭐ ALWAYS SHOW INVOICE
-                    const PopupMenuItem(
+                     PopupMenuItem(
                       value: "invoice",
-                      child: Text("Download Invoice"),
+                      child: Text("Download Invoice".tr),
                     ),
 
                     // ⭐ SHOW CANCEL ONLY WHEN ALLOWED
                     if (currentStatus.toLowerCase() != "order cancelled" &&
                         currentStatus.toLowerCase() != "cancelled" &&
                         currentStatus.toLowerCase() != "delivered")
-                      const PopupMenuItem(
+                       PopupMenuItem(
                         value: "cancel",
-                        child: Text("Cancel Order"),
+                        child: Text("Cancel Order".tr),
                       ),
                   ],
                 ),
@@ -380,8 +380,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   borderRadius: BorderRadius.circular(25),
                 ),
               ),
-              child: const Text(
-                "Goto home...",
+              child:  Text(
+                "Goto home...".tr,
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

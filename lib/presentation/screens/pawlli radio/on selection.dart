@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/utils.dart';
 
 class MyApp extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: Colors.amber,
         appBar: AppBar(
           backgroundColor: Colors.amber,
-          title: Text("Robert Radio"),
+          title: Text("Robert Radio".tr),
           leading: Padding(
             padding: const EdgeInsets.only(top: 0.0, left: 10, right: 10),
             child: CircleAvatar(
@@ -108,7 +109,7 @@ class _MyAppState extends State<MyApp> {
                 padding: const EdgeInsets.all(0.0),
                 child: Center(
                   child: Text(
-                    'Socialize the Pet',
+                    'Socialize the Pet'.tr,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.brown,
@@ -160,7 +161,7 @@ class _MyAppState extends State<MyApp> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Now",
+                                            "Now".tr,
                                             style: TextStyle(
                                               color: Colors.red,
                                               fontWeight: FontWeight.bold,
@@ -184,13 +185,13 @@ class _MyAppState extends State<MyApp> {
                                               MainAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Diet and Play time",
+                                              "Diet and Play time".tr,
                                               style: TextStyle(
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              "ily I Love You baby",
+                                              "ily I Love You baby".tr,
                                               style: TextStyle(
                                                 fontSize: 12,
                                               ),
@@ -237,7 +238,7 @@ class _MyAppState extends State<MyApp> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Now",
+                                            "Now".tr,
                                             style: TextStyle(
                                               color: Colors.red,
                                               fontWeight: FontWeight.bold,
@@ -261,14 +262,14 @@ class _MyAppState extends State<MyApp> {
                                         child: Column(
                                           children: [
                                             Text(
-                                              "Train your pet",
+                                              "Train your pet".tr,
                                               style: TextStyle(
                                                   fontSize:
                                                       12, // Adjust the font size here
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              "ily I Love You baby",
+                                              "ily I Love You baby".tr,
                                               style: TextStyle(
                                                 fontSize:
                                                     12, // Adjust the font size here
@@ -332,14 +333,14 @@ class _MyAppState extends State<MyApp> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "Socialize the Pet",
+                                              "Socialize the Pet".tr,
                                               style: TextStyle(
                                                   fontSize:
                                                       12, // Adjust the font size here
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              "ily I Love You baby",
+                                              "ily I Love You baby".tr,
                                               style: TextStyle(
                                                 fontSize:
                                                     12, // Adjust the font size here
@@ -387,7 +388,7 @@ class _MyAppState extends State<MyApp> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Now",
+                                            "Now".tr,
                                             style: TextStyle(
                                               color: Colors.red,
                                               fontWeight: FontWeight.bold,
@@ -413,14 +414,14 @@ class _MyAppState extends State<MyApp> {
                                               MainAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Love and care of Pet",
+                                              "Love and care of Pet".tr,
                                               style: TextStyle(
                                                   fontSize:
                                                       12, // Adjust the font size here
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              "ily I Love You baby",
+                                              "ily I Love You baby".tr,
                                               style: TextStyle(
                                                 fontSize:
                                                     12, // Adjust the font size here

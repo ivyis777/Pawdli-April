@@ -22,7 +22,7 @@ class MyReelsPage extends StatelessWidget {
           children: [
             AppBar(
               centerTitle: true,
-              title: const Text("My Videos"),
+              title:  Text("My Videos".tr),
               backgroundColor: Colors.white,
             ),
 
@@ -54,9 +54,9 @@ class MyReelsPage extends StatelessWidget {
         }
 
         if (controller.myReels.isEmpty) {
-          return const Center(
+          return  Center(
             child:
-                Text("No reels found", style: TextStyle(color: Colors.white70)),
+                Text("No reels found".tr, style: TextStyle(color: Colors.white70)),
           );
         }
 
@@ -122,11 +122,11 @@ class MyReelsPage extends StatelessWidget {
                         onSelected: (value) async {
                           if (value == 'delete') {
                             Get.defaultDialog(
-                              title: "Delete Video",
+                              title: "Delete Video".tr,
                               middleText:
-                                  "Are you sure you want to delete this video permanently?",
-                              textConfirm: "Delete",
-                              textCancel: "Cancel",
+                                  "Are you sure you want to delete this video permanently?".tr,
+                              textConfirm: "Delete".tr,
+                              textCancel: "Cancel".tr,
                               confirmTextColor: Colors.white,
                               onConfirm: () {
                                 controller.deleteReel(reel.id);
@@ -136,13 +136,13 @@ class MyReelsPage extends StatelessWidget {
                           }
                         },
                         itemBuilder: (_) => [
-                          const PopupMenuItem(
-                            value: 'delete',
+                           PopupMenuItem(
+                            value: 'delete'.tr,
                             child: Row(
                               children: [
                                 Icon(Icons.delete, size: 18, color: Colors.red),
                                 SizedBox(width: 8),
-                                Text("Delete"),
+                                Text("Delete".tr),
                               ],
                             ),
                           ),

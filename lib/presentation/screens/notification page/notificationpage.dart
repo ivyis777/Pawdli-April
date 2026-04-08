@@ -76,7 +76,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 preferredSize: Size.fromHeight(screenHeight * 0.12),
                 child: AppBar(
                   title: Text(
-                    'Notifications',
+                    'Notifications'.tr,
                     style: TextStyle(
                       fontSize: screenHeight * 0.03,
                       fontWeight: FontWeight.w600,
@@ -96,8 +96,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   }
 
                   if (controller.payments.isEmpty) {
-                    return const Center(
-                        child: Text("No notifications available"));
+                    return  Center(
+                        child: Text("No notifications available".tr));
                   }
 
                   List<NoticationModel> sortedNotifications = [
@@ -157,7 +157,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          notification.title ?? "No Title",
+                                          notification.title ?? "No Title".tr,
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w700,
@@ -171,7 +171,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                         SizedBox(height: screenHeight * 0.01),
                                         Text(
                                           notification.message ??
-                                              "No Description",
+                                              "No Description".tr,
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,

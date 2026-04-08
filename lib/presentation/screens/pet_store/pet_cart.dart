@@ -131,8 +131,8 @@ class _CartPageState extends State<CartPage> {
                   color: Colors.transparent,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Text(
-                  "Cart",
+                child: Text(
+                  "Cart".tr,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -149,8 +149,8 @@ class _CartPageState extends State<CartPage> {
         }
 
         if (cartController.cartItems.isEmpty) {
-          return const Center(
-            child: Text("Your cart is empty", style: TextStyle(fontSize: 18)),
+          return  Center(
+            child: Text("Your cart is empty".tr, style: TextStyle(fontSize: 18)),
           );
         }
 
@@ -179,7 +179,7 @@ class _CartPageState extends State<CartPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Total amount",
+                         Text("Total amount".tr,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                         Text(
@@ -196,7 +196,7 @@ class _CartPageState extends State<CartPage> {
                         onPressed: () {
                           if (selectedCartIds.isEmpty) {
                             Fluttertoast.showToast(
-                              msg: "Please select at least one item",
+                              msg: "Please select at least one item".tr,
                             );
                             return;
                           }
@@ -209,8 +209,8 @@ class _CartPageState extends State<CartPage> {
                           backgroundColor: Colours.primarycolour,
                           padding: const EdgeInsets.all(14),
                         ),
-                        child: const Text(
-                          "Place Order",
+                        child:  Text(
+                          "Place Order".tr,
                           style: TextStyle(fontSize: 16, color: Colors.white),
                         ),
                       ),

@@ -65,7 +65,7 @@ class _PetswitchState extends State<Petswitch> {
             children: [
               AppBar(
                 title: Text(
-                  'Select Buddy 🐾',
+                  'Select Buddy 🐾'.tr,
                   style: TextStyle(
                     fontSize: screenHeight * 0.035,
                     fontWeight: FontWeight.w600,
@@ -96,7 +96,7 @@ class _PetswitchState extends State<Petswitch> {
                   if (petsController.userPets.isEmpty) {
                     return Center(
                       child: Text(
-                        "No pets found",
+                        "No pets found".tr,
                         style: TextStyle(fontSize: 18, color: Colors.grey),
                       ),
                     );
@@ -123,7 +123,7 @@ class _PetswitchState extends State<Petswitch> {
                                   builder: (context) => Chat1to1(
                                     receiverId: widget.receiverId.toString(),
                                     receiverName:
-                                        widget.receiverName ?? "Unknown Pet",
+                                        widget.receiverName ?? "Unknown Pet".tr,
                                     petProfileImage: widget.receiverImage ?? "",
                                     petId: pet.petId!,
                                   ),
@@ -141,7 +141,7 @@ class _PetswitchState extends State<Petswitch> {
                                     : null;
                                 return fullPetImage ?? ''; // fallback for null
                               })(),
-                              pet.name ?? "Unknown",
+                              pet.name ?? "Unknown".tr,
                             ),
                           ),
                           SizedBox(height: 20),

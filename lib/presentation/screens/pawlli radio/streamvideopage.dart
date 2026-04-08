@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:video_player/video_player.dart';
 import 'package:pawlli/data/api service.dart';
@@ -102,7 +103,7 @@ class _StreamVideoPageState extends State<StreamVideoPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("Live Stream"),
+        title: Text("Live Stream".tr),
         backgroundColor: Colors.black,
         foregroundColor: Colours.secondarycolour,
       ),
@@ -111,8 +112,8 @@ class _StreamVideoPageState extends State<StreamVideoPage> {
             ? const CircularProgressIndicator(color: Colors.white)
 
             : _error
-                ? const Text(
-                    "Stream Offline",
+                ?  Text(
+                    "Stream Offline".tr,
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   )
 
@@ -124,8 +125,8 @@ class _StreamVideoPageState extends State<StreamVideoPage> {
                             child: VideoPlayer(_controller),
                           )
 
-                    : const Text(
-                        "Stream not available",
+                    :  Text(
+                        "Stream not available".tr,
                         style: TextStyle(color: Colors.white),
                       ),
       ),

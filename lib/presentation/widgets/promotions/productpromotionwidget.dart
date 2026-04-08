@@ -91,7 +91,7 @@ class Productpromotion extends StatelessWidget {
           Icon(Icons.pets, size: 80, color: Colours.primarycolour),
           const SizedBox(height: 10),
           Text(
-            "Coming Soon",
+            "Coming Soon".tr,
             style: TextStyle(
               fontSize: 14,
               color: Colours.primarycolour,

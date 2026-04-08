@@ -73,7 +73,7 @@ void initState() {
                               children: [
                                 // Title
                                 Text(
-                                  "Let’s Register",
+                                  "Let’s Register".tr,
                                   style: TextStyle(
                                     color: Colours.black,
                                     fontFamily: FontFamily.Ubantu,
@@ -87,7 +87,7 @@ void initState() {
                                   controller: _nameController,
                                   validator: FormValidation.nameValidation,
                                   decoration: InputDecoration(
-                                    hintText: "User Id",
+                                    hintText: "User Id".tr,
                                     hintStyle: TextStyle(color: Colours.textColour),
                                     contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
                                     filled: true,
@@ -105,7 +105,7 @@ void initState() {
                                   controller: _emailController,
                                   validator: FormValidation.emailValidation,
                                   decoration: InputDecoration(
-                                    hintText: "Email Id",
+                                    hintText: "Email Id".tr,
                                     hintStyle: TextStyle(color: Colours.textColour),
                                     contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
                                     filled: true,
@@ -121,7 +121,7 @@ void initState() {
                                
                               IntlPhoneField(
                                   decoration: InputDecoration(
-                                    hintText: 'Phone Number',
+                                    hintText: 'Phone Number'.tr,
                                     hintStyle: TextStyle(color: Colours.textColour),
                                     contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
                                     filled: true,
@@ -139,10 +139,10 @@ void initState() {
                                   },
                                   validator: (phone) {
                                     if (phone == null || phone.number.isEmpty) {
-                                      return 'Please enter your phone number';
+                                      return 'Please enter your phone number'.tr;
                                     }
                                     if (phone.number.length != 10) {
-                                      return 'Phone number must be 10 digits';
+                                      return 'Phone number must be 10 digits'.tr;
                                     }
                                     return null;
                                   },
@@ -190,29 +190,29 @@ void initState() {
 
                                                 if (msg.contains('email already')) {
                                                   Get.snackbar(
-                                                    "Error",
-                                                    "Email already registered. Please login.",
+                                                    "Error".tr,
+                                                    "Email already registered. Please login.".tr,
                                                     snackPosition: SnackPosition.TOP,
                                                   );
                                                 } 
                                                 else if (msg.contains('username already')) {
                                                   Get.snackbar(
-                                                    "Error",
-                                                    "Username already exists. Try different name.",
+                                                    "Error".tr,
+                                                    "Username already exists. Try different name.".tr,
                                                     snackPosition: SnackPosition.TOP,
                                                   );
                                                 } 
                                                 else if (msg.contains('mobile already')) {
                                                   Get.snackbar(
-                                                    "Error",
-                                                    "Mobile number already registered.",
+                                                    "Error".tr,
+                                                    "Mobile number already registered.".tr,
                                                     snackPosition: SnackPosition.TOP,
                                                   );
                                                 } 
                                                 else {
                                                   // ✅ DEFAULT MESSAGE FROM API
                                                   Get.snackbar(
-                                                    "Error",
+                                                    "Error".tr,
                                                     result.message,
                                                     snackPosition: SnackPosition.TOP,
                                                   );
@@ -239,7 +239,7 @@ void initState() {
                                                       AlwaysStoppedAnimation<Color>(Colours.secondarycolour),
                                                 )
                                               : Text(
-                                                  "Get OTP",
+                                                  "Get OTP".tr,
                                                   style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w500,
@@ -256,7 +256,7 @@ void initState() {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "Already have an account ? ",
+                                      "Already have an account ? ".tr,
                                       style: TextStyle(
                                         color: Colours.textColour,
                                         fontWeight: FontWeight.w400,
@@ -267,7 +267,7 @@ void initState() {
                                     TextButton(
                                       onPressed: () => Get.to(LoginPage()),
                                       child: Text(
-                                        'Login',
+                                        'Login'.tr,
                                         style: TextStyle(
                                           color: Colours.darkgreyColour,
                                           fontFamily: FontFamily.Ubantu,

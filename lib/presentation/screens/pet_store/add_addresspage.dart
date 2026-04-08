@@ -118,7 +118,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
       // ---------------- APP BAR WITH IMAGE ----------------
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Add Address"),
+        title:  Text("Add Address".tr),
         backgroundColor: Colors.white,
         elevation: 0,
         flexibleSpace: Stack(
@@ -151,8 +151,8 @@ class _AddAddressPageState extends State<AddAddressPage> {
               // ---------------- NAME ----------------
               TextFormField(
                 controller: nameCtrl,
-                decoration: _input("Full Name"),
-                validator: (v) => _required(v, "Enter full name"),
+                decoration: _input("Full Name".tr),
+                validator: (v) => _required(v, "Enter full name".tr),
               ),
               const SizedBox(height: 12),
 
@@ -171,8 +171,8 @@ class _AddAddressPageState extends State<AddAddressPage> {
                     child: TextFormField(
                       controller: phoneCtrl,
                       keyboardType: TextInputType.phone,
-                      decoration: _input("Mobile Number"),
-                      validator: (v) => _required(v, "Enter mobile number"),
+                      decoration: _input("Mobile Number".tr),
+                      validator: (v) => _required(v, "Enter mobile number".tr),
                     ),
                   ),
                 ],
@@ -184,42 +184,42 @@ class _AddAddressPageState extends State<AddAddressPage> {
                 controller: emailCtrl,
                 enabled: false,
                 decoration: _input(
-                  "Email",
+                  "Email".tr,
                   fillColor: Colors.grey.shade200,
                 ),
-                validator: (v) => _required(v, "Login email not found"),
+                validator: (v) => _required(v, "Login email not found".tr),
               ),
               const SizedBox(height: 12),
 
               // ---------------- HOUSE ----------------
               TextFormField(
                 controller: houseCtrl,
-                decoration: _input("House / Flat No"),
-                validator: (v) => _required(v, "Enter house / flat number"),
+                decoration: _input("House / Flat No".tr),
+                validator: (v) => _required(v, "Enter house / flat number".tr),
               ),
               const SizedBox(height: 12),
 
               // ---------------- STREET ----------------
               TextFormField(
                 controller: streetCtrl,
-                decoration: _input("Street / Area"),
-                validator: (v) => _required(v, "Enter street / area"),
+                decoration: _input("Street / Area".tr),
+                validator: (v) => _required(v, "Enter street / area".tr),
               ),
               const SizedBox(height: 12),
 
               // ---------------- CITY ----------------
               TextFormField(
                 controller: cityCtrl,
-                decoration: _input("City"),
-                validator: (v) => _required(v, "Enter city"),
+                decoration: _input("City".tr),
+                validator: (v) => _required(v, "Enter city".tr),
               ),
               const SizedBox(height: 12),
 
               // ---------------- STATE ----------------
               TextFormField(
                 controller: stateCtrl,
-                decoration: _input("State"),
-                validator: (v) => _required(v, "Enter state"),
+                decoration: _input("State".tr),
+                validator: (v) => _required(v, "Enter state".tr),
               ),
               const SizedBox(height: 12),
 
@@ -227,13 +227,13 @@ class _AddAddressPageState extends State<AddAddressPage> {
               TextFormField(
                 controller: pincodeCtrl,
                 keyboardType: TextInputType.number,
-                decoration: _input("Pincode"),
+                decoration: _input("Pincode".tr),
                 validator: (v) {
                   if (v == null || v.trim().isEmpty) {
-                    return "Enter pincode";
+                    return "Enter pincode".tr;
                   }
                   if (v.length < 6) {
-                    return "Enter valid pincode";
+                    return "Enter valid pincode".tr;
                   }
                   return null;
                 },
@@ -261,8 +261,8 @@ class _AddAddressPageState extends State<AddAddressPage> {
                     Get.back(result: address);
                   }
                 },
-                child: const Text(
-                  "Save Address",
+                child:  Text(
+                  "Save Address".tr,
                   style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),

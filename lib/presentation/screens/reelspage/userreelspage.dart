@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:pawlli/gen/assests.gen.dart';
@@ -101,7 +102,7 @@ class _UserReelsPageState extends State<UserReelsPage> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : reels.isEmpty
-              ? const Center(child: Text("No reels found"))
+              ?  Center(child: Text("No reels found".tr))
               : GridView.builder(
                   padding: const EdgeInsets.all(6),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -185,19 +186,19 @@ class _UserReelsPageState extends State<UserReelsPage> {
                                 icon: const Icon(Icons.more_vert,
                                     color: Colors.white),
                                 onSelected: (value) async {
-                                  if (value == 'save') {
+                                  if (value == 'save'.tr) {
                                     await ReelSaveHelper.save(
                                         context, reel.videoUrl);
                                   }
                                 },
-                                itemBuilder: (_) => const [
+                                itemBuilder: (_) =>  [
                                   PopupMenuItem(
-                                    value: 'save',
+                                    value: 'save'.tr,
                                     child: Row(
                                       children: [
                                         Icon(Icons.download, size: 18),
                                         SizedBox(width: 8),
-                                        Text("Save"),
+                                        Text("Save".tr),
                                       ],
                                     ),
                                   ),

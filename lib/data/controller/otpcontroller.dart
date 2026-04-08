@@ -45,12 +45,12 @@ class OtpController extends GetxController {
         return (
           success: true,
           message: response.message ??
-              'OTP sent successfully. Please check your email.'
+              'OTP sent successfully. Please check your email.'.tr
         );
       } else {
         return (
           success: false,
-          message: response.message ?? 'Something went wrong'
+          message: response.message ?? 'Something went wrong'.tr
         );
       }
     } catch (e) {
@@ -81,25 +81,25 @@ class OtpController extends GetxController {
           case 'EMAIL_EXISTS':
             return (
               success: false,
-              message: 'Email already registered. Please login.'
+              message: 'Email already registered. Please login.'.tr
             );
 
           case 'USERID_EXISTS':
             return (
               success: false,
-              message: 'UserId already exists. Try different Id.'
+              message: 'UserId already exists. Try different Id.'.tr
             );
 
           case 'MOBILE_EXISTS':
             return (
               success: false,
-              message: 'Mobile number already registered.'
+              message: 'Mobile number already registered.'.tr
             );
 
           case 'EMAIL_NOT_FOUND':
             return (
               success: false,
-              message: 'Email not found. Please sign up first.'
+              message: 'Email not found. Please sign up first.'.tr
             );
 
           case 'ACCOUNT_TEMPORARILY_LOCKED':
@@ -107,19 +107,19 @@ class OtpController extends GetxController {
             _startCooldown(wait);
             return (
               success: false,
-              message: 'Too many attempts. Wait $wait seconds.'
+              message: 'Too many attempts. Wait $wait seconds.'.tr
             );
 
           case 'TIMEOUT':
             return (
               success: false,
-              message: 'Request timed out. Try again.'
+              message: 'Request timed out. Try again.'.tr
             );
 
           case 'FORMAT_ERROR':
             return (
               success: false,
-              message: 'Invalid server response. Try again!'
+              message: 'Invalid server response. Try again!'.tr
             );
 
           default:
@@ -127,7 +127,7 @@ class OtpController extends GetxController {
               success: false,
               message: message.isNotEmpty
                   ? message
-                  : 'Something went wrong. Please try again.'
+                  : 'Something went wrong. Please try again.'.tr
             );
         }
       } finally {

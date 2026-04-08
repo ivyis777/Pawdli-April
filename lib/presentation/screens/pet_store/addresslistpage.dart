@@ -36,7 +36,7 @@ class AddressListPage extends StatelessWidget {
           await placemarkFromCoordinates(position.latitude, position.longitude);
 
       if (placemarks.isEmpty) {
-        Fluttertoast.showToast(msg: "Unable to fetch address");
+        Fluttertoast.showToast(msg: "Unable to fetch address".tr);
         return;
       }
 
@@ -55,7 +55,7 @@ class AddressListPage extends StatelessWidget {
         addressController.saveAddress(result);
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: "Location error");
+      Fluttertoast.showToast(msg: "Location error".tr);
     }
   }
 
@@ -68,7 +68,7 @@ class AddressListPage extends StatelessWidget {
       // ---------------- APP BAR WITH TOP IMAGE ----------------
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Select Address"),
+        title:  Text("Select Address".tr),
         backgroundColor: Colors.white,
         elevation: 0,
         flexibleSpace: Stack(
@@ -113,8 +113,8 @@ class AddressListPage extends StatelessWidget {
         child: SafeArea(
           child: ElevatedButton.icon(
             icon: const Icon(Icons.my_location, color: Colors.white),
-            label: const Text(
-              "Use Current Location",
+            label:  Text(
+              "Use Current Location".tr,
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -136,7 +136,7 @@ class AddressListPage extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: Obx(() {
         return addressController.allAddresses.isEmpty
-            ? const Center(child: Text("No addresses found. Add one."))
+            ?  Center(child: Text("No addresses found. Add one.".tr))
             : ListView.builder(
                 padding: const EdgeInsets.only(bottom: 90),
                 itemCount: addressController.allAddresses.length,

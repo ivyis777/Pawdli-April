@@ -94,9 +94,9 @@ final pet = _controller.adoptionPets
     .firstWhereOrNull((p) => p.id == widget.Id);
 
         if (pet == null) {
-          return const Center(
+          return  Center(
             child: Text(
-              "No pet data available",
+              "No pet data available".tr,
               style: TextStyle(fontSize: 18, color: Colors.white),
             ),
           );
@@ -130,7 +130,7 @@ final pet = _controller.adoptionPets
                               // **Title**
                               Center(
                                 child: Text(
-                                  pet.name ?? "No Name",
+                                  pet.name ?? "No Name".tr,
                                   style: TextStyle(
                                     color: Colours.brownColour,
                                     fontFamily: FontFamily.Cairo,
@@ -151,7 +151,7 @@ final pet = _controller.adoptionPets
 
                                 Expanded(
                                   child: Text(
-                                    pet.location ?? "No Location",
+                                    pet.location ?? "No Location".tr,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -169,7 +169,7 @@ final pet = _controller.adoptionPets
                               Container(
                                 margin: const EdgeInsets.only(left: 5),
                                 child: Text(
-                                  pet.description ?? "No Description",
+                                  pet.description ?? "No Description".tr,
                                   style: TextStyle(
                                     fontFamily: FontFamily.Cairo,
                                     fontSize: screenWidth * 0.05,
@@ -194,7 +194,7 @@ final pet = _controller.adoptionPets
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Age',
+                                          'Age'.tr,
                                           style: TextStyle(
                                             color: Colours.black,
                                             fontWeight: FontWeight.w700,
@@ -226,7 +226,7 @@ final pet = _controller.adoptionPets
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Gender',
+                                          'Gender'.tr,
                                           style: TextStyle(
                                             color: Colours.black,
                                             fontWeight: FontWeight.w700,
@@ -235,7 +235,7 @@ final pet = _controller.adoptionPets
                                         ),
                                         SizedBox(height: 8),
                                         Text(
-                                          pet.gender ?? "Unknown",
+                                          pet.gender ?? "Unknown".tr,
                                           style: TextStyle(
                                             color: Colours.brownColour,
                                             fontWeight: FontWeight.w700,
@@ -258,7 +258,7 @@ final pet = _controller.adoptionPets
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Weight',
+                                          'Weight'.tr,
                                           style: TextStyle(
                                             color: Colours.black,
                                             fontWeight: FontWeight.w700,

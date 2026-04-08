@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/model/ordermodel.dart';
 import 'package:pawlli/presentation/screens/pet_store/pet_cart.dart';
@@ -31,15 +32,15 @@ class _ReorderScreenState extends State<ReorderScreen> {
     if (item == null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Reorder Item"),
+          title:  Text("Reorder Item".tr),
           centerTitle: true,
           backgroundColor: Colors.transparent,
           foregroundColor: Colours.brownColour,
           elevation: 0,
         ),
-        body: const Center(
+        body:  Center(
           child: Text(
-            "No items found for reorder!",
+            "No items found for reorder!".tr,
             style: TextStyle(
                 fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red),
           ),
@@ -77,8 +78,8 @@ class _ReorderScreenState extends State<ReorderScreen> {
               MaterialPageRoute(builder: (_) => const CartPage()),
             );
           },
-          label: const Text(
-            'Reorder',
+          label:  Text(
+            'Reorder'.tr,
             style: TextStyle(
                 fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
           ),
@@ -106,7 +107,7 @@ class _ReorderScreenState extends State<ReorderScreen> {
                 // -------------------- AppBar --------------------
                 AppBar(
                   title: Text(
-                    'Reorder Item',
+                    'Reorder Item'.tr,
                     style: TextStyle(
                       fontSize: screenHeight * 0.03,
                       fontWeight: FontWeight.w600,
