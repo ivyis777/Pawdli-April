@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/utils.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
@@ -33,7 +34,7 @@ class AppointmentPage extends StatelessWidget {
               // AppBar
               AppBar(
                 title: Text(
-                  'Appointment Mode',
+                  'Appointment Mode'.tr,
                   style: TextStyle(
                     fontSize: screenHeight * 0.035,
                     fontWeight: FontWeight.w600,
@@ -73,7 +74,7 @@ class AppointmentPage extends StatelessWidget {
                           );
                         },
                         child: Text(
-                          "Quick Appointment",
+                          "Quick Appointment".tr,
                           style: TextStyle(
                             fontSize: screenHeight * 0.022,
                             fontWeight: FontWeight.bold,
@@ -103,7 +104,7 @@ class AppointmentPage extends StatelessWidget {
                           );
                         },
                         child: Text(
-                          "Schedule Appointment",
+                          "Schedule Appointment".tr,
                           style: TextStyle(
                             fontSize: screenHeight * 0.022,
                             fontWeight: FontWeight.bold,

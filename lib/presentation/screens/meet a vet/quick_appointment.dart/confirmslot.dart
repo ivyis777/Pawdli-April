@@ -22,7 +22,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Review & Pay",
+          "Review & Pay".tr,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w500,
@@ -55,7 +55,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Patient Name: Rakesh Kumar K',
+                          'Patient Name: Rakesh Kumar K'.tr,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -65,7 +65,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                         ),
                         SizedBox(height: 8.0),
                         Text(
-                          'Age: 24 Years',
+                          'Age: 24 Years'.tr,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -75,7 +75,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                         ),
                         SizedBox(height: 8.0),
                         Text(
-                          'Doctor: Dr. Chomon Aktar',
+                          'Doctor: Dr. Chomon Aktar'.tr,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -91,7 +91,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
               SizedBox(height: 16.0),
               SizedBox(height: 16.0),
               Text(
-                'Images',
+                'Images'.tr,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
@@ -107,7 +107,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
               ),
               SizedBox(height: 16.0),
               Text(
-                'Issue Description:',
+                'Issue Description:'.tr,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
@@ -117,7 +117,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
               ),
               SizedBox(height: 8.0),
               Text(
-                'I Have Problem in My Hair. I Have Problem in My Hair. I Have Problem in My Hair.',
+                'I Have Problem in My Hair. I Have Problem in My Hair. I Have Problem in My Hair.'.tr,
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w400,
@@ -127,7 +127,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
               ),
               SizedBox(height: 16.0),
               Text(
-                'Symptoms',
+                'Symptoms'.tr,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
@@ -137,7 +137,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
               ),
               SizedBox(height: 8.0),
               Text(
-                'Pimples ,Rashes,Pimples,Rashes',
+                'Pimples ,Rashes,Pimples,Rashes'.tr,
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w400,
@@ -176,7 +176,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Total Cost',
+                    'Total Cost'.tr,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -197,7 +197,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
               ),
               ListTile(
                 leading: Text(
-                  'Coupon ',
+                  'Coupon '.tr,
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontFamily: FontFamily.Cairo,
@@ -263,7 +263,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Net Payable',
+                    'Net Payable'.tr,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
@@ -300,7 +300,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                       _showPaymentSuccessDialog(context);
                     },
                     child: Text(
-                      'Payment now',
+                      'Payment now'.tr,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -346,7 +346,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  'Your Payment \n  Is Successful!',
+                  'Your Payment \n  Is Successful!'.tr,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
@@ -369,7 +369,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                       Get.to(Appointmentreviewpage());
                     },
                     child: Text(
-                      'okay',
+                      'okay'.tr,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,

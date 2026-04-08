@@ -226,7 +226,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 preferredSize: Size.fromHeight(screenHeight * 0.12),
                 child: AppBar(
                   title: Text(
-                    'Subscription',
+                    'Subscription'.tr,
                     style: TextStyle(
                       fontSize: screenHeight * 0.03,
                       fontWeight: FontWeight.w600,
@@ -243,11 +243,11 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   children: [
-                    Text("Filter: ",
+                    Text("Filter: ".tr,
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     DropdownButton<String>(
                       value: _selectedRoleFilter,
-                      items: ['All', 'Host', 'Listener'].map((String value) {
+                      items: ['All'.tr, 'Host'.tr, 'Listener'.tr].map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -324,7 +324,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   final allPrograms = [...filteredActive, ...filteredExpired];
 
                   if (allPrograms.isEmpty) {
-                    return Center(child: Text('No subscriptions found'));
+                    return Center(child: Text('No subscriptions found'.tr));
                   }
 
                   return RefreshIndicator(
@@ -388,7 +388,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Text(
-                                        program.isHost ? 'Host' : 'Listener',
+                                        program.isHost ? 'Host'.tr : 'Listener'.tr,
                                         style: TextStyle(
                                           color: isExpired
                                               ? Colors.grey[600]
@@ -421,7 +421,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                   Padding(
                                     padding: EdgeInsets.only(top: 4),
                                     child: Text(
-                                      'Session completed',
+                                      'Session completed'.tr,
                                       style: TextStyle(
                                         color: Colors.red,
                                         fontStyle: FontStyle.italic,
@@ -449,9 +449,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                       child: Text(
                                         program.isHost
                                             ? (_isRestart
-                                                ? 'Restart Session'
-                                                : 'Start Session')
-                                            : 'Join Session',
+                                                ? 'Restart Session'.tr
+                                                : 'Start Session'.tr)
+                                            : 'Join Session'.tr,
                                         style: TextStyle(color: Colors.white),
                                       ),
                                     ),
@@ -463,7 +463,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                   Padding(
                                     padding: EdgeInsets.only(top: 8),
                                     child: Text(
-                                      'Waiting for host to start...',
+                                      'Waiting for host to start...'.tr,
                                       style: TextStyle(
                                         color: Colors.orange.shade700,
                                         fontStyle: FontStyle.italic,
@@ -506,14 +506,14 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       builder: (context) {
         return AlertDialog(
           title: Text(
-            "Session Not Started",
+            "Session Not Started".tr,
             style: TextStyle(
               fontSize: 22, // Bigger font for title
               fontWeight: FontWeight.bold,
             ),
           ),
           content: Text(
-            "The session starts at $startTime on $date.",
+            "The session starts at $startTime on $date.".tr,
             style: TextStyle(
               fontSize: 18, // Bigger font for content
             ),
@@ -523,7 +523,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               onPressed: () =>
                   Navigator.of(context).pop(), // Only closes dialog on OK tap
               child: Text(
-                "OK",
+                "OK".tr,
                 style: TextStyle(fontSize: 18),
               ),
             ),
@@ -560,11 +560,11 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Session Failed'),
-          content: Text('Would you like to rejoin the session?'),
+          title: Text('Session Failed'.tr),
+          content: Text('Would you like to rejoin the session?'.tr),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cancel'.tr),
               onPressed: () {
                 setState(() {
                   _isDialogShowing = false; // Reset dialog flag
@@ -573,7 +573,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               },
             ),
             TextButton(
-              child: Text('Rejoin'),
+              child: Text('Rejoin'.tr),
               onPressed: () async {
                 setState(() {
                   _isDialogShowing = false; // Reset dialog flag
@@ -709,7 +709,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
       if (result == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to start session. Please try again.')),
+          SnackBar(content: Text('Failed to start session. Please try again.'.tr)),
         );
         return;
       }
@@ -722,7 +722,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
           SnackBar(
               content: Text(responseData['message'] ??
                   responseData['error'] ??
-                  'Failed to start session')),
+                  'Failed to start session'.tr)),
         );
         return;
       }
@@ -749,7 +749,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       print('Error in handleProgramStart: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(content: Text('Error: ${e.toString()}'.tr)),
         );
       }
     } finally {
@@ -761,7 +761,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   Future<void> handleJoinCall(int userId, int? sessionId) async {
     if (sessionId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Session ID not available. Please wait.')),
+         SnackBar(content: Text('Session ID not available. Please wait.'.tr)),
       );
       return;
     }
@@ -784,7 +784,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                data?['error'] ?? 'Failed to join session. Please try again.'),
+                data?['error'] ?? 'Failed to join session. Please try again.'.tr),
           ),
         );
         return;
@@ -802,7 +802,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
       if (channelName == null || token == null || uid == -1) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Missing call details from server.')),
+          SnackBar(content: Text('Missing call details from server.'.tr)),
         );
         return;
       }
@@ -827,7 +827,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       debugPrint('Error joining call: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error joining: ${e.toString()}')),
+          SnackBar(content: Text('Error joining: ${e.toString()}'.tr)),
         );
       }
     } finally {

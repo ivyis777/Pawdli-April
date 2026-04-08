@@ -87,7 +87,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
           Column(children: [
             AppBar(
               title: Text(
-                'Book Slots',
+                'Book Slots'.tr,
                 style: TextStyle(
                   fontSize: screenHeight * 0.035,
                   fontWeight: FontWeight.w600,
@@ -137,7 +137,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Dr. Chomon Aktar", // replace with API data
+                            "Dr. Chomon Aktar".tr, // replace with API data
                             style: TextStyle(
                               fontSize: screenHeight * 0.022,
                               fontWeight: FontWeight.bold,
@@ -146,7 +146,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                           ),
                           SizedBox(height: screenHeight * 0.005),
                           Text(
-                            "Dermatopathologist", // replace with API data
+                            "Dermatopathologist".tr, // replace with API data
                             style: TextStyle(
                               fontSize: screenHeight * 0.018,
                               color: Colors.grey[700],
@@ -163,7 +163,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
-                                  "350+ Patients",
+                                  "350+ Patients".tr,
                                   style: TextStyle(
                                     fontSize: screenHeight * 0.016,
                                     fontWeight: FontWeight.w600,
@@ -180,7 +180,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
-                                  "15+ Years",
+                                  "15+ Years".tr,
                                   style: TextStyle(
                                     fontSize: screenHeight * 0.016,
                                     fontWeight: FontWeight.w600,
@@ -205,7 +205,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                 Padding(
                   padding: const EdgeInsets.only(top: 12.0, left: 8.0),
                   child: Text(
-                    "About Doctor",
+                    "About Doctor".tr,
                     style: TextStyle(
                       fontSize: screenHeight * 0.024,
                       fontWeight: FontWeight.bold,
@@ -218,7 +218,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      'Dermatopathologist, Dermatopathologist Dermatopathologist \n DermatopathologistDermatopathologistDermatopathologist',
+                      'Dermatopathologist, Dermatopathologist Dermatopathologist \n DermatopathologistDermatopathologistDermatopathologist'.tr,
                       style: TextStyle(
                         fontSize: screenHeight * 0.022,
                         fontWeight: FontWeight.w500,
@@ -251,7 +251,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Selected Slots:',
+                              'Selected Slots:'.tr,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: screenHeight * 0.018,
@@ -278,7 +278,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                             ),
                             SizedBox(height: screenHeight * 0.01),
                             Text(
-                              'Total Amount: ₹$_totalAmount',
+                              'Total Amount: ₹$_totalAmount'.tr,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: screenHeight * 0.018,
@@ -296,7 +296,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                       if (slotController.slotList.isEmpty) {
                         return Center(
                           child: Text(
-                            "No slots available",
+                            "No slots available".tr,
                             style: TextStyle(
                               fontSize: screenHeight * 0.02,
                               color: Colors.grey,
@@ -469,7 +469,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                             ),
                           ),
                           child: Text(
-                            "Continue",
+                            "Continue".tr,
                             style: TextStyle(
                               fontSize: screenHeight * 0.022,
                               fontWeight: FontWeight.w600,

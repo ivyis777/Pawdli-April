@@ -69,7 +69,7 @@ class _MyPetsState extends State<MyPets> {
               children: [
                 AppBar(
                   title: Text(
-                    'My Pets',
+                    'My Pets'.tr,
                     style: TextStyle(
                       fontSize: screenHeight * 0.035,
                       fontWeight: FontWeight.w600,
@@ -98,9 +98,9 @@ class _MyPetsState extends State<MyPets> {
                       );
                     }
                     if (petsController.userPets.isEmpty) {
-                      return const Center(
+                      return  Center(
                         child: Text(
-                          "No pets found",
+                          "No pets found".tr,
                           style: TextStyle(fontSize: 18, color: Colors.grey),
                         ),
                       );

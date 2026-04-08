@@ -256,18 +256,18 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
             final openSettings = await showDialog<bool>(
               context: context,
               builder: (context) => AlertDialog(
-                title: const Text('Permission Required'),
-                content: const Text(
-                  'Location permission is denied.\nPlease enable it in app settings.',
+                title:  Text('Permission Required'.tr),
+                content:  Text(
+                  'Location permission is denied.\nPlease enable it in app settings.'.tr,
                 ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context, false),
-                    child: const Text('Cancel'),
+                    child:  Text('Cancel'.tr),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(context, true),
-                    child: const Text('Open Settings'),
+                    child:  Text('Open Settings'.tr),
                   ),
                 ],
               ),
@@ -278,7 +278,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
             }
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Location permission required')),
+               SnackBar(content: Text('Location permission required'.tr)),
             );
           }
           return;
@@ -325,16 +325,16 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
     return await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Location Service Disabled'),
-        content: const Text('Please enable location services'),
+        title:  Text('Location Service Disabled'.tr),
+        content:  Text('Please enable location services'.tr),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child:  Text('Cancel'.tr),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Enable'),
+            child:  Text('Enable'.tr),
           ),
         ],
       ),
@@ -358,18 +358,18 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
 
     switch (e.code) {
       case 'PERMISSION_DENIED':
-        errorMessage = 'Location permissions denied';
+        errorMessage = 'Location permissions denied'.tr;
         break;
       case 'PERMISSION_DENIED_NEVER_ASK':
         errorMessage =
-            'Location permissions permanently denied. Please enable in app settings.';
+            'Location permissions permanently denied. Please enable in app settings.'.tr;
         _showPermissionSettingsDialog();
         break;
       case 'LOCATION_SERVICES_DISABLED':
-        errorMessage = 'Location services disabled';
+        errorMessage = 'Location services disabled'.tr;
         break;
       case 'TIMEOUT':
-        errorMessage = 'Location request timed out';
+        errorMessage = 'Location request timed out'.tr;
         break;
       default:
         errorMessage = 'Error getting location: ${e.message}';
@@ -384,17 +384,16 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
     final openSettings = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Permission Required'),
-        content: const Text(
-            'Location permissions are permanently denied. Please enable them in app settings.'),
+        title:  Text('Permission Required'.tr),
+        content:  Text('Location permissions are permanently denied. Please enable them in app settings.'.tr),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child:  Text('Cancel'.tr),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Open Settings'),
+            child:  Text('Open Settings'.tr),
           ),
         ],
       ),
@@ -498,8 +497,8 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
               backgroundColor: Colors.blue,
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
-            child: const Text(
-              'Confirm Location',
+            child:  Text(
+              'Confirm Location'.tr,
               style: TextStyle(fontSize: 18),
             ),
           ),
@@ -511,7 +510,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
             onPressed: () {
               if (_selectedMapLocation == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Please select a location")),
+                  SnackBar(content: Text("Please select a location".tr)),
                 );
                 return;
               }
@@ -612,17 +611,17 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
 
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) throw 'Location services are disabled.';
+      if (!serviceEnabled) throw 'Location services are disabled.'.tr;
 
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          throw 'Location permissions are denied.';
+          throw 'Location permissions are denied.'.tr;
         }
       }
       if (permission == LocationPermission.deniedForever) {
-        throw 'Location permissions are permanently denied.';
+        throw 'Location permissions are permanently denied.'.tr;
       }
 
       Position position = await Geolocator.getCurrentPosition(
@@ -846,8 +845,8 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                 if (_locationString == null ||
                                     _locationString!.isEmpty) {
                                   safeSnackbar(
-                                    "Location required",
-                                    "Please select and confirm a location from the map",
+                                    "Location required".tr,
+                                    "Please select and confirm a location from the map".tr,
                                     bg: Colors.red,
                                   );
                                   return;
@@ -861,8 +860,8 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                     _imageFiles == null ||
                                     _imageFiles!.isEmpty) {
                                   safeSnackbar(
-                                    "Missing details",
-                                    "Please fill all fields and upload images",
+                                    "Missing details".tr,
+                                    "Please fill all fields and upload images".tr,
                                     // snackPosition: SnackPosition.TOP,
                                     bg: Colors.orange,
                                     // colorText: Colors.white,
@@ -970,7 +969,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                               );
 
                               if (amount == null || amount <= 0) {
-                                safeSnackbar("Error", "Enter valid amount");
+                                safeSnackbar("Error".tr, "Enter valid amount".tr);
                                 return;
                               }
 

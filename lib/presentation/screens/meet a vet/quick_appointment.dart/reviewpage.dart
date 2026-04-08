@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/utils.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 
@@ -20,7 +21,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Appointment Details",
+          "Appointment Details".tr,
           style: TextStyle(
             fontSize: 20,
    
@@ -54,7 +55,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Patient Name: Rakesh Kumar K',
+                          'Patient Name: Rakesh Kumar K'.tr,
                           style: TextStyle(
                             fontSize: 16,
                  
@@ -65,7 +66,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
                         ),
                         SizedBox(height: 8.0),
                         Text(
-                          'Age: 24 Years',
+                          'Age: 24 Years'.tr,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -76,7 +77,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
                         ),
                         SizedBox(height: 8.0),
                         Text(
-                          'Doctor: Dr. Chomon Aktar',
+                          'Doctor: Dr. Chomon Aktar'.tr,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -95,7 +96,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
               
               SizedBox(height: 16.0),
               Text(
-                'Images',
+                'Images'.tr,
                 style: TextStyle(
                   fontSize: 20,
          
@@ -112,7 +113,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
               ),
               SizedBox(height: 16.0),
               Text(
-                'Issue Description:',
+                'Issue Description:'.tr,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
@@ -122,7 +123,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
               ),
               SizedBox(height: 8.0),
               Text(
-                'I Have Problem in My Hair. I Have Problem in My Hair. I Have Problem in My Hair.',
+                'I Have Problem in My Hair. I Have Problem in My Hair. I Have Problem in My Hair.'.tr,
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w400,
@@ -132,7 +133,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
               ),
               SizedBox(height: 16.0),
               Text(
-                'Symptoms',
+                'Symptoms'.tr,
                 style: TextStyle(
                   fontSize: 20,
              
@@ -143,7 +144,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
               ),
               SizedBox(height: 8.0),
               Text(
-                'Pimples ,Rashes,Pimples,Rashes',
+                'Pimples ,Rashes,Pimples,Rashes'.tr,
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w400,
@@ -157,7 +158,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Paid',
+                    'Paid'.tr,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -195,7 +196,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
                       // Get.to( DoctorRatingPage());
                     },
                     child: Text(
-                      'Join Now',
+                      'Join Now'.tr,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,

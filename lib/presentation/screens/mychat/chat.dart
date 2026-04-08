@@ -26,7 +26,7 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'My Chats',
+          'My Chats'.tr,
           style: TextStyle(
             color: Colours.seachbarcolour,
             fontFamily: FontFamily.Cairo,
@@ -120,7 +120,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
       Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
         child: Text(
-          'Switch Pet',
+          'Switch Pet'.tr,
           style: TextStyle(
             fontSize: 23,
             fontWeight: FontWeight.w700,
@@ -139,14 +139,14 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
         }
 
         if (petsController.userPets.isEmpty) {
-          return Center(child: Text("No pets found."));
+          return Center(child: Text("No pets found.".tr));
         }
 
         return Obx(() {
           if (petsController.userPets.isEmpty) {
             return Center(
               child: Text(
-                "No pets available",
+                "No pets available".tr,
                 style: TextStyle(
                   fontSize: 18,
                   color: Colours.brownColour,
@@ -208,7 +208,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                               ),
                               SizedBox(height: screenHeight * 0.010),
                               Text(
-                                pet.name ?? 'Unknown Pet',
+                                pet.name ?? 'Unknown Pet'.tr,
                                 style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.w500,
@@ -238,7 +238,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
           Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
             child: Text(
-              'Recent Chat',
+              'Recent Chat'.tr,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
@@ -259,7 +259,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
             }
 
             if (recentChatController.recentChats.isEmpty) {
-              return const Center(child: Text("No recent chats available."));
+              return  Center(child: Text("No recent chats available.".tr));
             }
 
             return ListView.separated(
@@ -287,7 +287,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                               content:
-                                  Text('Please select a pet to chat with')),
+                                  Text('Please select a pet to chat with'.tr)),
                         );
                         return;
                       }

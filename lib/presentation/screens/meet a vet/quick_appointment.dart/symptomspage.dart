@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:get/utils.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 
@@ -14,8 +15,8 @@ class SymptomWidget extends StatefulWidget {
 class _SymptomWidgetState extends State<SymptomWidget> {
   final TextEditingController _otherProblemController = TextEditingController();
   final List<String> _symptoms = [
-    'Fever', 'Cough', 'Headache', 'Nausea',
-    'Sore Throat', 'Fatigue', 'Muscle Pain', 'Chills',
+    'Fever'.tr, 'Cough'.tr, 'Headache'.tr, 'Nausea'.tr,
+    'Sore Throat'.tr, 'Fatigue'.tr, 'Muscle Pain'.tr, 'Chills'.tr,
   ];
   Set<String> _selectedSymptoms = {};
 
@@ -27,7 +28,7 @@ class _SymptomWidgetState extends State<SymptomWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Write Your Problem:",
+          "Write Your Problem:".tr,
           style: TextStyle(
         fontSize: screenWidth * 0.045,
                     fontWeight: FontWeight.w500,
@@ -49,7 +50,7 @@ class _SymptomWidgetState extends State<SymptomWidget> {
               controller: _otherProblemController,
               decoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: 'Enter Your Problem',
+                hintText: 'Enter Your Problem'.tr,
                 hintStyle: TextStyle(
                   fontSize: 16,
                   fontFamily: FontFamily.Cairo,
@@ -62,7 +63,7 @@ class _SymptomWidgetState extends State<SymptomWidget> {
         ),
         const SizedBox(height: 16.0),
         Text(
-          "Symptoms:",
+          "Symptoms:".tr,
           style: TextStyle(
               fontSize: screenWidth * 0.045,
                     fontWeight: FontWeight.w500,

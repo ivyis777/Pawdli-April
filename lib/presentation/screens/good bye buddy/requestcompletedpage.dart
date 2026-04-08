@@ -42,11 +42,11 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
   /// 🚀 API CALL
   Future<void> completeRequest() async {
     if (images.isEmpty) {
-      Get.snackbar("Error", "Please upload images");
+      Get.snackbar("Error".tr, "Please upload images".tr);
       return;
     }
     if (descriptionController.text.trim().isEmpty) {
-      Get.snackbar("Error", "Please enter description");
+      Get.snackbar("Error".tr, "Please enter description".tr);
       return;
     }
 
@@ -70,14 +70,14 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
         'Accept': 'application/json',
       });
       print("TOKEN: $accessToken");
-      request.fields["status"] = "completed"; // ✅ must match backend
+      request.fields["status"] = "completed";
       request.fields["admin_description"] = descriptionController.text;
 
       /// 📸 FIXED IMAGE KEY
       for (var img in images) {
         request.files.add(
           await http.MultipartFile.fromPath(
-            "admin_images", // ✅ VERY IMPORTANT
+            "admin_images".tr, 
             img.path,
           ),
         );
@@ -90,16 +90,16 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
       print("BODY: $res");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.snackbar("Success", "Request Completed");
+        Get.snackbar("Success".tr, "Request Completed".tr);
 
         Get.offAll(() => MainLayout());
 
         Get.back(result: true);
       } else {
-        Get.snackbar("Error", res);
+        Get.snackbar("Error".tr, res);
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("Error".tr, e.toString());
     }
 
     setState(() => isLoading = false);
@@ -157,7 +157,7 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
           children: [
             /// REQUEST ID
             Text(
-              "Request ID: ${widget.requestId}",
+              "Request ID: ${widget.requestId}".tr,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
 

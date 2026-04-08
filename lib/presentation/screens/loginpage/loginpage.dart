@@ -172,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                                         keyboardType:
                                             TextInputType.emailAddress,
                                         decoration: InputDecoration(
-                                          hintText: 'Enter your email',
+                                          hintText: 'Enter your email'.tr,
                                           hintStyle: TextStyle(
                                               color: Colours.textColour),
                                           filled: true,
@@ -246,8 +246,8 @@ class _LoginPageState extends State<LoginPage> {
 
                                                   if (result.success) {
                                                     Get.snackbar(
-                                                      "OTP Sent",
-                                                      "Please check your email for OTP",
+                                                      "OTP Sent".tr,
+                                                      "Please check your email for OTP".tr,
                                                       snackPosition:
                                                           SnackPosition.TOP,
                                                     );
@@ -274,7 +274,7 @@ class _LoginPageState extends State<LoginPage> {
                                                             'sign up')) {
                                                       // ✅ SHOW ERROR FIRST
                                                       Get.snackbar(
-                                                        "Account Not Found",
+                                                        "Account Not Found".tr,
                                                         result.message,
                                                         snackPosition:
                                                             SnackPosition.TOP,
@@ -293,7 +293,7 @@ class _LoginPageState extends State<LoginPage> {
                                                     } else {
                                                       // ❌ SHOW OTHER ERRORS
                                                       Get.snackbar(
-                                                        "Error",
+                                                        "Error".tr,
                                                         result.message,
                                                         snackPosition:
                                                             SnackPosition.TOP,
@@ -391,7 +391,7 @@ class _LoginPageState extends State<LoginPage> {
 
                                               if (otpError != null) {
                                                 Get.snackbar(
-                                                  "Login Failed",
+                                                  "Login Failed".tr,
                                                   otpError,
                                                   snackPosition:
                                                       SnackPosition.TOP,
@@ -423,8 +423,8 @@ class _LoginPageState extends State<LoginPage> {
                                                   deletedEmail ==
                                                       testReviewerEmail) {
                                                 Get.snackbar(
-                                                  "Account Deleted",
-                                                  "This account has been deleted. Please contact ivyisark@gmail.com.",
+                                                  "Account Deleted".tr,
+                                                  "This account has been deleted. Please contact ivyisark@gmail.com.".tr,
                                                   snackPosition:
                                                       SnackPosition.TOP,
                                                   backgroundColor:
@@ -513,7 +513,7 @@ class _LoginPageState extends State<LoginPage> {
                                               ),
                                               SizedBox(width: 8),
                                               Text(
-                                                "Login with Email",
+                                                "Login".tr,
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w500,
@@ -563,7 +563,7 @@ class _LoginPageState extends State<LoginPage> {
                                     height: 24,
                                   ),
                                   label: Text(
-                                    " Continue with Google",
+                                    " Continue with Google".tr,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontFamily: FontFamily.Ubantu,
@@ -666,7 +666,7 @@ class _LoginPageState extends State<LoginPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "By continuing, you agree to our",
+                                      "By continuing, you agree to our".tr,
                                       style: TextStyle(
                                         color: Colours.textColour,
                                         fontFamily: FontFamily.Ubantu,
@@ -683,7 +683,7 @@ class _LoginPageState extends State<LoginPage> {
                                             "https://www.pawlli.com/terms-and-conditions/"));
                                       },
                                       child: Text(
-                                        "Terms of use",
+                                        "Terms of use".tr,
                                         style: TextStyle(
                                           color: Colours.darkgreyColour,
                                           decoration: TextDecoration.underline,
@@ -700,7 +700,7 @@ class _LoginPageState extends State<LoginPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "and",
+                                      "and".tr,
                                       style: TextStyle(
                                         color: Colours.textColour,
                                         fontFamily: FontFamily.Ubantu,
@@ -717,7 +717,7 @@ class _LoginPageState extends State<LoginPage> {
                                             "https://www.pawlli.com/privacy-policy/"));
                                       },
                                       child: Text(
-                                        " Privacy policy",
+                                        " Privacy policy".tr,
                                         style: TextStyle(
                                           color: Colours.darkgreyColour,
                                           decoration: TextDecoration.underline,

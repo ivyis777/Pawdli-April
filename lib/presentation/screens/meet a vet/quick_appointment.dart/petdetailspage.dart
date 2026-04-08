@@ -56,7 +56,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "Select Image Source",
+                "Select Image Source".tr,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
@@ -66,7 +66,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
               const SizedBox(height: 20),
               ListTile(
                 leading: const Icon(Icons.image),
-                title: const Text("Gallery"),
+                title:  Text("Gallery".tr),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImage();
@@ -74,7 +74,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.camera),
-                title: const Text("Camera"),
+                title:  Text("Camera".tr),
                 onTap: () {
                   Navigator.pop(context);
                   _takePhoto();
@@ -171,7 +171,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
             children: [
               if (_selectedValue == 'Self') ...[
                 Text(
-                  "Pet Details:",
+                  "Pet Details:".tr,
                   style: TextStyle(
                     fontSize: screenWidth * 0.045,
                     fontWeight: FontWeight.w500,
@@ -204,7 +204,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
               if (_selectedValue == 'Other') ...[
                 // Full Name
                 Text(
-                  "Name:",
+                  "Name:".tr,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -215,23 +215,23 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
                 const SizedBox(height: 5.0),
                 _buildTextFieldCard(
                     controller: _fullNameController,
-                    hintText: "Enter Pet Name"),
+                    hintText: "Enter Pet Name".tr),
                 const SizedBox(height: 16.0),
                 Row(
                   children: [
                     Expanded(
                       child: _buildTextFieldCard(
                         controller: _ageController,
-                        hintText: "Enter Age",
-                        label: "Age:",
+                        hintText: "Enter Age".tr,
+                        label: "Age:".tr,
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: _buildDropdownCard(
                         value: _selectedGender,
-                        label: "Gender:",
-                        items: ['Male', 'Female', 'Other'],
+                        label: "Gender:".tr,
+                        items: ['Male'.tr, 'Female'.tr, 'Other'.tr],
                         onChanged: (value) =>
                             setState(() => _selectedGender = value!),
                       ),
@@ -244,7 +244,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
                     Expanded(
                       child: _buildDropdownCard(
                         value: _selectedBloodGroup,
-                        label: "Blood Group:",
+                        label: "Blood Group:".tr,
                         items: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
                         onChanged: (value) =>
                             setState(() => _selectedBloodGroup = value!),
@@ -259,7 +259,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
               TextButton(
                 onPressed: _showImageSourceOptions,
                 child: Text(
-                  "Upload Image",
+                  "Upload Image".tr,
                   style: TextStyle(
                     fontSize: screenWidth * 0.045,
                     fontWeight: FontWeight.w500,
@@ -335,7 +335,7 @@ SymptomWidget(),
                              Get.to(ReviewandpayPage()); 
                     },
                     child: Text(
-                      'Next',
+                      'Next'.tr,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w400,

@@ -51,7 +51,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
             children: [
               AppBar(
                 title: Text(
-                  'Meet Vet Doctors',
+                  'Meet Vet Doctors'.tr,
                   style: TextStyle(
                     fontSize: screenHeight * 0.035,
                     fontWeight: FontWeight.w600,
@@ -80,7 +80,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
-                  'Selected Date: ${DateFormat.yMMMMd().format(_selectedDate)}',
+                  'Selected Date: ${DateFormat.yMMMMd().format(_selectedDate)}'.tr,
                   style: TextStyle(
                     fontSize: screenHeight * 0.020,
                     fontWeight: FontWeight.w500,
@@ -128,7 +128,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                     }
 
                     if (controller.pets.isEmpty) {
-                      return const Center(child: Text('No doctors available'));
+                      return  Center(child: Text('No doctors available'.tr));
                     }
 
                     return ListView.builder(
@@ -193,7 +193,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    pet.name ?? "Unknown",
+                    pet.name ?? "Unknown".tr,
                     style: TextStyle(
                       color: Colours.secondarycolour,
                       fontFamily: FontFamily.Cairo,
@@ -203,7 +203,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                   ),
                   const SizedBox(height: 1),
                   Text(
-                    pet.description ?? "No description",
+                    pet.description ?? "No description".tr,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -221,7 +221,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
-                          pet.location ?? "Clinic",
+                          pet.location ?? "Clinic".tr,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -235,7 +235,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                   ),
                   const SizedBox(height: 1),
                   Text(
-                    "Tap to book a session with this doctor!",
+                    "Tap to book a session with this doctor!".tr,
                     style: TextStyle(
                       color: Colours.secondarycolour,
                       fontFamily: FontFamily.Cairo,
