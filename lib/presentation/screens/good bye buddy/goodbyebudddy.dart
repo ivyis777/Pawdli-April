@@ -556,7 +556,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                 ),
               ),
               Text(
-                "Select Image Source",
+                "Select Image Source".tr,
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w600,
@@ -568,7 +568,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
               ListTile(
                 leading: Icon(Icons.image, size: 25),
                 title: Text(
-                  "Gallery",
+                  "Gallery".tr,
                   style: TextStyle(
                     fontSize: screenHeight * 0.020,
                     fontWeight: FontWeight.w500,
@@ -584,7 +584,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
               ListTile(
                 leading: Icon(Icons.camera, size: 25),
                 title: Text(
-                  "Camera",
+                  "Camera".tr,
                   style: TextStyle(
                     fontSize: screenHeight * 0.020,
                     fontWeight: FontWeight.w500,
@@ -695,7 +695,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
           },
         ),
         title: Text(
-          pageTitle,
+          pageTitle.tr,
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,
@@ -709,10 +709,10 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
           unselectedLabelColor: Colors.black,
           indicatorColor: Colours.primarycolour,
           indicatorWeight: 3,
-          tabs: const [
-            Tab(text: "GoodByeBuddy"),
-            Tab(text: "Donation"),
-            Tab(text: "Requests"),
+          tabs:  [
+            Tab(text: "GoodByeBuddy".tr),
+            Tab(text: "Donation".tr),
+            Tab(text: "Requests".tr),
           ],
         ),
       ),
@@ -736,15 +736,15 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                         children: [
                           SizedBox(height: 16),
 
-                          Text('Location:',
+                          Text('Location:'.tr,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           SizedBox(height: 8),
                           ElevatedButton(
                             onPressed: _openMapForLocationSelection,
-                            child: Text("Select Location from Map"),
+                            child: Text("Select Location from Map".tr),
                           ),
                           if (_locationString != null)
-                            Text("Address: $_locationString"),
+                            Text("Address: ".tr + "$_locationString"),
 
                           SizedBox(height: 16),
 
@@ -758,7 +758,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
-                                child: Center(child: Text("Upload Image")),
+                                child: Center(child: Text("Upload Image".tr)),
                               ),
                             ),
                           ),
@@ -785,7 +785,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                           SizedBox(height: 16),
 
                           Text(
-                            'Landmark:',
+                            'Landmark:'.tr,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 8),
@@ -812,7 +812,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                           SizedBox(height: 16),
 
                           Text(
-                            'Description:',
+                            'Description:'.tr,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 8),
@@ -893,8 +893,8 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                 backgroundColor: Colours.primarycolour,
                                 fixedSize: Size(screenWidth * 0.8, 50),
                               ),
-                              child: const Text(
-                                "Submit",
+                              child:  Text(
+                                "Submit".tr,
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
@@ -915,7 +915,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                         children: [
                           SizedBox(height: 30),
                           Text(
-                            "Support Paw ❤️",
+                            "Support Paw ❤️".tr,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -924,7 +924,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                           SizedBox(height: 12),
                           Text(
                             "Your donation helps rescue, treat, and care for animals in need. "
-                            "Every contribution supports food, medical care, and shelter.",
+                            "Every contribution supports food, medical care, and shelter.".tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14,
@@ -936,7 +936,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                             controller: donationAmountController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              hintText: "Enter amount (₹)",
+                              hintText: "Enter Amount (₹)".tr,
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -945,7 +945,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                             controller: donationMessageController,
                             maxLines: 4,
                             decoration: InputDecoration(
-                              hintText: "Word of support for the Pets",
+                              hintText: "Word of support for the Pets".tr,
                               contentPadding: EdgeInsets.all(16),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
@@ -981,8 +981,8 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                               backgroundColor: Colours.primarycolour,
                               fixedSize: Size(screenWidth * 0.8, 50),
                             ),
-                            child: const Text(
-                              "Donate",
+                            child: Text(
+                              "Donate".tr,
                               style: TextStyle(
                                 color: Colors.white, // ✅ white text
                                 fontWeight: FontWeight.w600,
@@ -1054,8 +1054,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                                       horizontal: 12,
                                                       vertical: 6),
                                               decoration: BoxDecoration(
-                                                color: item["status"] ==
-                                                        "completed"
+                                                color: item["status"] == "completed"
                                                     ? Colors.green.shade100
                                                     : Colors.orange.shade100,
                                                 borderRadius:

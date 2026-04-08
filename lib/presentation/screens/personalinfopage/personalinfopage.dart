@@ -208,7 +208,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             children: [
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title: const Text('Take a Picture'),
+                title: Text('Take a Picture'.tr),
                 onTap: () async {
                   final XFile? image =
                       await picker.pickImage(source: ImageSource.camera);
@@ -229,7 +229,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.image),
-                title: const Text('Upload from Gallery'),
+                title: Text('Upload from Gallery'.tr),
                 onTap: () async {
                   final XFile? image =
                       await picker.pickImage(source: ImageSource.gallery);
@@ -278,7 +278,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           Column(children: [
             AppBar(
               title: Text(
-                'Profile',
+                'Profile'.tr,
                 style: TextStyle(
                   fontSize: screenHeight * 0.035,
                   fontWeight: FontWeight.w600,
@@ -380,7 +380,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             TextFormField(
                               controller: _nameController,
                               decoration: InputDecoration(
-                                labelText: 'Name',
+                                labelText: 'Name'.tr,
                                 labelStyle: TextStyle(color: Colors.brown[600]),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
@@ -395,7 +395,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your name';
+                                  return 'Please enter your name'.tr;
                                 }
                                 return null;
                               },
@@ -405,7 +405,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             TextFormField(
                               controller: _ageController,
                               decoration: InputDecoration(
-                                labelText: 'Age',
+                                labelText: 'Age'.tr,
                                 labelStyle: TextStyle(color: Colors.brown[600]),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
@@ -420,14 +420,14 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               keyboardType: TextInputType.number,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your age';
+                                  return 'Please enter your age'.tr;
                                 }
                                 final age = int.tryParse(value);
                                 if (age == null) {
-                                  return 'Please enter a valid number';
+                                  return 'Please enter a valid number'.tr;
                                 }
                                 if (age < 1 || age > 100) {
-                                  return 'Age must be between 1 to 100';
+                                  return 'Age must be between 1 to 100'.tr;
                                 }
                                 return null;
                               },
@@ -442,7 +442,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
                                   Text(
-                                    'Gender:',
+                                    'Gender:'.tr,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
@@ -486,7 +486,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                           Padding(
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 10),
-                                            child: Text('Male',
+                                            child: Text('Male'.tr,
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     fontWeight:
@@ -495,7 +495,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                           Padding(
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 10),
-                                            child: Text('Female',
+                                            child: Text('Female'.tr,
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     fontWeight:
@@ -504,7 +504,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                           Padding(
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 10),
-                                            child: Text('Others',
+                                            child: Text('Others'.tr,
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     fontWeight:
@@ -538,12 +538,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               initialValue: _phoneNumber,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your phone number';
+                                  return 'Please enter your phone number'.tr;
                                 }
                                 return null;
                               },
                               inputDecoration: InputDecoration(
-                                labelText: 'Phone Number',
+                                labelText: 'Phone Number'.tr,
                                 labelStyle: TextStyle(color: Colors.brown[600]),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
@@ -563,7 +563,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               readOnly: true,
                               style: TextStyle(color: Colors.grey), // Grey text
                               decoration: InputDecoration(
-                                labelText: 'Email ID',
+                                labelText: 'Email ID'.tr,
                                 labelStyle: TextStyle(color: Colors.grey),
                                 filled: true,
                                 fillColor: Colors.grey[
@@ -585,7 +585,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             TextFormField(
                               controller: _address1Controller,
                               decoration: InputDecoration(
-                                labelText: 'Address ',
+                                labelText: 'Address '.tr,
                                 labelStyle: TextStyle(color: Colors.brown[600]),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
@@ -600,7 +600,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your address';
+                                  return 'Please enter your address'.tr;
                                 }
                                 return null;
                               },
@@ -609,7 +609,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             TextFormField(
                               controller: _cityController,
                               decoration: InputDecoration(
-                                labelText: 'City',
+                                labelText: 'City'.tr,
                                 labelStyle: TextStyle(color: Colors.brown[600]),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
@@ -624,7 +624,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your city';
+                                  return 'Please enter your city'.tr;
                                 }
                                 return null;
                               },
@@ -635,7 +635,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             TextFormField(
                               controller: _stateController,
                               decoration: InputDecoration(
-                                labelText: 'State',
+                                labelText: 'State'.tr,
                                 labelStyle: TextStyle(color: Colors.brown[600]),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
@@ -650,7 +650,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your state';
+                                  return 'Please enter your state'.tr;
                                 }
                                 return null;
                               },
@@ -661,7 +661,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             TextFormField(
                               controller: _countryController,
                               decoration: InputDecoration(
-                                labelText: 'Country',
+                                labelText: 'Country'.tr,
                                 labelStyle: TextStyle(color: Colors.brown[600]),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
@@ -676,7 +676,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your country';
+                                  return 'Please enter your country'.tr;
                                 }
                                 return null;
                               },
@@ -687,7 +687,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             TextFormField(
                               controller: _pincodeController,
                               decoration: InputDecoration(
-                                labelText: 'Pincode',
+                                labelText: 'Pincode'.tr,
                                 labelStyle: TextStyle(color: Colors.brown[600]),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
@@ -702,7 +702,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               keyboardType: TextInputType.number,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your pincode';
+                                  return 'Please enter your pincode'.tr;
                                 }
                                 return null;
                               },
@@ -720,7 +720,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                                 .showSnackBar(
                                               SnackBar(
                                                 content: Text(
-                                                    'Please enter a valid phone number'),
+                                                    'Please enter a valid phone number'.tr),
                                                 backgroundColor: Colors.black,
                                               ),
                                             );
@@ -750,7 +750,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                                 BorderRadius.circular(15),
                                           ),
                                         ),
-                                        child: Text('Update',
+                                        child: Text('Update'.tr,
                                             style: TextStyle(
                                               fontSize: screenHeight * 0.025,
                                               fontWeight: FontWeight.w600,

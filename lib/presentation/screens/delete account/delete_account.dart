@@ -22,7 +22,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
     final email = _emailController.text.trim();
 
     if (email.isEmpty || !email.contains('@')) {
-      Get.snackbar("Error", "Please enter a valid email",
+      Get.snackbar("Error", "Please enter a valid email".tr,
           backgroundColor: Colours.primarycolour);
       return;
     }
@@ -31,7 +31,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
       otpSent = true;
     });
 
-    Get.snackbar("OTP Sent", "An OTP has been sent to your email",
+    Get.snackbar("OTP Sent", "An OTP has been sent to your email".tr,
         backgroundColor: Colours.primarycolour);
   }
 
@@ -40,13 +40,13 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
     final otp = _otpController.text.trim();
 
     if (email.isEmpty || !email.contains('@')) {
-      Get.snackbar("Error", "Please enter a valid email",
+      Get.snackbar("Error", "Please enter a valid email".tr,
           backgroundColor: Colours.primarycolour);
       return;
     }
 
     if (otp.isEmpty) {
-      Get.snackbar("Error", "Please enter OTP",
+      Get.snackbar("Error", "Please enter OTP".tr,
           backgroundColor: Colours.primarycolour);
       return;
     }
@@ -55,15 +55,15 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text("Confirm Deletion"),
-          content: const Text(
-              "Are you sure you want to delete your account? This action is irreversible."),
+          title:  Text("Confirm Deletion".tr),
+          content:  Text(
+              "Are you sure you want to delete your account? This action is irreversible.".tr),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
+              child:  Text("Cancel".tr),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -72,13 +72,13 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                 Navigator.pop(context);
                 _deleteAccount();
               },
-              child: const Text("Delete"),
+              child:  Text("Delete".tr),
             ),
           ],
         ),
       );
     } else {
-      Get.snackbar("Invalid", "Invalid email or OTP",
+      Get.snackbar("Invalid", "Invalid email or OTP".tr,
           backgroundColor: Colours.primarycolour);
     }
   }
@@ -91,8 +91,8 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
     box.write('deleted_user_email', deletedEmail);
 
     Get.snackbar(
-      "Deleted",
-      "Your account has been deleted.",
+      "Deleted".tr,
+      "Your account has been deleted.".tr,
       backgroundColor: Colours.primarycolour,
     );
 
@@ -130,7 +130,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
             children: [
               AppBar(
                 title: Text(
-                  'Delete Account',
+                  'Delete Account'.tr,
                   style: TextStyle(
                     fontSize: screenHeight * 0.03,
                     fontWeight: FontWeight.w600,
@@ -152,14 +152,14 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                         const Icon(Icons.delete_forever,
                             size: 80, color: Colors.red),
                         const SizedBox(height: 16),
-                        const Text(
-                          "Delete Your Account",
+                         Text(
+                          "Delete Your Account".tr,
                           style: TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
-                        const Text(
-                          "Enter your email and OTP to confirm deletion.",
+                         Text(
+                          "Enter your email and OTP to confirm deletion.".tr,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 30),
@@ -169,7 +169,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            labelText: "Email",
+                            labelText: "Email".tr,
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12)),
                           ),
@@ -181,7 +181,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                           controller: _otpController,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                            labelText: "Enter OTP",
+                            labelText: "Enter OTP".tr,
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12)),
                           ),
@@ -199,7 +199,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                                 borderRadius: BorderRadius.circular(30)),
                           ),
                           child: Text(
-                            "Send OTP",
+                            "Send OTP".tr,
                             style: TextStyle(
                                 color: Colours.brownColour, fontSize: 15),
                           ),
@@ -217,7 +217,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                                 borderRadius: BorderRadius.circular(30)),
                           ),
                           child: Text(
-                            "Delete Account",
+                            "Delete Account".tr,
                             style: TextStyle(
                                 color: Colours.brownColour, fontSize: 15),
                           ),

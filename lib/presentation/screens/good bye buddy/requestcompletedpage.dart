@@ -141,7 +141,7 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
 
         /// 📝 TITLE
         title: Text(
-          "Complete Request",
+          "Complete Request".tr,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -165,15 +165,15 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
 
             /// LOCATION
             Text(
-              "Location: ${widget.location}",
+              "Location: ${widget.location}".tr,
               style: const TextStyle(fontSize: 14),
             ),
 
             const SizedBox(height: 25),
 
             /// UPLOAD TITLE
-            const Text(
-              "Upload Completion Images",
+            Text(
+              "Upload Completion Images".tr ,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
 
@@ -190,8 +190,8 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
                     const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
               ),
               onPressed: pickImages,
-              child: const Text(
-                "Take Images",
+              child: Text(
+                "Take Images".tr,
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -217,8 +217,8 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
             const SizedBox(height: 25),
 
             /// DESCRIPTION
-            const Text(
-              "Completion Description",
+             Text(
+              "Completion Description".tr,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
 
@@ -256,8 +256,8 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
                 onPressed: isLoading ? null : completeRequest,
                 child: isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                        "Request Completed",
+                    :  Text(
+                        "Request Completed".tr,
                         style: TextStyle(color: Colors.white),
                       ),
               ),

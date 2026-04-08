@@ -55,9 +55,9 @@ void initState() {
         }
         final pet = _controller.petDescription.value;
         if (pet == null) {
-          return const Center(
+          return  Center(
             child: Text(
-              "No pet data available",
+              "No pet data available".tr,
               style: TextStyle(fontSize: 18, color: Colors.white),
             ),
           );
@@ -91,7 +91,7 @@ void initState() {
                               // **Title**
                               Center(
                                 child: Text(
-                                  pet.name ?? "No Name",
+                                  pet.name ?? "No Name".tr,
                                   style: TextStyle(
                                     color: Colours.brownColour,
                                     fontFamily: FontFamily.Cairo,
@@ -114,7 +114,7 @@ void initState() {
                                         ),
                                         const SizedBox(width: 9),
                                         Text(
-                                          pet.location ?? "No Location",
+                                          pet.location ?? "No Location".tr,
                                           style: TextStyle(
                                             color: Colours.brownColour,
                                             fontFamily: FontFamily.Cairo,
@@ -132,7 +132,7 @@ void initState() {
                               Container(
                                 margin: const EdgeInsets.only(left: 5),
                                 child: Text(
-                                  pet.description ?? "No Description",
+                                  pet.description ?? "No Description".tr,
                                   style: TextStyle(
                                     fontFamily: FontFamily.Cairo,
                                     fontSize: screenWidth * 0.05,
@@ -157,7 +157,7 @@ void initState() {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Age',
+                                          'Age'.tr,
                                           style: TextStyle(
                                             color: Colours.black,
                                             fontWeight: FontWeight.w700,
@@ -189,7 +189,7 @@ void initState() {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Gender',
+                                          'Gender'.tr,
                                           style: TextStyle(
                                             color: Colours.black,
                                             fontWeight: FontWeight.w700,
@@ -198,7 +198,7 @@ void initState() {
                                         ),
                                         SizedBox(height: 8),
                                         Text(
-                                          pet.gender ?? "Unknown",
+                                          pet.gender ?? "Unknown".tr,
                                           style: TextStyle(
                                             color: Colours.brownColour,
                                             fontWeight: FontWeight.w700,
@@ -221,7 +221,7 @@ void initState() {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Weight',
+                                          'Weight'.tr,
                                           style: TextStyle(
                                             color: Colours.black,
                                             fontWeight: FontWeight.w700,
@@ -254,7 +254,7 @@ void initState() {
                                 
                                                             
                                   child: Text(
-                                    "Connect",
+                                    "Connect".tr,
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,

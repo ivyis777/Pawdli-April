@@ -275,7 +275,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                   children: [
                     AppBar(
                       title: Text(
-                        'My Wallet',
+                        'My Wallet'.tr,
                         style: TextStyle(
                           fontSize: screenHeight * 0.03,
                           fontWeight: FontWeight.w600,
@@ -315,7 +315,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      'Balance:',
+                                      'Balance:'.tr,
                                       style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
@@ -350,7 +350,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
 
 // ✅ Top Up Section (removed Platform.isAndroid)
                           Text(
-                            'Top Up',
+                            'Top Up'.tr,
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -362,7 +362,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                             controller: myController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              hintText: 'Enter amount',
+                              hintText: 'Enter amount'.tr,
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -404,7 +404,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                     colorText: Colors.white,
                                     snackStyle: SnackStyle.FLOATING,
                                     messageText: Text(
-                                      "Enter a valid amount",
+                                      "Enter a valid amount".tr,
                                       style: TextStyle(
                                         fontSize: 19,
                                         fontWeight: FontWeight.bold,
@@ -415,7 +415,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                 }
                               },
                               child: Text(
-                                "Top Up",
+                                "Top Up".tr,
                                 style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold,
@@ -435,7 +435,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
 
                           SizedBox(height: screenHeight * 0.05),
                           Text(
-                            'Transaction History',
+                            'Transaction History'.tr,
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -454,7 +454,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
 
                             if (transactions.isEmpty) {
                               return Center(
-                                  child: Text("No transactions found"));
+                                  child: Text("No transactions found".tr));
                             }
 
                             return Card(
@@ -485,7 +485,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                             children: [
                                               Padding(
                                                 padding: EdgeInsets.all(8.0),
-                                                child: Text('Date',
+                                                child: Text('Date'.tr,
                                                     style: TextStyle(
                                                       fontSize:
                                                           screenHeight * 0.02,
@@ -496,7 +496,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.all(8.0),
-                                                child: Text('Type',
+                                                child: Text('Type'.tr,
                                                     style: TextStyle(
                                                       fontSize:
                                                           screenHeight * 0.02,
@@ -507,7 +507,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.all(8.0),
-                                                child: Text('Amount',
+                                                child: Text('Amount'.tr,
                                                     style: TextStyle(
                                                       fontSize:
                                                           screenHeight * 0.02,
@@ -579,7 +579,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                                               FontWeight.w400,
                                                           color: (transaction
                                                                       .transactionType ==
-                                                                  "deposit")
+                                                                  "deposit".tr)
                                                               ? Colors.green
                                                               : Colors.red)),
                                                 ),

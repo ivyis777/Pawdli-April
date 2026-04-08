@@ -212,7 +212,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                   right: 0,
                   child: Center(
                     child: Text(
-                      "Make a Friend",
+                      "Make a Friend".tr,
                       style: TextStyle(
                         color: Colours.brownColour,
                         fontFamily: FontFamily.Cairo,
@@ -231,7 +231,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: 'Search',
+                      hintText: 'Search'.tr,
                       hintStyle: TextStyle(
                         color: Colours.textColour,
                         fontFamily: FontFamily.Cairo,
@@ -370,9 +370,9 @@ class _SeeAllPageState extends State<SeeAllPage> {
               }
 
               if (subcategoryController.allsubCategories.isEmpty) {
-                return const Padding(
+                return  Padding(
                   padding: EdgeInsets.symmetric(vertical: 12),
-                  child: Center(child: Text("No subcategories found")),
+                  child: Center(child: Text("No subcategories found".tr)),
                 );
               }
 
@@ -498,7 +498,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                             ),
                           );
                         } else {
-                          Get.snackbar("Error", "Pet ID is missing.");
+                          Get.snackbar("Error", "Pet ID is missing.".tr);
                         }
                       },
                       child: Stack(
@@ -520,7 +520,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  category.name ?? "Default Name",
+                                  category.name ?? "Default Name".tr,
                                   style: TextStyle(
                                     fontSize: screenWidth * 0.06,
                                     fontWeight: FontWeight.w600,
@@ -543,7 +543,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                                   ),
                                   child: Text(
                                     category.description ??
-                                        "Default Description",
+                                        "Default Description".tr,
                                     style: TextStyle(
                                         fontSize: screenWidth * 0.04,
                                         color: Colours.secondarycolour),
@@ -559,7 +559,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                                         color: Colours.secondarycolour),
                                     const SizedBox(width: 6),
                                     Text(
-                                      category.location ?? "Default location",
+                                      category.location ?? "Default location".tr,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(

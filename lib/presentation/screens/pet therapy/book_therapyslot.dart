@@ -639,7 +639,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
         onTap: onTap,
         validator: (value) {
           if (requireValidation && (value == null || value.trim().isEmpty)) {
-            return 'Please enter this field';
+            return 'Please enter this field'.tr;
           }
           return null;
         },
@@ -669,7 +669,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(
-            'Mode:',
+            'Mode:'.tr,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           ToggleSwitch(
@@ -684,7 +684,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
             inactiveFgColor: Colors.white,
             initialLabelIndex: _isOnsite == 'Onsite' ? 0 : 1,
             totalSwitches: 2,
-            labels: ['Onsite', 'Offsite '],
+            labels: ['Onsite'.tr, 'Offsite '.tr],
             radiusStyle: true,
             onToggle: (index) {
               setState(() {
@@ -705,7 +705,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(
-            'Gender:',
+            'Gender:'.tr,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           ToggleSwitch(
@@ -716,7 +716,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
             inactiveBgColor: Colors.grey,
             inactiveFgColor: Colors.white,
             totalSwitches: 2,
-            labels: ['Male', 'Female'],
+            labels: ['Male'.tr, 'Female'.tr],
             icons: [FontAwesomeIcons.mars, FontAwesomeIcons.venus],
             activeBgColors: [
               [Colours.primarycolour],
@@ -748,7 +748,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
       inactiveFgColor: Colors.white,
       initialLabelIndex: index,
       totalSwitches: 2,
-      labels: ['Yes', 'No'],
+      labels: ['Yes'.tr, 'No'.tr],
       radiusStyle: true,
       onToggle: onToggle, // 👈 This now matches the expected type
     );
@@ -782,7 +782,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                       preferredSize: Size.fromHeight(screenHeight * 0.12),
                       child: AppBar(
                         title: Text(
-                          'Book Slots',
+                          'Book Slots'.tr,
                           style: TextStyle(
                             fontSize: screenHeight * 0.03,
                             fontWeight: FontWeight.w600,
@@ -818,7 +818,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                   children: [
                                     Row(
                                       children: [
-                                        Text('Therapy: ',
+                                        Text('Therapy: '.tr,
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
                                       ],
@@ -873,7 +873,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                             ),
 
                             _buildTextField(
-                              "Enter Birthday (YYYY/MM/DD)",
+                              "Enter Birthday (YYYY/MM/DD)".tr,
                               _birthdayController,
                               readOnly: true,
                               onTap: () => _selectDate(context),
@@ -895,8 +895,8 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                   _isPhoneNumberValid = isValid;
                                 });
                                 print(isValid
-                                    ? '✅ Valid phone number'
-                                    : '❌ Invalid phone number');
+                                    ? '✅ Valid phone number'.tr
+                                    : '❌ Invalid phone number'.tr);
                               },
                               selectorConfig: SelectorConfig(
                                 selectorType: PhoneInputSelectorType.DIALOG,
@@ -906,12 +906,12 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                               initialValue: _phoneNumber,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your phone number';
+                                  return 'Please enter your phone number'.tr;
                                 }
                                 return null;
                               },
                               inputDecoration: InputDecoration(
-                                labelText: 'Phone Number',
+                                labelText: 'Phone Number'.tr,
                                 labelStyle: TextStyle(color: Colors.brown[600]),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
@@ -933,7 +933,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                 maxLines: 3,
                                 controller: Addresscontroller,
                                 decoration: InputDecoration(
-                                  labelText: 'Enter Place',
+                                  labelText: 'Enter Place'.tr,
                                   labelStyle:
                                       TextStyle(color: Colors.brown[600]),
                                   border: OutlineInputBorder(
@@ -954,7 +954,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                             SizedBox(height: 5),
 
                             _buildTextField(
-                                "Enter Pincode", _pincodeController),
+                                "Enter Pincode".tr, _pincodeController),
 
                             if (_pincodeError != null)
                               Padding(
@@ -974,7 +974,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                             SizedBox(height: 16),
 
                             /// Q1: Previous Pet Therapy
-                            Text('Have you taken any pet therapy previously?',
+                            Text('Have you taken any pet therapy previously?'.tr,
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                             SizedBox(height: 8),
                             _buildYesNoToggle(
@@ -986,13 +986,13 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                               // Yes
                               SizedBox(height: 8),
                               _buildTextField(
-                                  "Please mention/share the details of the pet",
+                                  "Please mention/share the details of the pet".tr,
                                   _therapyDetailsController),
                             ],
                             SizedBox(height: 16),
 
                             /// Q2: Individual/Group Therapy
-                            Text('Is this therapy for Individual/Group?',
+                            Text('Is this therapy for Individual/Group?'.tr,
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                             SizedBox(height: 8),
                             _buildYesNoToggle(
@@ -1003,12 +1003,12 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                             if (_groupTherapyIndex == 0) ...[
                               SizedBox(height: 8),
                               _buildTextField(
-                                  "If Yes, how many?", _groupCountController),
+                                  "If Yes, how many?".tr, _groupCountController),
                             ],
                             SizedBox(height: 16),
 
                             /// Q3: Is it for Students?
-                            Text('Is this therapy for Students?',
+                            Text('Is this therapy for Students?'.tr,
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                             SizedBox(height: 8),
                             _buildYesNoToggle(
@@ -1018,13 +1018,13 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                 }),
                             if (_studentsIndex == 0) ...[
                               SizedBox(height: 8),
-                              _buildTextField("If Yes, how many students?",
+                              _buildTextField("If Yes, how many students?".tr,
                                   _studentCountController),
                             ],
                             SizedBox(height: 16),
 
                             /// Q4: Is it for Employees?
-                            Text('Is this therapy for Employees?',
+                            Text('Is this therapy for Employees?'.tr,
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                             SizedBox(height: 8),
                             _buildYesNoToggle(
@@ -1035,10 +1035,10 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                             if (_employeesIndex == 0) ...[
                               SizedBox(height: 8),
                               _buildTextField(
-                                  "Organization Name", _orgNameController),
+                                  "Organization Name".tr, _orgNameController),
                               SizedBox(height: 8),
                               _buildTextField(
-                                  "No. of Employees", _employeeCountController),
+                                  "No. of Employees".tr, _employeeCountController),
                             ],
 
                             SizedBox(height: 8),
@@ -1048,7 +1048,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Description:',
+                                    'Description:'.tr,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
@@ -1059,7 +1059,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                     maxLines: 3,
                                     controller: programDescriptionController,
                                     decoration: InputDecoration(
-                                      labelText: 'Description',
+                                      labelText: 'Description'.tr,
                                       labelStyle:
                                           TextStyle(color: Colors.brown[600]),
                                       border: OutlineInputBorder(
@@ -1095,7 +1095,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                   print(
                                       "UI Wallet Balance: ${walletBalanceController.walletBalanceAmount.value}");
                                   return Text(
-                                    'Wallet Balance: ₹ ${walletBalanceController.walletBalanceAmount.value}',
+                                    'Wallet Balance: ₹ ${walletBalanceController.walletBalanceAmount.value}'.tr,
                                     style: TextStyle(
                                       fontSize: screenHeight * 0.02,
                                       fontWeight: FontWeight.w500,
@@ -1116,7 +1116,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
                                   if (pin.isEmpty) {
                                     setState(() {
-                                      _pincodeError = "❌ Please enter pincode";
+                                      _pincodeError = "❌ Please enter pincode".tr;
                                     });
                                     return;
                                   }
@@ -1124,7 +1124,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                   if (!isValidPincode(pin)) {
                                     setState(() {
                                       _pincodeError =
-                                          "❌ No service for this region";
+                                          "❌ No service for this region".tr;
                                     });
                                     return;
                                   }
@@ -1133,14 +1133,14 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                     showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
-                                        title: Text("Not Available"),
+                                        title: Text("Not Available".tr),
                                         content: Text(
-                                            "Sorry, pets are not available for this pincode."),
+                                            "Sorry, pets are not available for this pincode.".tr),
                                         actions: [
                                           TextButton(
                                             onPressed: () =>
                                                 Navigator.pop(context),
-                                            child: Text("OK"),
+                                            child: Text("OK".tr),
                                           ),
                                         ],
                                       ),
@@ -1164,7 +1164,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                   ),
                                 ),
                                 child: Text(
-                                  "Pay ₹${widget.totalAmount}",
+                                  "Pay ₹${widget.totalAmount}".tr,
                                   style: TextStyle(
                                     fontSize: screenHeight * 0.025,
                                     fontWeight: FontWeight.w600,

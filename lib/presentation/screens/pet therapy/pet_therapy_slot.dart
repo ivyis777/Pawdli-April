@@ -87,7 +87,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
             children: [
               AppBar(
                 title: Text(
-                  'Book Slots',
+                  'Book Slots'.tr,
                   style: TextStyle(
                     fontSize: screenHeight * 0.035,
                     fontWeight: FontWeight.w600,
@@ -105,7 +105,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Center(
                   child: Text(
-                    'Selected Date: ${DateFormat.yMMMMd().format(widget.selectedDate)}',
+                    'Selected Date: ${DateFormat.yMMMMd().format(widget.selectedDate)}'.tr,
                     style: TextStyle(
                       fontSize: screenHeight * 0.022,
                       fontWeight: FontWeight.w500,
@@ -135,7 +135,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Selected Slots:',
+                                'Selected Slots:'.tr,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: screenHeight * 0.018,
@@ -180,7 +180,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                         if (slotController.slotList.isEmpty) {
                           return Center(
                             child: Text(
-                              "No slots available",
+                              "No slots available".tr,
                               style: TextStyle(
                                 fontSize: screenHeight * 0.02,
                                 color: Colors.grey,
@@ -361,7 +361,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                                   ),
                                 ),
                                 child: Text(
-                                  "Continue",
+                                  "Continue".tr,
                                   style: TextStyle(
                                     fontSize: screenHeight * 0.022,
                                     fontWeight: FontWeight.w600,

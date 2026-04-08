@@ -97,7 +97,7 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
 
         /// 📝 TITLE
         title: Text(
-          "Request Details",
+          "Request Details".tr,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -113,7 +113,7 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
         final data = controller.requestDetails.value;
 
         if (data == null) {
-          return const Center(child: Text("No Data"));
+          return  Center(child: Text("No Data".tr));
         }
 
         return SingleChildScrollView(
@@ -224,8 +224,8 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
               const SizedBox(height: 25),
 
               /// LOCATION DETAILS
-              const Text(
-                "Location Details",
+               Text(
+                "Location Details".tr,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
 
@@ -242,8 +242,8 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
               const SizedBox(height: 20),
 
               /// LANDMARK
-              const Text(
-                "Landmark",
+               Text(
+                "Landmark".tr,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
 
@@ -272,7 +272,7 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
                   color: Colors.blue,
                 ),
                 label: Text(
-                  "Navigate to Location",
+                  "Navigate to Location".tr,
                   style: TextStyle(
                     color: Colours.brownColour,
                     fontWeight: FontWeight.w600,
@@ -283,8 +283,8 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
               const SizedBox(height: 25),
 
               /// DESCRIPTION
-              const Text(
-                "Description",
+               Text(
+                "Description".tr,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
 
@@ -295,8 +295,8 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
               const SizedBox(height: 20),
 
               /// CREATED DATE
-              const Text(
-                "Created On",
+               Text(
+                "Created On".tr,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
 
@@ -323,8 +323,8 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
                     ),
                   ),
                   onPressed: shareDetails,
-                  child: const Text(
-                    "Share Details",
+                  child:  Text(
+                    "Share Details".tr,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -356,8 +356,8 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
                           location: data.location ?? "",
                         ));
                   },
-                  child: const Text(
-                    "Make Request Completed",
+                  child:  Text(
+                    "Make Request Completed".tr,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,

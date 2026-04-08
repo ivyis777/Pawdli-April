@@ -56,7 +56,7 @@ class _PetTherapyState extends State<PetTherapy> {
             children: [
               AppBar(
                 title: Text(
-                  'Pet Therapy',
+                  'Pet Therapy'.tr,
                   style: TextStyle(
                     fontSize: screenHeight * 0.035,
                     fontWeight: FontWeight.w600,
@@ -85,7 +85,7 @@ class _PetTherapyState extends State<PetTherapy> {
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
-                  'Selected Date: ${DateFormat.yMMMMd().format(_selectedDate)}',
+                  'Selected Date: ${DateFormat.yMMMMd().format(_selectedDate)}'.tr,
                   style: TextStyle(
                     fontSize: screenHeight * 0.020,
                     fontWeight: FontWeight.w500,
@@ -138,7 +138,7 @@ class _PetTherapyState extends State<PetTherapy> {
                     }
 
                     if (controller.pets.isEmpty) {
-                      return const Center(child: Text('No pets available'));
+                      return  Center(child: Text('No pets available'.tr));
                     }
 
                     return ListView.builder(
@@ -203,7 +203,7 @@ class _PetTherapyState extends State<PetTherapy> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    pet.name ?? "Unknown",
+                    pet.name ?? "Unknown".tr,
                     style: TextStyle(
                       color: Colours.secondarycolour,
                       fontFamily: FontFamily.Cairo,
@@ -213,7 +213,7 @@ class _PetTherapyState extends State<PetTherapy> {
                   ),
                   const SizedBox(height: 1),
                   Text(
-                    pet.description ?? "No description",
+                    pet.description ?? "No description".tr,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -231,7 +231,7 @@ class _PetTherapyState extends State<PetTherapy> {
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
-                          pet.location ?? "Pawlli Office",
+                          pet.location ?? "Pawlli Office".tr,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -245,7 +245,7 @@ class _PetTherapyState extends State<PetTherapy> {
                   ),
                   const SizedBox(height: 1),
                   Text(
-                    "Tap to book a session with this pet!",
+                    "Tap to book a session with this pet!".tr,
                     style: TextStyle(
                       color: Colours.secondarycolour,
                       fontFamily: FontFamily.Cairo,
@@ -298,7 +298,7 @@ class _PetTherapyState extends State<PetTherapy> {
                         ),
                       ),
                       child: Text(
-                        'Images',
+                        'Images'.tr,
                         style: TextStyle(
                           color: Colours.secondarycolour,
                           fontSize: screenWidth * 0.035,
@@ -367,7 +367,7 @@ class _ImageGalleryScreenState extends State<ImageGalleryScreen> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text("Gallery", style: TextStyle(color: Colors.white)),
+        title:  Text("Gallery".tr, style: TextStyle(color: Colors.white)),
       ),
       body: Stack(
         alignment: Alignment.center,

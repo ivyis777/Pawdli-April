@@ -94,8 +94,8 @@ void _handleIncomingMessage(dynamic message) {
         sender: widget.receiverName,
         time: DateTime.tryParse(decoded['timestamp'] ?? '') ?? DateTime.now(),
         isMe: false,
-        delivered: decoded['delivered'] ?? true,
-        seen: decoded['seen'] ?? false,
+        delivered: decoded['delivered'.tr] ?? true,
+        seen: decoded['seen'.tr] ?? false,
       ));
     });
   } catch (e) {
@@ -224,19 +224,17 @@ void _reconnectWebSocket() {
         title: Row(
           children: [
           Center(
-                                child:CircleAvatar(
-  radius: 22,
-  backgroundColor: Colors.grey[200],
-  backgroundImage: widget.petProfileImage.isNotEmpty
-      ? CachedNetworkImageProvider(widget.petProfileImage)
-      : null,
-  child: widget.petProfileImage.isEmpty
-      ? const Icon(Icons.pets, color: Colors.brown, size: 28)
-      : null,
-)
-
-                                  )
-                                  ,
+            child:CircleAvatar(
+              radius: 22,
+              backgroundColor: Colors.grey[200],
+              backgroundImage: widget.petProfileImage.isNotEmpty
+                  ? CachedNetworkImageProvider(widget.petProfileImage)
+                  : null,
+              child: widget.petProfileImage.isEmpty
+                  ? const Icon(Icons.pets, color: Colors.brown, size: 28)
+                  : null,
+            )
+           ),
             const SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,7 +244,7 @@ void _reconnectWebSocket() {
                   style: const TextStyle(fontSize: 16),
                 ),
                 Text(
-                  'Online',
+                  'Online'.tr,
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey[300],
@@ -306,7 +304,7 @@ void _reconnectWebSocket() {
             child: TextField(
               controller: _messageController,
               decoration: InputDecoration(
-                hintText: 'Type a message...',
+                hintText: 'Type a message...'.tr,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide.none,

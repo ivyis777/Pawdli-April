@@ -212,7 +212,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
             "📩 Free slot booking response: ${response.statusCode} - ${response.body}");
 
         if (response.statusCode == 200 || response.statusCode == 201) {
-          Fluttertoast.showToast(msg: "Slot booked successfully!");
+          Fluttertoast.showToast(msg: "Slot booked successfully!".tr);
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -227,12 +227,12 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
           final responseData = json.decode(response.body);
           final errorMessage = responseData['error'] ??
               responseData['message'] ??
-              "Something went wrong.";
+              "Something went wrong.".tr;
           Fluttertoast.showToast(msg: "Error: $errorMessage");
         }
       } catch (e) {
         print("❌ Exception booking free slot: $e");
-        Fluttertoast.showToast(msg: "Failed to book slot. Please try again.");
+        Fluttertoast.showToast(msg: "Failed to book slot. Please try again.".tr);
       }
 
       return; // Don't call Razorpay if amount is 0
@@ -325,7 +325,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
 
   void openCheckout() {
     if (_orderId == null || _orderId!.isEmpty) {
-      Fluttertoast.showToast(msg: "Order ID is missing. Please try again.");
+      Fluttertoast.showToast(msg: "Order ID is missing. Please try again.".tr);
       return;
     }
 
@@ -351,7 +351,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
       _razorpay.open(options);
     } catch (e) {
       debugPrint('Razorpay open error: $e');
-      Fluttertoast.showToast(msg: "Payment failed. Please try again.");
+      Fluttertoast.showToast(msg: "Payment failed. Please try again.".tr);
     }
   }
 
@@ -363,8 +363,8 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
       debugPrint("Signature: ${response.signature ?? 'N/A'}");
 
       Get.snackbar(
-        "Success",
-        "Payment Successful!",
+        "Success".tr,
+        "Payment Successful!".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colours.primarycolour,
         colorText: Colours.secondarycolour,
@@ -419,8 +419,8 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
     } catch (e) {
       debugPrint("❗ Error handling payment success: $e");
       Get.snackbar(
-        "Error",
-        "Payment processing error: $e",
+        "Error".tr,
+        "Payment processing error: $e".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colours.primarycolour,
         colorText: Colours.seachbarcolour,
@@ -480,7 +480,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     Fluttertoast.showToast(
-        msg: "💳 External Wallet Selected: ${response.walletName}");
+        msg: "💳 External Wallet Selected: ${response.walletName}".tr);
   }
 
   Map<String, dynamic>? _parseJsonSafely(String? jsonString) {
@@ -497,9 +497,9 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
   void createOrderThroughWallet() async {
     await Get.find<PayThroughWalletController>().initiatePayment(
       amount: widget.totalAmount.toString(),
-      currency: "INR",
+      currency: "INR".tr,
       bookingId: widget.selectedSlotIds,
-      purpose: "Host",
+      purpose: "Host".tr,
       receipt: "",
       programName: programNameController.text,
       programDescription: programDescriptionController.text,
@@ -511,10 +511,10 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
 
     final result = Get.find<PayThroughWalletController>().paymentResult.value;
 
-    if (result?.message == "Insufficient wallet balance.") {
+    if (result?.message == "Insufficient wallet balance.".tr) {
       Get.snackbar(
-        "Insufficient Balance",
-        "You don’t have enough wallet balance to complete this transaction.",
+        "Insufficient Balance".tr,
+        "You don’t have enough wallet balance to complete this transaction.".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -527,8 +527,8 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
 
     if (result != null && result.status == "success") {
       Get.snackbar(
-        "Success",
-        "Booking completed successfully!",
+        "Success".tr,
+        "Booking completed successfully!".tr,
         snackPosition: SnackPosition.BOTTOM,
         duration: Duration(seconds: 3),
       );
@@ -545,8 +545,8 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
       );
     } else {
       Get.snackbar(
-        "Error",
-        result?.message ?? "Payment failed",
+        "Error".tr,
+        result?.message ?? "Payment failed".tr,
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -578,7 +578,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
       if (result == null) {
         // user cancelled
         setState(() {
-          uploadStatus = "File selection cancelled.";
+          uploadStatus = "File selection cancelled.".tr;
           // Do not clear previously selected file (so user doesn't lose it)
         });
         return;
@@ -586,15 +586,15 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
 
       setState(() {
         selectedFile = result.files.first;
-        selectedFileType = wantAudio ? 'Audio' : 'Video';
-        uploadStatus = "Selected ${selectedFile!.name}";
+        selectedFileType = wantAudio ? 'Audio'.tr : 'Video'.tr;
+        uploadStatus = "Selected ${selectedFile!.name}".tr;
       });
 
       // Optionally start upload immediately:
       // await uploadSelectedFile(); // comment this line if you want manual upload only
     } catch (e) {
       setState(() {
-        uploadStatus = "Error picking file: $e";
+        uploadStatus = "Error picking file: $e".tr;
       });
       print("Error picking file: $e");
     }
@@ -604,38 +604,38 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
   /// Uses AppUrl.FileUploadURL (please ensure it's defined in your AppUrl).
   Future<void> uploadSelectedFile() async {
     if (programNameController.text.isEmpty) {
-      Fluttertoast.showToast(msg: "Please enter program name");
+      Fluttertoast.showToast(msg: "Please enter program name".tr);
       return;
     }
 
     if (programDescriptionController.text.isEmpty) {
-      Fluttertoast.showToast(msg: "Please enter program description");
+      Fluttertoast.showToast(msg: "Please enter program description".tr);
       return;
     }
 
     if (selectedLanguage == null || selectedLanguage!.isEmpty) {
-      Fluttertoast.showToast(msg: "Please select language");
+      Fluttertoast.showToast(msg: "Please select language".tr);
       return;
     }
 
     if (selectedFileType == null && selectedProgramType.isEmpty) {
-      Fluttertoast.showToast(msg: "Please select program type");
+      Fluttertoast.showToast(msg: "Please select program type".tr);
       return;
     }
 
     if (widget.selectedSlots.isEmpty) {
-      Fluttertoast.showToast(msg: "Please select a slot");
+      Fluttertoast.showToast(msg: "Please select a slot".tr);
       return;
     }
 
     if (selectedFile == null || selectedFile!.path == null) {
-      Fluttertoast.showToast(msg: "No file selected to upload.");
+      Fluttertoast.showToast(msg: "No file selected to upload.".tr);
       return;
     }
 
     setState(() {
       isUploading = true;
-      uploadStatus = "Uploading ...";
+      uploadStatus = "Uploading ...".tr;
       uploadProgress = 0.0; // ⬅️ ADDED
     });
 
@@ -701,11 +701,11 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
       if (streamedResponse.statusCode == 200 ||
           streamedResponse.statusCode == 201) {
         setState(() {
-          uploadStatus = "Upload successful: ${selectedFile!.name}";
+          uploadStatus = "Upload successful: ${selectedFile!.name}".tr;
           uploadProgress = 1.0;
         });
 
-        Fluttertoast.showToast(msg: "Slot booked successfully.");
+        Fluttertoast.showToast(msg: "Slot booked successfully.".tr);
 
         // ⬇⬇⬇ Correct: Navigation after success
         Future.delayed(Duration(milliseconds: 500), () {
@@ -720,9 +720,9 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
       }
     } catch (e) {
       setState(() {
-        uploadStatus = "Upload error: $e";
+        uploadStatus = "Upload error: $e".tr;
       });
-      Fluttertoast.showToast(msg: "Upload failed: $e");
+      Fluttertoast.showToast(msg: "Upload failed: $e".tr);
     } finally {
       setState(() {
         isUploading = false;
@@ -767,7 +767,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                       preferredSize: Size.fromHeight(screenHeight * 0.12),
                       child: AppBar(
                         title: Text(
-                          'Book Slots',
+                          'Book Slots'.tr,
                           style: TextStyle(
                             fontSize: screenHeight * 0.03,
                             fontWeight: FontWeight.w600,
@@ -801,10 +801,10 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                 children: [
                                   Row(
                                     children: [
-                                      Text('Radio: ',
+                                      Text('Radio: '.tr,
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
-                                      Text('Radio: ${widget.radioname}',
+                                      Text('Radio: ${widget.radioname}'.tr,
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
                                     ],
@@ -812,15 +812,15 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                   SizedBox(height: 8),
                                   ...parsedSlots.asMap().entries.map((entry) {
                                     int index = entry.key + 1;
-                                    String start = entry.value["start"]!;
-                                    String end = entry.value["end"]!;
+                                    String start = entry.value["start".tr]!;
+                                    String end = entry.value["end".tr]!;
 
                                     return Padding(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 4.0),
                                       child: Row(
                                         children: [
-                                          Text('Slot $index: ',
+                                          Text('Slot $index: '.tr,
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold)),
                                           Text("$start - $end"),
@@ -834,7 +834,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                           ),
 
                           SizedBox(height: 16),
-                          Text('Program Name:',
+                          Text('Program Name:'.tr,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           SizedBox(height: 8),
                           Material(
@@ -842,7 +842,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                               controller: programNameController,
                               focusNode: _programNameFocus,
                               decoration: InputDecoration(
-                                hintText: 'Enter program name',
+                                hintText: 'Enter program name'.tr,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
@@ -857,7 +857,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                             ),
                           ),
                           SizedBox(height: 16),
-                          Text('Program Description:',
+                          Text('Program Description:'.tr,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           SizedBox(height: 8),
                           Material(
@@ -866,7 +866,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                               maxLines: 3,
                               controller: programDescriptionController,
                               decoration: InputDecoration(
-                                hintText: 'Enter Description',
+                                hintText: 'Enter Description'.tr,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
@@ -881,7 +881,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                             ),
                           ),
                           SizedBox(height: 16),
-                          Text('Language:',
+                          Text('Language:'.tr,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           SizedBox(height: 8),
 
@@ -892,19 +892,19 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
 
                             if (languageController.allLanguages.isEmpty) {
                               return Center(
-                                  child: Text("No languages available"));
+                                  child: Text("No languages available".tr));
                             }
 
                             return MultiSelectDialogField(
                               items: languageController.allLanguages
                                   .map((lang) => MultiSelectItem(lang, lang))
                                   .toList(),
-                              title: Text("Select Languages",
+                              title: Text("Select Languages".tr,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 20)),
                               searchable: true,
-                              searchHint: "Search languages...",
+                              searchHint: "Search languages...".tr,
                               selectedColor: Colours.primarycolour,
                               dialogHeight:
                                   languageController.allLanguages.length > 6
@@ -916,7 +916,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                               ),
                               buttonIcon: Icon(Icons.arrow_drop_down,
                                   color: Colours.primarycolour),
-                              buttonText: Text("Select Languages",
+                              buttonText: Text("Select Languages".tr,
                                   style: TextStyle(color: Colours.textColour)),
                               onConfirm: (results) {
                                 languageController.selectedLanguages
@@ -934,13 +934,13 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                           SizedBox(height: 20),
 
                           /// 🆕 Program Mode Section
-                          Text('Program Mode:',
+                          Text('Program Mode:'.tr,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           Row(
                             children: [
                               Expanded(
                                 child: RadioListTile<String>(
-                                  title: Text('Live',
+                                  title: Text('Live'.tr,
                                       style: TextStyle(fontSize: 13)),
                                   value: 'Live',
                                   groupValue: programMode,
@@ -961,7 +961,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                               ),
                               Expanded(
                                 child: RadioListTile<String>(
-                                  title: Text('Recorded',
+                                  title: Text('Recorded'.tr,
                                       style: TextStyle(fontSize: 13)),
                                   value: 'Recorded',
                                   groupValue: programMode,
@@ -977,13 +977,13 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
 
                           if (programMode == 'Recorded') ...[
                             SizedBox(height: 8),
-                            Text('Recorded Type:',
+                            Text('Recorded Type:'.tr,
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                             Row(
                               children: [
                                 Expanded(
                                   child: RadioListTile<String>(
-                                    title: Text('Single Time',
+                                    title: Text('Single Time'.tr,
                                         style: TextStyle(fontSize: 13)),
                                     value: 'Single',
                                     groupValue: repeatType,
@@ -996,7 +996,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                 ),
                                 Expanded(
                                   child: RadioListTile<String>(
-                                    title: Text('Repeat',
+                                    title: Text('Repeat'.tr,
                                         style: TextStyle(fontSize: 13)),
                                     value: 'Repeated',
                                     groupValue: repeatType,
@@ -1026,7 +1026,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                           SizedBox(height: 16),
 
                           /// Existing Program Type (Audio/Video)
-                          Text('Program Type :',
+                          Text('Program Type :'.tr,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           SizedBox(height: 15),
                           Center(
@@ -1038,7 +1038,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                               inactiveBgColor: Colours.brownColour,
                               inactiveFgColor: Colors.white,
                               totalSwitches: 2,
-                              labels: ['Audio', 'Video'],
+                              labels: ['Audio'.tr, 'Video'.tr],
                               icons: [Icons.mic, Icons.videocam],
                               activeBgColors: [
                                 [Colours.primarycolour],
@@ -1174,7 +1174,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                               ),
                             ),
                             child: Text(
-                              'Book slot',
+                              'Book slot'.tr,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 22,

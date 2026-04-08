@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/controller/admin_ordercontroller.dart';
 import 'package:pawlli/data/model/admin_ordermodel.dart';
@@ -12,6 +13,16 @@ class AdminOrderListPage extends StatelessWidget {
 
   final AdminOrdercontroller controller = Get.put(AdminOrdercontroller());
 
+String formatToIndianTime(String dateTime) {
+  try {
+    DateTime parsed = DateTime.parse(dateTime).toLocal();
+
+    // Format: 25 Mar 2026, 04:46 PM
+    return DateFormat('dd MMM yyyy, hh:mm a').format(parsed);
+  } catch (e) {
+    return dateTime;
+  }
+}
 
 Color getStatusColor(String status) {
   switch (status.toLowerCase()) {
@@ -106,6 +117,11 @@ Color getStatusColor(String status) {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text("Amount: ₹${order.finalAmount}"),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Date: ${formatToIndianTime(order.createdAt)}",
+                        style: const TextStyle(fontSize: 12, color: Colors.black54),
+                      ),
                     ],
                   ),
 

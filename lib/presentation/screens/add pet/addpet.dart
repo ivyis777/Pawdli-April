@@ -110,7 +110,7 @@ class _AddPetPageState extends State<AddPetPage> {
       aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
       uiSettings: [
         AndroidUiSettings(
-          toolbarTitle: 'Crop Image',
+          toolbarTitle: 'Crop Image'.tr,
           toolbarColor: Colours.primarycolour,
           toolbarWidgetColor: Colors.white,
           cropStyle: CropStyle.circle, // ✅ CIRCLE CROP (Android)
@@ -118,7 +118,7 @@ class _AddPetPageState extends State<AddPetPage> {
           lockAspectRatio: true,
         ),
         IOSUiSettings(
-          title: 'Crop Image',
+          title: 'Crop Image'.tr,
           aspectRatioLockEnabled: true,
         ),
       ],
@@ -141,7 +141,7 @@ class _AddPetPageState extends State<AddPetPage> {
             children: [
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title: const Text('Take a Picture'),
+                title:  Text('Take a Picture'.tr),
                 onTap: () async {
                   Navigator.pop(sheetContext); // ✅ CLOSE SHEET FIRST
 
@@ -166,7 +166,7 @@ class _AddPetPageState extends State<AddPetPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.image),
-                title: const Text('Upload from Gallery'),
+                title:  Text('Upload from Gallery'.tr),
                 onTap: () async {
                   Navigator.pop(sheetContext); // ✅ CLOSE SHEET FIRST
 
@@ -260,7 +260,7 @@ class _AddPetPageState extends State<AddPetPage> {
         onTap: onTap, // 👈 apply onTap
         validator: (value) {
           if (requireValidation && (value == null || value.trim().isEmpty)) {
-            return 'Please enter this field';
+            return 'Please enter this field'.tr;
           }
           return null;
         },
@@ -296,7 +296,7 @@ class _AddPetPageState extends State<AddPetPage> {
         child: DropdownButtonFormField<String>(
           value:
               _selectedType, // should be null initially for validation to work properly
-          hint: const Text('Select Type'),
+          hint: Text('Select Type'.tr),
           items: categories.map((cat_model.Data category) {
             return DropdownMenuItem<String>(
               value: category.name,
@@ -326,7 +326,7 @@ class _AddPetPageState extends State<AddPetPage> {
             }
           },
           decoration: InputDecoration(
-            labelText: 'Select Type',
+            labelText: 'Select Type'.tr,
             labelStyle: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.brown,
@@ -344,7 +344,7 @@ class _AddPetPageState extends State<AddPetPage> {
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please select a Type';
+              return 'Please select a Type'.tr;
             }
             return null;
           },
@@ -362,7 +362,7 @@ class _AddPetPageState extends State<AddPetPage> {
           items: [],
           onChanged: null,
           decoration: InputDecoration(
-            labelText: 'Select Breed',
+            labelText: 'Select Breed'.tr,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           ),
         );
@@ -388,7 +388,7 @@ class _AddPetPageState extends State<AddPetPage> {
           });
         },
         decoration: InputDecoration(
-          labelText: 'Select Breed',
+          labelText: 'Select Breed'.tr,
           labelStyle: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.brown,
@@ -406,7 +406,7 @@ class _AddPetPageState extends State<AddPetPage> {
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please select a Breed';
+            return 'Please select a Breed'.tr;
           }
           return null;
         },
@@ -421,7 +421,7 @@ class _AddPetPageState extends State<AddPetPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(
-            'Gender:',
+            'Gender:'.tr,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           ToggleSwitch(
@@ -432,7 +432,7 @@ class _AddPetPageState extends State<AddPetPage> {
             inactiveBgColor: Colors.grey,
             inactiveFgColor: Colors.white,
             totalSwitches: 2,
-            labels: ['Male', 'Female'],
+            labels: ['Male'.tr, 'Female'.tr],
             icons: [FontAwesomeIcons.mars, FontAwesomeIcons.venus],
             activeBgColors: [
               [Colours.primarycolour],
@@ -458,7 +458,7 @@ class _AddPetPageState extends State<AddPetPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Text(
-              'Neutered/Spayed:',
+              'Neutered/Spayed:'.tr,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             ToggleSwitch(
@@ -474,7 +474,7 @@ class _AddPetPageState extends State<AddPetPage> {
               initialLabelIndex:
                   _isSpayed == 'Yes' ? 0 : 1, // Sync with current state
               totalSwitches: 2,
-              labels: ['Yes', 'No'],
+              labels: ['Yes'.tr, 'No'.tr],
               radiusStyle: true,
               onToggle: (index) {
                 setState(() {
@@ -509,7 +509,7 @@ class _AddPetPageState extends State<AddPetPage> {
       Column(children: [
         AppBar(
           title: Text(
-            'Add  Pet',
+            'Add Pet'.tr,
             style: TextStyle(
               fontSize: screenHeight * 0.035,
               fontWeight: FontWeight.w600,
@@ -574,7 +574,7 @@ class _AddPetPageState extends State<AddPetPage> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
-                            "Size: $_compressedSizeText",
+                            "Size: $_compressedSizeText".tr,
                             style: TextStyle(fontSize: 14, color: Colors.brown),
                           ),
                         ),
@@ -585,17 +585,17 @@ class _AddPetPageState extends State<AddPetPage> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      _buildTextField('Pet Name', _nameController),
+                      _buildTextField('Pet Name'.tr, _nameController),
 
                       _buildTypeDropdown(),
                       _buildBreedDropdown(),
                       //  _buildTextField("Enter Pet Age", _ageController),
                       _buildTextField(
-                          "Enter Pet Description", _descriptionController),
+                          "Enter Pet Description".tr, _descriptionController),
                       _buildTextField(
-                          "Enter Pet Location", _LocationController),
+                          "Enter Pet Location".tr, _LocationController),
                       _buildTextField(
-                        "Enter Birthday (YYYY/MM/DD)",
+                        "Enter Birthday (YYYY/MM/DD)".tr,
                         _birthdayController,
                         readOnly: true, // 👈 Prevent keyboard input
                         onTap: () => _selectDate(
@@ -613,18 +613,18 @@ class _AddPetPageState extends State<AddPetPage> {
                         children: [
                           Expanded(
                             child: _buildTextField(
-                                "Enter Weight (kg)", _weightController),
+                                "Enter Weight (kg)".tr, _weightController),
                           ),
                           SizedBox(width: 10),
                           Expanded(
                             child: _buildTextField(
-                                "Enter Height (cm)", _heightController),
+                                "Enter Height (cm)".tr, _heightController),
                           ),
                         ],
                       ),
 
                       _buildTextField(
-                          "Enter Microchip Number", _microchipController,
+                          "Enter Microchip Number".tr, _microchipController,
                           requireValidation: false),
 
                       Center(
@@ -652,7 +652,7 @@ class _AddPetPageState extends State<AddPetPage> {
                                 // "phone_number": '$_selectedCountryCode${_phoneController.text}',
                               };
 
-// ✅ Add the image only if it’s a valid File
+                              // ✅ Add the image only if it’s a valid File
                               if (_profileImage != null &&
                                   _profileImage is File) {
                                 petData["pet_profile_image"] = _profileImage!;
@@ -671,7 +671,7 @@ class _AddPetPageState extends State<AddPetPage> {
                             ),
                           ),
                           child: Text(
-                            "Save",
+                            "Save".tr,
                             style: TextStyle(
                               fontSize: screenHeight * 0.025,
                               fontWeight: FontWeight.w600,

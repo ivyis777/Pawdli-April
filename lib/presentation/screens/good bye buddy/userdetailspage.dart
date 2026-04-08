@@ -108,7 +108,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
 
         /// 📝 TITLE
         title: Text(
-          "My Request Details",
+          "My Request Details".tr,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -139,7 +139,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
               /// STATUS
               Row(
                 children: [
-                  const Text("Task Status: ",
+                   Text("Task Status: ".tr,
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   Text(
                     data.status ?? "",
@@ -158,8 +158,8 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
               if (data.status == "completed") ...[
                 /// 🔹 ADMIN DESCRIPTION FIRST
                 if (adminDescription.isNotEmpty) ...[
-                  const Text(
-                    "Notes:",
+                   Text(
+                    "Notes:".tr,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -185,8 +185,8 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
 
                 /// 🔹 COMPLETED IMAGES BELOW DESCRIPTION
                 if (adminImages.isNotEmpty) ...[
-                  const Text(
-                    "Completed Work Images",
+                   Text(
+                    "Completed Work Images".tr,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -229,7 +229,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
 
               const Divider(height: 30),
 
-              const Text("User Details",
+               Text("User Details".tr,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
 
               const SizedBox(height: 20),
@@ -276,7 +276,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
 
               const SizedBox(height: 20),
 
-              const Text("Location Details",
+               Text("Location Details".tr,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
 
               const SizedBox(height: 8),
@@ -285,7 +285,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
 
               const SizedBox(height: 15),
 
-              const Text("Landmark",
+               Text("Landmark".tr,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
 
               const SizedBox(height: 6),
@@ -294,7 +294,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
 
               const SizedBox(height: 20),
 
-              const Text("Google Maps Link",
+               Text("Google Maps Link".tr,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
 
               const SizedBox(height: 6),
@@ -313,7 +313,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
 
               const SizedBox(height: 20),
 
-              const Text("Description",
+               Text("Description".tr,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
 
               const SizedBox(height: 6),
@@ -322,7 +322,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
 
               const SizedBox(height: 20),
 
-              const Text("Created On",
+               Text("Created On".tr,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
 
               const SizedBox(height: 6),

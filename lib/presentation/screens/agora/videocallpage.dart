@@ -429,19 +429,19 @@ void _showPermissionDialog() {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Permissions Required'),
+      title:  Text('Permissions Required'.tr),
       content: const Text(
           'Camera and microphone access are permanently denied. Please enable them in Settings > Privacy > Camera & Microphone.'),
       actions: [
         TextButton(
-          child: const Text('Open Settings'),
+          child:  Text('Open Settings'.tr),
           onPressed: () {
             openAppSettings(); // 🚀 from permission_handler
             Navigator.pop(context);
           },
         ),
         TextButton(
-          child: const Text('Cancel'),
+          child:  Text('Cancel'.tr),
           onPressed: () => Navigator.pop(context),
         ),
       ],
@@ -606,7 +606,7 @@ Future<void> _switchCamera() async {
     debugPrint('Error switching camera: $e');
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to switch camera')),
+         SnackBar(content: Text('Failed to switch camera'.tr)),
       );
     }
   }
@@ -635,7 +635,7 @@ Future<void> _toggleCamera() async {
     debugPrint('Camera toggle error: $e');
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Camera toggle failed: ${e.toString()}')),
+        SnackBar(content: Text('Camera toggle failed: ${e.toString()}'.tr)),
       );
     }
   } finally {
@@ -668,7 +668,7 @@ Future<void> _sendCameraStateToParticipants() async {
                 Positioned.fill(
                   child: widget.programType == "Video"
                       ? _renderAllVideos()
-                      : const Center(child: Text("Audio Call")),
+                      :  Center(child: Text("Audio Call".tr)),
                 ),
                 _toolbar(),
                 _participantList(),
@@ -836,7 +836,7 @@ Future<void> _sendCameraStateToParticipants() async {
         ),
         const SizedBox(width: 8),
         Text(
-          'Chat ${isCallWsConnected ? 'Connected' : 'Disconnected'}',
+          'Chat ${isCallWsConnected ? 'Connected'.tr : 'Disconnected'.tr}',
           style: const TextStyle(color: Colors.white),
         ),
       ],
@@ -851,9 +851,9 @@ Future<void> _sendCameraStateToParticipants() async {
             ),
             Expanded(
               child: _messages.isEmpty
-                  ? const Center(
+                  ?  Center(
                       child: Text(
-                        'No messages yet',
+                        'No messages yet'.tr,
                         style: TextStyle(color: Colors.white54),
                       ),
                     )
@@ -874,7 +874,7 @@ Future<void> _sendCameraStateToParticipants() async {
                       controller: chatController,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        hintText: 'Type a message...',
+                        hintText: 'Type a message...'.tr,
                         hintStyle: const TextStyle(color: Colors.white70),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),

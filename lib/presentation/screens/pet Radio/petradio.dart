@@ -57,7 +57,7 @@ class _PetradioState extends State<Petradio> {
                 preferredSize: Size.fromHeight(screenHeight * 0.12),
                 child: AppBar(
                   title: Text(
-                    'PAWdLI Radio Stations',
+                    'PAWdLI Radio Stations'.tr,
                     style: TextStyle(
                       fontSize: screenHeight * 0.03,
                       fontWeight: FontWeight.w600,
@@ -79,7 +79,7 @@ class _PetradioState extends State<Petradio> {
                   if (_petRadioController.petRadioList.isEmpty) {
                     return Center(
                       child: Text(
-                        "No Pet Radios Available",
+                        "No Pet Radios Available".tr,
                         style: TextStyle(
                           fontSize: screenHeight * 0.02,
                           fontFamily: FontFamily.Cairo,

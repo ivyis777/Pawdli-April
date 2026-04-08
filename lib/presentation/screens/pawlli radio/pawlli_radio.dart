@@ -708,7 +708,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
           appBar: AppBar(
             backgroundColor: Colours.primarycolour,
             title: Text(
-              "Pawlli Radio",
+              "Pawdli Radio".tr,
               style: TextStyle(
                 color: Colours.brownColour,
                 fontSize: screenHeight * 0.027,
@@ -761,7 +761,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                                   );
                                 },
                                 child: Text(
-                                  "Book A Slot",
+                                  "Book A Slot".tr,
                                   style: TextStyle(
                                     color: Colours.seachbarcolour,
                                     fontSize: screenHeight * 0.02,
@@ -829,7 +829,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                     if (programList == null || programList.isEmpty) {
                       return Center(
                         child: Text(
-                          "No programs available for selected date",
+                          "No programs available for selected date".tr,
                           style: TextStyle(
                             color: Colours.black,
                             fontSize: screenHeight * 0.02,

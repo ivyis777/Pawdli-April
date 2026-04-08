@@ -1,3 +1,5 @@
+import 'package:pawlli/data/model/OrderItemModel.dart';
+
 class AdminOrdermodel {
   final int orderId;
   final int user;
@@ -6,6 +8,7 @@ class AdminOrdermodel {
   final String status;
   final String? shippingAddress;
   final String createdAt;
+  final List<OrderItemModel> items; // ✅ NEW
 
   AdminOrdermodel({
     required this.orderId,
@@ -15,6 +18,7 @@ class AdminOrdermodel {
     required this.status,
     this.shippingAddress,
     required this.createdAt,
+    required this.items, // ✅ NEW
   });
 
   factory AdminOrdermodel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +30,10 @@ class AdminOrdermodel {
       status: json['order_status'],
       shippingAddress: json['shipping_address'],
       createdAt: json['created_at'],
+      items: (json['items'] as List<dynamic>?)
+              ?.map((e) => OrderItemModel.fromJson(e))
+              .toList() ??
+          [],
     );
   }
 }
