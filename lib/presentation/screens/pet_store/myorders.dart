@@ -6,17 +6,31 @@ import 'package:pawlli/data/model/ordermodel.dart';
 import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/presentation/screens/pet_store/orderdetailspage.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class OrdersPage extends StatelessWidget {
   OrdersPage({super.key});
 
   final MyOrdersController controller = Get.find<MyOrdersController>();
 
   final filterNames = {
-    OrderFilter.all: "All".tr,
-    OrderFilter.ordered: "Ordered".tr,
-    OrderFilter.shipping: "Shipping".tr,
-    OrderFilter.delivered: "Delivered".tr,
-    OrderFilter.cancelled: "Cancelled".tr,
+    OrderFilter.all: "All",
+    OrderFilter.ordered: "Ordered",
+    OrderFilter.shipping: "Shipping",
+    OrderFilter.delivered: "Delivered",
+    OrderFilter.cancelled: "Cancelled",
   };
 
   @override
@@ -58,7 +72,7 @@ class OrdersPage extends StatelessWidget {
               title:  Text(
                 "My Orders".tr,
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: getResponsiveFont(context, 18),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -68,25 +82,36 @@ class OrdersPage extends StatelessWidget {
       ),
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: SafeArea(
-        child: _orderList(),
+        child: _orderList(context),
       ),
     );
   }
 
-  Widget _orderList() {
+  Widget _orderList(BuildContext context) {
     return Obx(() {
       if (controller.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
 
       if (controller.filteredOrders.isEmpty) {
-        return  Center(child: Text("No Orders Found".tr));
+        return  Center(child: Text(
+          "No Orders Found".tr,
+          style: TextStyle(
+            fontSize: getResponsiveFont(context, 14),
+          ),
+        ));
       }
 
-      return ListView.builder(
-        itemCount: controller.filteredOrders.length,
-        itemBuilder: (context, i) =>
-            _orderCard(controller.filteredOrders[i], context),
+      return RefreshIndicator(
+        onRefresh: () async {
+          await controller.fetchOrders(); // 👈 call your API again
+        },
+        child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(), // IMPORTANT
+          itemCount: controller.filteredOrders.length,
+          itemBuilder: (context, i) =>
+              _orderCard(controller.filteredOrders[i], context),
+        ),
       );
     });
   }
@@ -96,30 +121,30 @@ class OrdersPage extends StatelessWidget {
 
     // 🔴 FIRST PRIORITY — Cancelled
     if (status == "cancelled" || status == "order cancelled") {
-      return "Cancel".tr;
+      return "Cancel";
     }
 
     // 🟢 Delivered
     if (status == "delivered") {
-      return "Delivered".tr;
+      return "Delivered";
     }
 
     // 🟢 Razorpay payment completed
     if (order.razorpayPaymentId != null &&
         order.razorpayPaymentId!.isNotEmpty) {
-      return "Confirmed".tr;
+      return "Confirmed";
     }
 
     // 🟢 Wallet-paid orders
     if (order.finalAmount > 0 &&
         order.razorpayOrderId == null &&
         order.razorpayPaymentId == null) {
-      return "Confirmed".tr;
+      return "Confirmed";
     }
 
     // 🟡 COD orders
     if (status == "pending") {
-      return "Confirmed".tr;
+      return "Confirmed";
     }
 
     return order.orderStatus.capitalize ?? "Pending".tr;
@@ -161,12 +186,12 @@ class OrdersPage extends StatelessWidget {
                     return Image.network(
                       imageUrl,
                       height: 90,
-                      width: 90,
+                      width: 80,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) {
                         return Container(
-                          height: 100,
-                          width: 100,
+                          height: 90,
+                          width: 80,
                           color: Colors.grey[200],
                           child: const Icon(Icons.image_not_supported),
                         );
@@ -192,8 +217,8 @@ class OrdersPage extends StatelessWidget {
                             item.productName,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 15,
+                            style: TextStyle(
+                              fontSize: getResponsiveFont(context, 14),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -211,7 +236,8 @@ class OrdersPage extends StatelessWidget {
                           ),
                           child: Text(
                             getDisplayStatus(order),
-                            style: const TextStyle(
+                            style: TextStyle(
+                              fontSize: getResponsiveFont(context, 12),
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
@@ -224,15 +250,19 @@ class OrdersPage extends StatelessWidget {
 
                     Text(
                       "Order: ${order.orderId}".tr,
-                      style: TextStyle(color: Colors.grey[700]),
+                      style: TextStyle(
+                        fontSize: getResponsiveFont(context, 12),
+                        color: Colors.grey[700]),
                     ),
 
                     const SizedBox(height: 4),
 
                     Text(
                       "Amount: ₹${order.finalAmount}".tr,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w500, fontSize: 13),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: getResponsiveFont(context, 13),
+                      ),
                     ),
                   ],
                 ),

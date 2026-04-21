@@ -25,30 +25,43 @@ Future<void> setupFCM() async {
 
     debugPrint('🔔 Notification permission granted.');
 
-    // ✅ Get APNS Token
-    String? apnsToken = await messaging.getAPNSToken();
-    debugPrint('🍎 APNs Token (iOS): $apnsToken');
-
-    // 🔥 CRITICAL FIX (NO CRASH)
-    if (defaultTargetPlatform == TargetPlatform.iOS && apnsToken == null) {
-      debugPrint('⚠️ APNS not ready → skipping FCM for now');
-      return;
-    }
-
-    // ✅ Safe now
-    String? fcmToken = await messaging.getToken();
-    debugPrint("🚀 FCM Token: $fcmToken");
-
     final box = GetStorage();
 
-    if (apnsToken != null) {
-      box.write('apns_token', apnsToken);
+    // 🔥 STEP 1: ALWAYS GET FCM TOKEN (DON'T BLOCK)
+    String? fcmToken;
+    try {
+      fcmToken = await messaging.getToken();
+      debugPrint("🚀 FCM Token: $fcmToken");
+
+      if (fcmToken != null && fcmToken.isNotEmpty) {
+        box.write('fcm_token', fcmToken);
+      }
+    } catch (e) {
+      debugPrint("❌ FCM TOKEN ERROR: $e");
     }
 
-    if (fcmToken != null) {
-      box.write('fcm_token', fcmToken);
+    // 🔥 STEP 2: TRY APNS TOKEN (OPTIONAL)
+    try {
+      String? apnsToken;
+
+      for (int i = 0; i < 5; i++) {
+        apnsToken = await messaging.getAPNSToken();
+        if (apnsToken != null) break;
+        await Future.delayed(const Duration(seconds: 1));
+      }
+
+      debugPrint('🍎 APNs Token (iOS): $apnsToken');
+
+      if (apnsToken != null && apnsToken.isNotEmpty) {
+        box.write('apns_token', apnsToken);
+      } else {
+        debugPrint('⚠️ APNS still not available (normal on first run)');
+      }
+    } catch (e) {
+      debugPrint("❌ APNS TOKEN ERROR: $e");
     }
 
+    // 🔄 TOKEN REFRESH
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
       debugPrint('🔄 Token refreshed: $newToken');
       box.write('fcm_token', newToken);
@@ -58,11 +71,12 @@ Future<void> setupFCM() async {
     debugPrint('❌ FCM ERROR (handled safely): $e');
   }
 
-  // Listeners (safe)
+  // 🔔 FOREGROUND LISTENER
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     debugPrint('📥 FOREGROUND MESSAGE RECEIVED');
   });
 
+  // 🔔 BACKGROUND CLICK LISTENER
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
     debugPrint('📨 APP OPENED FROM NOTIFICATION');
   });

@@ -15,6 +15,20 @@ import 'package:toggle_switch/toggle_switch.dart';
 import 'dart:io';
 import 'package:get/get.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class AddPetPage extends StatefulWidget {
   @override
   _AddPetPageState createState() => _AddPetPageState();
@@ -256,8 +270,11 @@ class _AddPetPageState extends State<AddPetPage> {
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: TextFormField(
         controller: controller,
-        readOnly: readOnly, // 👈 apply readOnly
-        onTap: onTap, // 👈 apply onTap
+        readOnly: readOnly, 
+        style: TextStyle(
+          fontSize: getResponsiveFont(context, 14),
+        ),
+        onTap: onTap,
         validator: (value) {
           if (requireValidation && (value == null || value.trim().isEmpty)) {
             return 'Please enter this field'.tr;
@@ -267,6 +284,7 @@ class _AddPetPageState extends State<AddPetPage> {
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
+            fontSize: getResponsiveFont(context, 13),
             fontWeight: FontWeight.w500,
             color: Colours.brownColour,
           ),
@@ -296,11 +314,14 @@ class _AddPetPageState extends State<AddPetPage> {
         child: DropdownButtonFormField<String>(
           value:
               _selectedType, // should be null initially for validation to work properly
-          hint: Text('Select Type'.tr),
+          hint: Text(
+            'Select Type'.tr,
+            style: TextStyle(fontSize: getResponsiveFont(context, 14)),
+          ),
           items: categories.map((cat_model.Data category) {
             return DropdownMenuItem<String>(
               value: category.name,
-              child: Text(category.name ?? ''),
+              child: Text(category.name ?? '', style: TextStyle(fontSize: getResponsiveFont(context, 14))),
             );
           }).toList(),
           onChanged: (newValue) {
@@ -327,7 +348,8 @@ class _AddPetPageState extends State<AddPetPage> {
           },
           decoration: InputDecoration(
             labelText: 'Select Type'.tr,
-            labelStyle: const TextStyle(
+            labelStyle: TextStyle(
+              fontSize: getResponsiveFont(context, 13),
               fontWeight: FontWeight.bold,
               color: Colors.brown,
             ),
@@ -373,7 +395,7 @@ class _AddPetPageState extends State<AddPetPage> {
         items: breedList.map<DropdownMenuItem<String>>((e) {
           return DropdownMenuItem<String>(
             value: e.name,
-            child: Text(e.name ?? ''),
+            child: Text(e.name ?? '', style: TextStyle(fontSize: getResponsiveFont(context, 14))),
           );
         }).toList(),
         onChanged: (newValue) {
@@ -422,10 +444,10 @@ class _AddPetPageState extends State<AddPetPage> {
         children: <Widget>[
           Text(
             'Gender:'.tr,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold),
           ),
           ToggleSwitch(
-            minWidth: 90.0,
+            minWidth: 80.0,
             initialLabelIndex: _selectedGender == 'Male' ? 0 : 1,
             cornerRadius: 20.0,
             activeFgColor: Colors.white,
@@ -459,10 +481,10 @@ class _AddPetPageState extends State<AddPetPage> {
           children: <Widget>[
             Text(
               'Neutered/Spayed:'.tr,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold),
             ),
             ToggleSwitch(
-              minWidth: 90.0,
+              minWidth: 80.0,
               cornerRadius: 20.0,
               activeBgColors: [
                 [Colours.primarycolour],
@@ -511,7 +533,7 @@ class _AddPetPageState extends State<AddPetPage> {
           title: Text(
             'Add Pet'.tr,
             style: TextStyle(
-              fontSize: screenHeight * 0.035,
+              fontSize: getResponsiveFont(context, 18),
               fontWeight: FontWeight.w600,
               fontFamily: 'Cairo',
               color: Colors.brown,
@@ -575,7 +597,7 @@ class _AddPetPageState extends State<AddPetPage> {
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
                             "Size: $_compressedSizeText".tr,
-                            style: TextStyle(fontSize: 14, color: Colors.brown),
+                            style: TextStyle(fontSize: getResponsiveFont(context, 13), color: Colors.brown),
                           ),
                         ),
                     ],
@@ -664,8 +686,7 @@ class _AddPetPageState extends State<AddPetPage> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colours.primarycolour,
-                            fixedSize:
-                                Size(screenWidth * 0.8, screenHeight * 0.07),
+                            fixedSize: Size(screenWidth * 0.8, 50),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
@@ -673,7 +694,7 @@ class _AddPetPageState extends State<AddPetPage> {
                           child: Text(
                             "Save".tr,
                             style: TextStyle(
-                              fontSize: screenHeight * 0.025,
+                              fontSize: getResponsiveFont(context, 16),
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
                             ),

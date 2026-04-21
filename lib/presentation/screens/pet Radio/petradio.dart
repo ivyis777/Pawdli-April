@@ -6,6 +6,20 @@ import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/pawlli%20radio/pawlli_radio.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class Petradio extends StatefulWidget {
   const Petradio({super.key});
 
@@ -17,8 +31,8 @@ class _PetradioState extends State<Petradio> {
   final AllPetRadioController _petRadioController =
       Get.put(AllPetRadioController());
   final TextEditingController _searchController = TextEditingController();
-  bool isBrownBackground = true;
-  bool isBrownRadio = true;
+  bool isBrownBackground = false;
+  bool isBrownRadio = false;
 
   @override
   void initState() {
@@ -59,7 +73,7 @@ class _PetradioState extends State<Petradio> {
                   title: Text(
                     'PAWdLI Radio Stations'.tr,
                     style: TextStyle(
-                      fontSize: screenHeight * 0.03,
+                      fontSize: getResponsiveFont(context, 18),
                       fontWeight: FontWeight.w600,
                       fontFamily: FontFamily.Cairo,
                       color: Colours.black,
@@ -81,7 +95,7 @@ class _PetradioState extends State<Petradio> {
                       child: Text(
                         "No Pet Radios Available".tr,
                         style: TextStyle(
-                          fontSize: screenHeight * 0.02,
+                          fontSize: getResponsiveFont(context, 14),
                           fontFamily: FontFamily.Cairo,
                           color: Colours.black,
                         ),
@@ -130,7 +144,7 @@ class _PetradioState extends State<Petradio> {
                                 child: Stack(
                                   children: [
                                     Container(
-                                      width: screenWidth * 1.6,
+                                      width: screenWidth,
                                       height: screenHeight * 0.20,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
@@ -163,15 +177,13 @@ class _PetradioState extends State<Petradio> {
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: FontFamily.Cairo,
-                                                fontSize: screenWidth * 0.06,
+                                                fontSize: getResponsiveFont(context, 16),
                                                 fontWeight: FontWeight.w600,
                                               ),
-                                              maxLines:
-                                                  null, // ✅ Allows unlimited lines if necessary
-                                              overflow: TextOverflow
-                                                  .visible, // ✅ Prevents text from being cut off
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                               softWrap:
-                                                  true, // ✅ Ensures text wraps
+                                                  true,
                                             ),
                                           ),
                                           SizedBox(height: 5),
@@ -183,11 +195,11 @@ class _PetradioState extends State<Petradio> {
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: FontFamily.Cairo,
-                                                fontSize: screenWidth * 0.04,
+                                                fontSize: getResponsiveFont(context, 13),
                                                 fontWeight: FontWeight.w400,
                                               ),
-                                              maxLines: null,
-                                              overflow: TextOverflow.visible,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                               softWrap: true,
                                             ),
                                           ),

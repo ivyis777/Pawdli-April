@@ -25,6 +25,20 @@ import 'package:pawlli/data/controller/walletbalancecontroller.dart';
 import 'package:pawlli/presentation/screens/payment failure/payment_failure.dart';
 import 'package:pawlli/presentation/screens/pet_store/myorders.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class PlaceOrderPage extends StatefulWidget {
   final List<int> selectedCartIds;
 
@@ -552,7 +566,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                 "Place Order".tr,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: getResponsiveFont(context, 18),
                 ),
               ),
             ),
@@ -625,18 +639,18 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                                     item.storeProductName ?? "Product".tr,
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                        fontSize: 14,
+                                    style: TextStyle(
+                                        fontSize: getResponsiveFont(context, 14),
                                         fontWeight: FontWeight.w600),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     item.variantName ?? "Variant".tr,
-                                    style: const TextStyle(
-                                        fontSize: 13, color: Colors.grey),
+                                    style: TextStyle(
+                                        fontSize: getResponsiveFont(context, 12), color: Colors.grey),
                                   ),
                                   const SizedBox(height: 6),
-                                  Text("Quantity: $qty".tr),
+                                  Text("Quantity: $qty".tr,style: TextStyle(fontSize: getResponsiveFont(context, 12))),
                                 ],
                               ),
                             ),
@@ -644,8 +658,8 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                             // PRICE
                             Text(
                               "₹$price",
-                              style: const TextStyle(
-                                  fontSize: 14,
+                              style: TextStyle(
+                                  fontSize: getResponsiveFont(context, 14),
                                   fontWeight: FontWeight.bold,
                                   color: Colors.green),
                             )
@@ -689,13 +703,15 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                            Text(
                             "Total Savings".tr,
                             style: TextStyle(
+                              fontSize: getResponsiveFont(context, 13),
                               color: Colors.green,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           Text(
                             "₹${totalSavings.toStringAsFixed(2)}",
-                            style: const TextStyle(
+                            style: TextStyle(
+                              fontSize: getResponsiveFont(context, 13),
                               color: Colors.green,
                               fontWeight: FontWeight.w600,
                             ),
@@ -704,7 +720,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                       ),
                     ),
                   const Divider(),
-                  _priceRow("PAYABLE".tr, "₹${payableAmount.toStringAsFixed(2)}",
+                  _priceRow("PAYABLE".tr, "₹${payableAmount.toStringAsFixed(2)}", 
                       bold: true),
                 ],
               ),
@@ -759,9 +775,9 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                               : selectedPaymentMethod == "cod"
                                   ? "PROCEED".tr
                                   : "PAY ₹${payableAmount.toStringAsFixed(2)}".tr,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: getResponsiveFont(context, 16),
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -791,7 +807,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                 children: [
                    Text("Deliver To".tr,
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold)),
                   GestureDetector(
                     onTap: () async {
                       final result = await Get.to(() => AddressListPage());
@@ -800,7 +816,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                     child:  Text(
                       "Change Delivery Address".tr,
                       style: TextStyle(
-                          color: Colors.grey, fontWeight: FontWeight.bold),
+                          color: Colors.grey, fontSize: getResponsiveFont(context, 12),fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
@@ -808,13 +824,13 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
               const SizedBox(height: 10),
               addr == null
                   ?  Text("No address selected".tr,
-                      style: TextStyle(color: Colors.grey))
+                      style: TextStyle(color: Colors.grey,fontSize: getResponsiveFont(context, 13)))
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(addr.name,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15)),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 13),)),
                         Text(addr.phone),
                         Text(addr.email),
                         const SizedBox(height: 6),
@@ -849,12 +865,15 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
         children: [
            Text(
             "Apply Coupon".tr,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 14)),
           ),
           const SizedBox(height: 10),
           TextField(
             controller: couponController,
             readOnly: couponApplied,
+            style: TextStyle(
+              fontSize: getResponsiveFont(context, 14),
+            ),
             decoration: InputDecoration(
               hintText: "Enter coupon code".tr,
               suffixIcon: Row(
@@ -867,6 +886,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                       child: Text(
                         "APPLY".tr,
                         style: TextStyle(
+                          fontSize: getResponsiveFont(context, 13),
                           color: Colours.primarycolour,
                           fontWeight: FontWeight.bold,
                         ),
@@ -880,6 +900,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                       child:  Text(
                         "REMOVE".tr,
                         style: TextStyle(
+                          fontSize: getResponsiveFont(context, 13),
                           color: Colors.red,
                           fontWeight: FontWeight.bold,
                         ),
@@ -894,7 +915,8 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
               padding: const EdgeInsets.only(top: 8),
               child: Text(
                 "Coupon applied: -₹${couponDiscount.toStringAsFixed(2)}".tr,
-                style: const TextStyle(
+                style: TextStyle(
+                  fontSize: getResponsiveFont(context, 13),
                   color: Colors.green,
                   fontWeight: FontWeight.w600,
                 ),
@@ -945,6 +967,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
             title: Text(
               codTitle,
               style: TextStyle(
+                fontSize: getResponsiveFont(context, 13),
                 color: codEnabled ? Colors.black : Colors.grey,
               ),
             ),

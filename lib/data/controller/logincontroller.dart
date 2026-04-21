@@ -5,7 +5,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/api%20service.dart';
 import 'package:pawlli/data/controller/reelitemcontroller.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginController extends GetxController {
   final box = GetStorage();
@@ -48,7 +47,16 @@ class LoginController extends GetxController {
         print("IS SUPER USER: ${user.isSuperuser}");
         print("IS STAFF: ${user.isStaff}");
 
+        print("API isSuperuser: ${user.isSuperuser}");
+
+        bool isSuper = user.isSuperuser == true;
+
+        // ✅ DEBUG
+        print("SAVED isSuperUser: $isSuper");
+        
+
         // ✅ SAVE SESSION
+        box.remove(LocalStorageConstants.isSuperUser);
         box.write(LocalStorageConstants.sessionManager, true);
         box.write(LocalStorageConstants.userId, user.userId);
         box.write(LocalStorageConstants.userEmail, user.email);
@@ -56,7 +64,8 @@ class LoginController extends GetxController {
         box.write(LocalStorageConstants.access, user.tokens?.access ?? '');
         box.write(LocalStorageConstants.refresh, user.tokens?.refresh ?? '');
         box.write(LocalStorageConstants.name, user.name ?? '');
-        box.write(LocalStorageConstants.isSuperUser, user.isSuperuser);
+        // box.write(LocalStorageConstants.isSuperUser, user.isSuperuser);
+        box.write(LocalStorageConstants.isSuperUser, isSuper);
 
         // 🔔 ✅ SUBSCRIBE TO ALL USERS TOPIC
         try {
@@ -171,7 +180,13 @@ class LoginController extends GetxController {
 
         final user = response.data!;
 
+        print("API isSuperuser: ${user.isSuperuser}");
+        bool isSuper = user.isSuperuser == true;
+        print("SAVED isSuperUser: $isSuper");
+        
+
         // ✅ Save session
+        box.remove(LocalStorageConstants.isSuperUser);
         box.write(LocalStorageConstants.sessionManager, true);
         box.write(LocalStorageConstants.userId, user.userId);
         box.write(LocalStorageConstants.userEmail, user.email);
@@ -179,6 +194,9 @@ class LoginController extends GetxController {
         box.write(LocalStorageConstants.access, user.tokens?.access ?? '');
         box.write(LocalStorageConstants.refresh, user.tokens?.refresh ?? '');
         box.write(LocalStorageConstants.name, user.name ?? '');
+
+        box.write(LocalStorageConstants.isSuperUser, isSuper);
+
 
         // try {
         //   await FirebaseMessaging.instance.subscribeToTopic("all_users");

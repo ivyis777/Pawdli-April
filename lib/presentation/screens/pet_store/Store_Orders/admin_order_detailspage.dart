@@ -5,6 +5,20 @@ import 'package:intl/intl.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/model/admin_ordermodel.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class AdminOrderDetailspage extends StatelessWidget {
   final AdminOrdermodel order;
 
@@ -74,7 +88,7 @@ class AdminOrderDetailspage extends StatelessWidget {
               title: Text(
                 "Request Details".tr,
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: getResponsiveFont(context, 18),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -98,35 +112,37 @@ class AdminOrderDetailspage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Order ID: ${order.orderId}".tr,
-                      style: const TextStyle(fontSize: 18)),
+                      style: TextStyle(fontSize: getResponsiveFont(context, 16),fontWeight: FontWeight.w600,)),
                   const SizedBox(height: 10),
-                  Text("User ID: ${order.user}".tr),
-                  Text("Total Amount: ₹${order.totalAmount}".tr),
-                  Text("Final Amount: ₹${order.finalAmount}".tr),
-                  Text("Status: ${order.status}".tr),
+                  Text("User ID: ${order.user}".tr,style: TextStyle(fontSize: getResponsiveFont(context, 14)),),
+                  Text("Total Amount: ₹${order.totalAmount}".tr,style: TextStyle(fontSize: getResponsiveFont(context, 14)),),
+                  Text("Final Amount: ₹${order.finalAmount}".tr,style: TextStyle(fontSize: getResponsiveFont(context, 14)),),
+                  Text("Status: ${order.status}".tr,style: TextStyle(fontSize: getResponsiveFont(context, 14)),),
                   const SizedBox(height: 10),
 
-                  const Text("Shipping Address:",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Shipping Address:",
+                      style: TextStyle(fontSize: getResponsiveFont(context, 15),
+                        fontWeight: FontWeight.bold)),
 
                   if (address != null) ...[
-                    Text("Name: ${address['name']}".tr),
-                    Text("Phone: ${address['phone']}".tr),
-                    Text("Email: ${address['email']}".tr),
-                    Text("Address: ${address['address']}".tr),
+                    Text("Name: ${address['name']}".tr,style: TextStyle(fontSize: getResponsiveFont(context, 13)),),
+                    Text("Phone: ${address['phone']}".tr,style: TextStyle(fontSize: getResponsiveFont(context, 13)),),
+                    Text("Email: ${address['email']}".tr,style: TextStyle(fontSize: getResponsiveFont(context, 13)),),
+                    Text("Address: ${address['address']}".tr,style: TextStyle(fontSize: getResponsiveFont(context, 13)),),
                   ] else
-                    Text(order.shippingAddress ?? "N/A"),
+                    Text(order.shippingAddress ?? "N/A", style: TextStyle(fontSize: getResponsiveFont(context, 13)),),
 
                   const SizedBox(height: 10),
                   Text(
                     "Created At: ${formatToIndianTime(order.createdAt)}".tr,
-                    style: const TextStyle(fontWeight: FontWeight.w500),
+                    style: TextStyle(fontSize: getResponsiveFont(context, 13),
+                      fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 20),
 
                    Text(
                     "Order Items".tr,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: getResponsiveFont(context, 15), fontWeight: FontWeight.bold),
                   ),
 
                   const SizedBox(height: 10),
@@ -171,14 +187,18 @@ class AdminOrderDetailspage extends StatelessWidget {
                                 children: [
                                   Text(
                                     item.productName,
-                                    style: const TextStyle(
-                                        fontSize: 14, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(height: 4),
-                                  Text("Variant: ${item.variantName}".tr),
-                                  Text("Qty: ${item.quantity}".tr),
-                                  Text("Price: ₹${item.price}".tr),
-                                  Text("Total: ₹${item.totalPrice}".tr),
+                                  Text("Variant: ${item.variantName}".tr, style: TextStyle(fontSize: getResponsiveFont(context, 13))),
+
+                                  Text("Qty: ${item.quantity}".tr, style: TextStyle(fontSize: getResponsiveFont(context, 13))),
+
+                                  Text("Price: ₹${item.price}".tr, style: TextStyle(fontSize: getResponsiveFont(context, 13))),
+
+                                  Text("Total: ₹${item.totalPrice}".tr, style: TextStyle(fontSize: getResponsiveFont(context, 13))),
+
                                 ],
                               ),
                             ),

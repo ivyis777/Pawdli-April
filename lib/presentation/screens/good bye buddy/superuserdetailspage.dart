@@ -7,6 +7,20 @@ import 'package:pawlli/presentation/screens/good%20bye%20buddy/requestcompletedp
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class SuperUserRequestDetailsPage extends StatefulWidget {
   final int requestId;
 
@@ -37,17 +51,21 @@ class _SuperUserRequestDetailsPageState
   }
 
   Future<void> openMap(double lat, double lng) async {
-    final Uri mapUrl = Uri.parse("geo:$lat,$lng?q=$lat,$lng");
+    final Uri googleMapsUrl = Uri.parse(
+      "https://www.google.com/maps/search/?api=1&query=$lat,$lng",
+    );
 
-    if (await canLaunchUrl(mapUrl)) {
-      await launchUrl(mapUrl);
+    if (await canLaunchUrl(googleMapsUrl)) {
+      await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication);
+    } else {
+      print("Could not open map");
     }
   }
 
-  void shareDetails() {
-    final data = controller.requestDetails.value;
+  void shareDetails(BuildContext context) {
+  final data = controller.requestDetails.value;
 
-    final text = """
+  final text = """
 Request ID: ${data?.id}
 
 Location: ${data?.location}
@@ -61,8 +79,13 @@ Map:
 https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longitude}
 """;
 
-    Share.share(text);
-  }
+  final box = context.findRenderObject() as RenderBox;
+
+  Share.share(
+    text,
+    sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +122,7 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
         title: Text(
           "Request Details".tr,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: getResponsiveFont(context, 18),
             fontWeight: FontWeight.w600,
             color: Colours.brownColour,
           ),
@@ -226,7 +249,7 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
               /// LOCATION DETAILS
                Text(
                 "Location Details".tr,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 16)),
               ),
 
               const SizedBox(height: 10),
@@ -235,7 +258,10 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
                 children: [
                   const Icon(Icons.location_on, color: Colors.red),
                   const SizedBox(width: 10),
-                  Expanded(child: Text(data.location ?? "")),
+                  Expanded(child: Text(data.location ?? "", 
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 13),
+                  ))),
                 ],
               ),
 
@@ -244,7 +270,7 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
               /// LANDMARK
                Text(
                 "Landmark".tr,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 16)),
               ),
 
               const SizedBox(height: 8),
@@ -253,7 +279,10 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
                 children: [
                   const Icon(Icons.location_pin, color: Colors.blue),
                   const SizedBox(width: 10),
-                  Text(data.landmark ?? ""),
+                  Text(data.landmark ?? "",
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 13),
+                  ),),
                 ],
               ),
 
@@ -262,7 +291,7 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
               /// NAVIGATE BUTTON
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
+                    minimumSize: const Size(double.infinity, 45),
                     backgroundColor: const Color(0xffE8D6B8)),
                 onPressed: () {
                   openMap(data.latitude ?? 0, data.longitude ?? 0);
@@ -274,6 +303,7 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
                 label: Text(
                   "Navigate to Location".tr,
                   style: TextStyle(
+                    fontSize: getResponsiveFont(context, 15),
                     color: Colours.brownColour,
                     fontWeight: FontWeight.w600,
                   ),
@@ -285,25 +315,31 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
               /// DESCRIPTION
                Text(
                 "Description".tr,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 16)),
               ),
 
               const SizedBox(height: 6),
 
-              Text(data.description ?? ""),
+              Text(data.description ?? "",
+              style: TextStyle(
+                fontSize: getResponsiveFont(context, 13),
+              )),
 
               const SizedBox(height: 20),
 
               /// CREATED DATE
                Text(
                 "Created On".tr,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 16)),
               ),
 
               const SizedBox(height: 6),
 
               Text(
                 formatDateTime(data.createdAt ?? ""),
+                style: TextStyle(
+                  fontSize: getResponsiveFont(context, 13),
+                ),
               ),
 
               const SizedBox(height: 30),
@@ -314,19 +350,16 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.brown,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 80, // 🔥 controls width based on text
-                      vertical: 12, // 🔥 controls height
-                    ),
+                    fixedSize: Size(MediaQuery.of(context).size.width * 0.6, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
                   ),
-                  onPressed: shareDetails,
+                  onPressed: () => shareDetails(context),
                   child:  Text(
                     "Share Details".tr,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: getResponsiveFont(context, 14),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -342,10 +375,7 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
                     backgroundColor:
                         Colours.primarycolour, // 🔥 your primary color
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 80, // 🔥 width based on text
-                      vertical: 12,
-                    ),
+                    fixedSize: Size(MediaQuery.of(context).size.width * 0.8, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -359,7 +389,7 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
                   child:  Text(
                     "Make Request Completed".tr,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: getResponsiveFont(context, 15),
                       fontWeight: FontWeight.w600,
                     ),
                   ),

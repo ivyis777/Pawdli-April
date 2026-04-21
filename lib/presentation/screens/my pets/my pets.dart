@@ -9,6 +9,20 @@ import 'package:pawlli/presentation/screens/add%20pet/addpet.dart';
 import 'package:pawlli/presentation/screens/homepage/homepage.dart';
 import 'package:pawlli/presentation/screens/petprofile/editpetprofile.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class MyPets extends StatefulWidget {
   final bool fromUpdateFlow;
   const MyPets({Key? key, this.fromUpdateFlow = false}) : super(key: key);
@@ -71,7 +85,7 @@ class _MyPetsState extends State<MyPets> {
                   title: Text(
                     'My Pets'.tr,
                     style: TextStyle(
-                      fontSize: screenHeight * 0.035,
+                      fontSize: getResponsiveFont(context, 18),
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Cairo',
                       color: Colors.brown,
@@ -93,7 +107,7 @@ class _MyPetsState extends State<MyPets> {
                         child: Text(
                           petsController.errorMessage.value,
                           style: TextStyle(
-                              color: Colours.brownColour, fontSize: 16),
+                              color: Colours.brownColour, fontSize: getResponsiveFont(context, 14)),
                         ),
                       );
                     }
@@ -101,7 +115,7 @@ class _MyPetsState extends State<MyPets> {
                       return  Center(
                         child: Text(
                           "No pets found".tr,
-                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                          style: TextStyle(fontSize: getResponsiveFont(context, 15), color: Colors.grey),
                         ),
                       );
                     }
@@ -212,12 +226,12 @@ class _MyPetsState extends State<MyPets> {
             fit: BoxFit.cover,
           ),
           Positioned(
-            left: 20,
+            left: 25,
             child: Row(
               children: [
                 CircleAvatar(
                   backgroundColor: Colours.secondarycolour,
-                  radius: screenWidth * 0.1,
+                  radius: 40,
                   backgroundImage: imageProvider,
                   onBackgroundImageError: (_, __) {
                     // fallback if cached image fails
@@ -235,8 +249,8 @@ class _MyPetsState extends State<MyPets> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: screenHeight * 0.025,
-                        fontWeight: FontWeight.bold,
+                        fontSize: getResponsiveFont(context, 17),
+                        fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
                     ),

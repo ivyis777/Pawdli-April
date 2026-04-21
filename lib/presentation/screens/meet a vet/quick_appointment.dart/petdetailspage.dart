@@ -7,6 +7,20 @@ import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/quick_appointment.dart/confirmslot.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/quick_appointment.dart/symptomspage.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 
 class PetDetailsPage extends StatefulWidget {
   const PetDetailsPage({super.key});
@@ -123,7 +137,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
               Text(
                 _selectedValue,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: getResponsiveFont(context, 16),
                   fontWeight: FontWeight.w500,
                   fontFamily: FontFamily.Cairo,
                   color: Colours.black,
@@ -173,7 +187,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
                 Text(
                   "Pet Details:".tr,
                   style: TextStyle(
-                    fontSize: screenWidth * 0.045,
+                    fontSize: getResponsiveFont(context, 14),
                     fontWeight: FontWeight.w500,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -261,7 +275,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
                 child: Text(
                   "Upload Image".tr,
                   style: TextStyle(
-                    fontSize: screenWidth * 0.045,
+                    fontSize: getResponsiveFont(context, 14),
                     fontWeight: FontWeight.w500,
                    fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -337,7 +351,7 @@ SymptomWidget(),
                     child: Text(
                       'Next'.tr,
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: getResponsiveFont(context, 16),
                         fontWeight: FontWeight.w400,
                         color: Colours.secondarycolour,
                         fontFamily: FontFamily.Ubantu,
@@ -360,7 +374,7 @@ SymptomWidget(),
           child: Text(
             label,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: getResponsiveFont(context, 14),
               fontWeight: FontWeight.w500,
                 fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -371,7 +385,7 @@ SymptomWidget(),
           child: Text(
             value,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: getResponsiveFont(context, 14),
               fontWeight: FontWeight.w400,
                fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -393,7 +407,7 @@ SymptomWidget(),
           Text(
             label,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: getResponsiveFont(context, 13),
               fontWeight: FontWeight.w500,
                 fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -412,11 +426,14 @@ SymptomWidget(),
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 controller: controller,
+                style: TextStyle(
+                  fontSize: getResponsiveFont(context, 14),
+                ),
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: hintText,
                   hintStyle: TextStyle(
-                    fontSize: 16,
+                    fontSize: getResponsiveFont(context, 13),
                     fontFamily: FontFamily.Cairo,
                     color: Colors.grey,
                   ),
@@ -441,7 +458,7 @@ SymptomWidget(),
         Text(
           label,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: getResponsiveFont(context, 13),
             fontWeight: FontWeight.w500,
             fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -463,7 +480,9 @@ SymptomWidget(),
                 onChanged: onChanged,
                 items: items
                     .map((item) =>
-                        DropdownMenuItem<String>(value: item, child: Text(item)))
+                        DropdownMenuItem<String>(value: item, child: Text(item, style: TextStyle(
+                          fontSize: getResponsiveFont(context, 13),
+                        ))))
                     .toList(),
               ),
             ),

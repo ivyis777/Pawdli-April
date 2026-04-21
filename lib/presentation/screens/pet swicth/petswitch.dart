@@ -8,6 +8,20 @@ import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/controller/petslistcontroller.dart';
 import 'package:pawlli/presentation/screens/chat1to1/chatui.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class Petswitch extends StatefulWidget {
   final int receiverId;
   final String receiverImage;
@@ -67,7 +81,7 @@ class _PetswitchState extends State<Petswitch> {
                 title: Text(
                   'Select Buddy 🐾'.tr,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.035,
+                    fontSize: getResponsiveFont(context, 18),
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Cairo',
                     color: Colors.brown,
@@ -89,7 +103,7 @@ class _PetswitchState extends State<Petswitch> {
                       child: Text(
                         petsController.errorMessage.value,
                         style:
-                            TextStyle(color: Colours.brownColour, fontSize: 16),
+                            TextStyle(color: Colours.brownColour, fontSize: getResponsiveFont(context, 14)),
                       ),
                     );
                   }
@@ -97,12 +111,12 @@ class _PetswitchState extends State<Petswitch> {
                     return Center(
                       child: Text(
                         "No pets found".tr,
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                        style: TextStyle(fontSize: getResponsiveFont(context, 14), color: Colors.grey),
                       ),
                     );
                   }
                   return ListView.builder(
-                    padding: EdgeInsets.all(16.0),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     itemCount: petsController.userPets.length,
                     itemBuilder: (context, index) {
                       final pet = petsController.userPets[index];
@@ -202,7 +216,7 @@ class _PetswitchState extends State<Petswitch> {
                 Text(
                   name,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.03,
+                    fontSize: getResponsiveFont(context, 16),
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     fontFamily: 'Cairo',

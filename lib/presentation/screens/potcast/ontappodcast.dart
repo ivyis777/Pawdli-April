@@ -6,6 +6,20 @@ import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/controller/postcastepisodecontroller.dart';
 import 'package:pawlli/presentation/screens/potcast/videoplayer.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class Allepisode extends StatefulWidget {
   final int podcastId;
 
@@ -69,21 +83,24 @@ class _AllepisodeState extends State<Allepisode> {
                     Text(
                       podcastInfo?.title ?? "Podcast".tr,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: getResponsiveFont(context, 18),
+                          fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 5),
                     Text(
                       controller.episodes.first.guest?.name ?? "Unknown Host".tr,
-                      style: const TextStyle(
-                          fontSize: 14, color: Colors.black54),
+                      style: TextStyle(
+                          fontSize: getResponsiveFont(context, 13),
+                          color: Colors.black54),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       podcastInfo?.description ?? "",
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          fontSize: 14, height: 1.5, color: Colors.black87),
+                      style: TextStyle(
+                          fontSize: getResponsiveFont(context, 13),
+                          height: 1.5, color: Colors.black87),
                     ),
                   ],
                 ),
@@ -99,7 +116,9 @@ class _AllepisodeState extends State<Allepisode> {
                     Text(
                       "All Episodes".tr,
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          TextStyle(
+                            fontSize: getResponsiveFont(context, 16),
+                            fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -208,8 +227,9 @@ Padding(
               ),
               child: Text(
                 epNumber,
-                style: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.bold, color: Colors.purple),
+                style: TextStyle(
+                    fontSize: getResponsiveFont(context, 12), 
+                    fontWeight: FontWeight.bold, color: Colors.purple),
               ),
             ),
             const SizedBox(width: 12),
@@ -218,11 +238,14 @@ Padding(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          fontSize: getResponsiveFont(context, 14),
+                          fontWeight: FontWeight.bold)),
                   Text(
                     "$duration   |   $date",
-                    style: TextStyle(color: Colors.grey[700], fontSize: 13),
+                    style: TextStyle(
+                      color: Colors.grey[700], 
+                      fontSize: getResponsiveFont(context, 12)),
                   ),
                 ],
               ),

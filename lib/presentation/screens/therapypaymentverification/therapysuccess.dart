@@ -7,6 +7,20 @@ import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/homepage/homepage.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class TherapyPaymentsuccess extends StatefulWidget {
   final String orderId;
   final String? paymentId;
@@ -71,7 +85,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
             title: Text(
               'Payment'.tr,
               style: TextStyle(
-                fontSize: screenHeight * 0.03,
+                fontSize: getResponsiveFont(context, 18),
                 fontWeight: FontWeight.w600,
                 fontFamily: FontFamily.Cairo,
                 color: Colours.black,
@@ -133,7 +147,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                               child: Text(
                                 paymentData.message ?? 'Payment Success!'.tr,
                                 style: TextStyle(
-                                  fontSize: screenHeight * 0.02,
+                                  fontSize: getResponsiveFont(context, 14),
                                   fontWeight: FontWeight.w300,
                                   color: Colours.black,
                                   fontFamily: FontFamily.Ubantu,
@@ -145,7 +159,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                               child: Text(
                                 '₹ ${paymentData.amount?.toString() ?? '0'}',
                                 style: TextStyle(
-                                  fontSize: screenHeight * 0.025,
+                                  fontSize: getResponsiveFont(context, 18),
                                   fontWeight: FontWeight.bold,
                                   color: Colours.black,
                                   fontFamily: FontFamily.Ubantu,
@@ -168,7 +182,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                                     Text(
                                       'Ref Number: '.tr,
                                       style: TextStyle(
-                                        fontSize: screenHeight * 0.022,
+                                        fontSize: getResponsiveFont(context, 13),
                                         color: Colours.darkgreyColour,
                                         fontWeight: FontWeight.w400,
                                         fontFamily: FontFamily.Ubantu,
@@ -178,7 +192,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                                       child: Text(
                                         paymentData.paymentId ?? 'N/A',
                                         style: TextStyle(
-                                          fontSize: screenHeight * 0.022,
+                                          fontSize: getResponsiveFont(context, 13),
                                           fontWeight: FontWeight.w400,
                                           color: Colours.textColour,
                                           fontFamily: FontFamily.Ubantu,
@@ -199,7 +213,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                                     Text(
                                       'Date:'.tr,
                                       style: TextStyle(
-                                        fontSize: screenHeight * 0.022,
+                                        fontSize: getResponsiveFont(context, 13),
                                         color: Colours.darkgreyColour,
                                         fontWeight: FontWeight.w400,
                                         fontFamily: FontFamily.Ubantu,
@@ -208,7 +222,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                                     Text(
                                       paymentData.date ?? 'N/A',
                                       style: TextStyle(
-                                        fontSize: screenHeight * 0.022,
+                                        fontSize: getResponsiveFont(context, 13),
                                         fontWeight: FontWeight.w400,
                                         color: Colours.textColour,
                                         fontFamily: FontFamily.Ubantu,
@@ -227,7 +241,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                                     Text(
                                       'Payment Method:'.tr,
                                       style: TextStyle(
-                                        fontSize: screenHeight * 0.022,
+                                        fontSize: getResponsiveFont(context, 13),
                                         color: Colours.darkgreyColour,
                                         fontWeight: FontWeight.w400,
                                         fontFamily: FontFamily.Ubantu,
@@ -236,7 +250,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                                     Text(
                                       paymentData.paymentMethod ?? 'N/A',
                                       style: TextStyle(
-                                        fontSize: screenHeight * 0.022,
+                                        fontSize: getResponsiveFont(context, 13),
                                         fontWeight: FontWeight.w400,
                                         color: Colours.textColour,
                                         fontFamily: FontFamily.Ubantu,
@@ -256,10 +270,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                fixedSize: Size(
-                                  screenWidth * 0.8,
-                                  screenHeight * 0.07,
-                                ),
+                                fixedSize: Size(screenWidth * 0.8, 50),
                                 backgroundColor: Colours.primarycolour,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
@@ -268,7 +279,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                               child: Text(
                                 "Done".tr,
                                 style: TextStyle(
-                                  fontSize: screenHeight * 0.025,
+                                  fontSize: getResponsiveFont(context, 16),
                                   fontWeight: FontWeight.w600,
                                   color: Colours.secondarycolour,
                                 ),

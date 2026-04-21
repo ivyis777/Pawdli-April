@@ -25,6 +25,20 @@ import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart' hide Data;
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class PawlliRadio extends StatefulWidget {
   final int? radioid;
   final bool fromPaymentFlow;
@@ -203,7 +217,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
           content: Text(
             "The session starts at $startTime on $date.".tr,
             style: TextStyle(
-              fontSize: 18, // Bigger font for content
+              fontSize: getResponsiveFont(context, 16), // Bigger font for content
             ),
           ),
           actions: [
@@ -212,7 +226,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                   Navigator.of(context).pop(), // Only closes dialog on OK tap
               child: Text(
                 "OK".tr,
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: getResponsiveFont(context, 16)),
               ),
             ),
           ],
@@ -711,7 +725,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
               "Pawdli Radio".tr,
               style: TextStyle(
                 color: Colours.brownColour,
-                fontSize: screenHeight * 0.027,
+                fontSize: getResponsiveFont(context, 18),
                 fontWeight: FontWeight.w700,
                 fontFamily: FontFamily.Cairo,
               ),
@@ -764,7 +778,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                                   "Book A Slot".tr,
                                   style: TextStyle(
                                     color: Colours.seachbarcolour,
-                                    fontSize: screenHeight * 0.02,
+                                    fontSize: getResponsiveFont(context, 14),
                                     fontWeight: FontWeight.w500,
                                     fontFamily: FontFamily.Cairo,
                                   ),
@@ -777,7 +791,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                                         .format(_selectedDate),
                                     style: TextStyle(
                                       color: Colours.brownColour,
-                                      fontSize: screenHeight * 0.022,
+                                      fontSize: getResponsiveFont(context, 14),
                                       fontWeight: FontWeight.w600,
                                       fontFamily: FontFamily.Cairo,
                                     ),
@@ -810,7 +824,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
               // Song List Section
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(screenWidth * 0.04),
+                  padding: EdgeInsets.all(12),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -832,7 +846,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                           "No programs available for selected date".tr,
                           style: TextStyle(
                             color: Colours.black,
-                            fontSize: screenHeight * 0.02,
+                            fontSize: getResponsiveFont(context, 14),
                             fontWeight: FontWeight.w500,
                             fontFamily: FontFamily.Cairo,
                           ),
@@ -966,7 +980,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                   time,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: screenWidth * 0.030),
+                      fontSize: getResponsiveFont(context, 12)),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
@@ -974,7 +988,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                 Text(
                   amount,
                   style: TextStyle(
-                      color: Colors.red, fontSize: screenWidth * 0.035),
+                      color: Colors.red, fontSize: getResponsiveFont(context, 12)),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
@@ -989,7 +1003,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                     username, // Username displayed
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: screenWidth * 0.045),
+                        fontSize: getResponsiveFont(context, 14)),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
@@ -997,7 +1011,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                   Text(
                     title, // Title displayed
                     style: TextStyle(
-                        color: Colors.grey, fontSize: screenWidth * 0.035),
+                        color: Colors.grey, fontSize: getResponsiveFont(context, 13)),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
@@ -1006,13 +1020,13 @@ class _PawlliRadioState extends State<PawlliRadio> {
             ),
             Column(
               children: [
-                Icon(icon, color: Colors.black, size: screenWidth * 0.06),
+                Icon(icon, color: Colors.black, size: getResponsiveFont(context, 22)),
                 SizedBox(height: 5),
                 Text(
                   formattedLanguages.length > 15
                       ? "${formattedLanguages.substring(0, 15)}..."
                       : formattedLanguages,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: getResponsiveFont(context, 12), fontWeight: FontWeight.w500),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
@@ -1063,10 +1077,10 @@ class _PawlliRadioState extends State<PawlliRadio> {
                   SizedBox(height: 5),
                   Text(title,
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          TextStyle(fontSize: getResponsiveFont(context, 16), fontWeight: FontWeight.bold)),
                   SizedBox(height: 5),
                   Text(subtitle,
-                      style: TextStyle(fontSize: 16, color: Colors.grey)),
+                      style: TextStyle(fontSize: getResponsiveFont(context, 14), color: Colors.grey)),
                   SizedBox(height: 15),
                   if (languages.isNotEmpty)
                     Text(
@@ -1091,7 +1105,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                         return Text(
                           'Wallet Balance: ₹ ${walletBalanceController.walletBalanceAmount.value}'.tr,
                           style: TextStyle(
-                            fontSize: screenHeight * 0.015,
+                            fontSize: getResponsiveFont(context, 12),
                             fontWeight: FontWeight.w400,
                             color: Colours.black,
                           ),
@@ -1126,7 +1140,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(screenWidth * 0.5, screenHeight * 0.05),
+                      fixedSize: Size(screenWidth * 0.5, 45),
                       backgroundColor: Colours.primarycolour,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
@@ -1135,7 +1149,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                     child: Text(
                       amount,
                       style: TextStyle(
-                        fontSize: screenHeight * 0.025,
+                        fontSize: getResponsiveFont(context, 15),
                         fontWeight: FontWeight.w600,
                         color: Colours.secondarycolour,
                       ),

@@ -5,6 +5,20 @@ import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/controller/goodbyebuddylistcontroller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class UserRequestDetailsPage extends StatefulWidget {
   final int requestId;
 
@@ -110,7 +124,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
         title: Text(
           "My Request Details".tr,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: getResponsiveFont(context, 18),
             fontWeight: FontWeight.w600,
             color: Colours.brownColour,
           ),
@@ -140,14 +154,17 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
               Row(
                 children: [
                    Text("Task Status: ".tr,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                        fontSize: getResponsiveFont(context, 14),
+                        fontWeight: FontWeight.w600)),
                   Text(
                     data.status ?? "",
                     style: TextStyle(
+                      fontSize: getResponsiveFont(context, 14),
                       color: data.status == "completed"
                           ? Colors.green
                           : Colors.orange,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -162,7 +179,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
                     "Notes:".tr,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: getResponsiveFont(context, 16),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -177,7 +194,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
                     ),
                     child: Text(
                       adminDescription,
-                      style: const TextStyle(fontSize: 14),
+                      style: TextStyle(fontSize: getResponsiveFont(context, 13)),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -189,7 +206,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
                     "Completed Work Images".tr,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: getResponsiveFont(context, 16),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -230,7 +247,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
               const Divider(height: 30),
 
                Text("User Details".tr,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 16))),
 
               const SizedBox(height: 20),
 
@@ -277,25 +294,25 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
               const SizedBox(height: 20),
 
                Text("Location Details".tr,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 16))),
 
               const SizedBox(height: 8),
 
-              Text(data.location ?? ""),
+              Text(data.location ?? "", style: TextStyle(fontSize: getResponsiveFont(context, 13)),),
 
               const SizedBox(height: 15),
 
                Text("Landmark".tr,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 16))),
 
               const SizedBox(height: 6),
 
-              Text(data.landmark ?? ""),
+              Text(data.landmark ?? "", style: TextStyle(fontSize: getResponsiveFont(context, 13)),),
 
               const SizedBox(height: 20),
 
                Text("Google Maps Link".tr,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 16))),
 
               const SizedBox(height: 6),
 
@@ -307,28 +324,31 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
                 },
                 child: Text(
                   "https://www.google.com/maps/search/?api=1&query=${data.latitude},${data.longitude}",
-                  style: const TextStyle(color: Colors.blue),
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 13),
+                    color: Colors.blue),
                 ),
               ),
 
               const SizedBox(height: 20),
 
                Text("Description".tr,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 16))),
 
               const SizedBox(height: 6),
 
-              Text(data.description ?? ""),
+              Text(data.description ?? "", style: TextStyle(fontSize: getResponsiveFont(context, 13)),),
 
               const SizedBox(height: 20),
 
                Text("Created On".tr,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 16))),
 
               const SizedBox(height: 6),
 
               Text(
                 formatDateTime(data.createdAt ?? ""),
+                style: TextStyle(fontSize: getResponsiveFont(context, 13)),
               ),
             ],
           ),

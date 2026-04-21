@@ -10,6 +10,20 @@ import 'package:get/get.dart';
 import 'package:pawlli/presentation/screens/Pet%20Adoption/addpetadoption.dart';
 import 'package:pawlli/presentation/screens/Pet%20Adoption/adoptiondescription.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class AdoptionViewList extends StatefulWidget {
   final bool fromUpdateFlow;
   const AdoptionViewList({Key? key, this.fromUpdateFlow = false})
@@ -18,6 +32,7 @@ class AdoptionViewList extends StatefulWidget {
   @override
   _AdoptionViewListState createState() => _AdoptionViewListState();
 }
+
 
 class _AdoptionViewListState extends State<AdoptionViewList> {
   final AdoptionPetController _controller = Get.put(AdoptionPetController());
@@ -68,7 +83,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                 title: Text(
                   'Adoptions'.tr,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.035,
+                    fontSize: getResponsiveFont(context, 18),
                     fontWeight: FontWeight.w600,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.brownColour,
@@ -86,7 +101,12 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                   }
 
                   if (_controller.adoptionPets.isEmpty) {
-                    return  Center(child: Text("No pets found.".tr));
+                    return  Center(child: Text(
+                      "No pets found.".tr,
+                      style: TextStyle(
+                        fontSize: getResponsiveFont(context, 14),
+                      ),
+                    ));
                   }
 
                   final sortedPets = [..._controller.adoptionPets];
@@ -201,7 +221,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                         'SOLD OUT'.tr,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: screenWidth * 0.035,
+                          fontSize: getResponsiveFont(context, 12),
                           fontWeight: FontWeight.bold,
                           fontFamily: FontFamily.Cairo,
                         ),
@@ -223,7 +243,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                             style: TextStyle(
                               color: Colours.secondarycolour,
                               fontFamily: FontFamily.Cairo,
-                              fontSize: screenWidth * 0.055,
+                              fontSize: getResponsiveFont(context, 16),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -240,7 +260,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                             style: TextStyle(
                               color: Colours.secondarycolour,
                               fontFamily: FontFamily.Cairo,
-                              fontSize: screenWidth * 0.04,
+                              fontSize: getResponsiveFont(context, 13),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -255,7 +275,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                         style: TextStyle(
                           color: Colours.secondarycolour,
                           fontFamily: FontFamily.Cairo,
-                          fontSize: screenWidth * 0.042,
+                          fontSize: getResponsiveFont(context, 13),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -269,7 +289,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                           style: TextStyle(
                             color: Colours.secondarycolour,
                             fontFamily: FontFamily.Cairo,
-                            fontSize: screenWidth * 0.045,
+                            fontSize: getResponsiveFont(context, 13),
                           ),
                         ),
                       ),
@@ -277,7 +297,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                       Row(
                         children: [
                           Icon(Icons.location_on,
-                              size: screenWidth * 0.06,
+                              size: 18,
                               color: Colours.secondarycolour),
                           const SizedBox(width: 6),
                           Expanded(
@@ -288,7 +308,7 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
                               style: TextStyle(
                                 color: Colours.secondarycolour,
                                 fontFamily: FontFamily.Cairo,
-                                fontSize: screenWidth * 0.04,
+                                fontSize: getResponsiveFont(context, 13),
                               ),
                             ),
                           ),

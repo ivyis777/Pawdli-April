@@ -12,6 +12,20 @@ import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/agora/videocallpage.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class SubscriptionPage extends StatefulWidget {
   @override
   _SubscriptionPageState createState() => _SubscriptionPageState();
@@ -228,14 +242,15 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   title: Text(
                     'Subscription'.tr,
                     style: TextStyle(
-                      fontSize: screenHeight * 0.03,
+                      fontSize: getResponsiveFont(context, 18),
                       fontWeight: FontWeight.w600,
                       fontFamily: FontFamily.Cairo,
-                      color: Colours.black,
+                      color: Colours.brownColour,
                     ),
                   ),
                   centerTitle: true,
                   backgroundColor: Colors.transparent,
+                  foregroundColor: Colours.brownColour,
                   elevation: 0,
                 ),
               ),
@@ -244,13 +259,21 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 child: Row(
                   children: [
                     Text("Filter: ".tr,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                          fontSize: getResponsiveFont(context, 14),
+                          fontWeight: FontWeight.w600,
+                        )),
                     DropdownButton<String>(
                       value: _selectedRoleFilter,
                       items: ['All'.tr, 'Host'.tr, 'Listener'.tr].map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              fontSize: getResponsiveFont(context, 14),
+                            ),
+                          ),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -324,7 +347,12 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   final allPrograms = [...filteredActive, ...filteredExpired];
 
                   if (allPrograms.isEmpty) {
-                    return Center(child: Text('No subscriptions found'.tr));
+                    return Center(child: Text(
+                      'No subscriptions found'.tr,
+                      style: TextStyle(
+                        fontSize: getResponsiveFont(context, 14),
+                      ),
+                    ));
                   }
 
                   return RefreshIndicator(
@@ -369,7 +397,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                     Text(
                                       program.programName,
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: getResponsiveFont(context, 15),
                                         fontWeight: FontWeight.bold,
                                         color: isExpired
                                             ? Colors.grey
@@ -395,7 +423,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                               : program.isHost
                                                   ? Colours.brownColour
                                                   : Colours.primarycolour,
-                                          fontSize: 12,
+                                            fontSize: getResponsiveFont(context, 12),
                                         ),
                                       ),
                                     ),
@@ -405,6 +433,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                 Text(
                                   'Host: ${program.host?.isNotEmpty == true ? program.host! : "Self"}',
                                   style: TextStyle(
+                                    fontSize: getResponsiveFont(context, 13),
                                       color: isExpired
                                           ? Colors.grey
                                           : Colors.grey.shade600),
@@ -413,9 +442,10 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                 Text(
                                   '${program.date} • ${program.time}',
                                   style: TextStyle(
-                                      color: isExpired
-                                          ? Colors.grey
-                                          : Colors.grey.shade600),
+                                    fontSize: getResponsiveFont(context, 13),
+                                    color: isExpired
+                                        ? Colors.grey
+                                        : Colors.grey.shade600),
                                 ),
                                 if (isExpired)
                                   Padding(
@@ -424,6 +454,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                       'Session completed'.tr,
                                       style: TextStyle(
                                         color: Colors.red,
+                                        fontSize: getResponsiveFont(context, 12),
                                         fontStyle: FontStyle.italic,
                                       ),
                                     ),
@@ -452,7 +483,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                                 ? 'Restart Session'.tr
                                                 : 'Start Session'.tr)
                                             : 'Join Session'.tr,
-                                        style: TextStyle(color: Colors.white),
+                                        style: TextStyle(
+                                          fontSize: getResponsiveFont(context, 14),
+                                          color: Colors.white),
                                       ),
                                     ),
                                   ),
@@ -465,6 +498,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                     child: Text(
                                       'Waiting for host to start...'.tr,
                                       style: TextStyle(
+                                        fontSize: getResponsiveFont(context, 12),
                                         color: Colors.orange.shade700,
                                         fontStyle: FontStyle.italic,
                                       ),
@@ -508,14 +542,14 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
           title: Text(
             "Session Not Started".tr,
             style: TextStyle(
-              fontSize: 22, // Bigger font for title
+              fontSize: getResponsiveFont(context, 18), // Bigger font for title
               fontWeight: FontWeight.bold,
             ),
           ),
           content: Text(
             "The session starts at $startTime on $date.".tr,
             style: TextStyle(
-              fontSize: 18, // Bigger font for content
+              fontSize: getResponsiveFont(context, 14), // Bigger font for content
             ),
           ),
           actions: [
@@ -524,7 +558,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   Navigator.of(context).pop(), // Only closes dialog on OK tap
               child: Text(
                 "OK".tr,
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: getResponsiveFont(context, 14)),
               ),
             ),
           ],

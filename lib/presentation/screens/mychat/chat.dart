@@ -10,6 +10,20 @@ import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/chat1to1/chatui.dart';
 import 'package:get/get.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class ChatPage extends StatefulWidget {
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -31,7 +45,7 @@ class _ChatPageState extends State<ChatPage> {
             color: Colours.seachbarcolour,
             fontFamily: FontFamily.Cairo,
             fontWeight: FontWeight.w700,
-            fontSize: screenWidth * 0.06,
+            fontSize: getResponsiveFont(context, 18),
           ),
         ),
         backgroundColor: Colours.primarycolour,
@@ -122,7 +136,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
         child: Text(
           'Switch Pet'.tr,
           style: TextStyle(
-            fontSize: 23,
+            fontSize: getResponsiveFont(context, 16),
             fontWeight: FontWeight.w700,
             color: Colours.brownColour,
             fontFamily: FontFamily.Cairo,
@@ -148,7 +162,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
               child: Text(
                 "No pets available".tr,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: getResponsiveFont(context, 14),
                   color: Colours.brownColour,
                 ),
               ),
@@ -194,7 +208,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                               const SizedBox(height: 10),
                               Center(
                                 child: CircleAvatar(
-                                  radius: 50,
+                                  radius: 40,
                                   backgroundColor:
                                       Colours.primarycolour.withOpacity(0.2),
                                   backgroundImage: fullPetImage.isNotEmpty
@@ -210,7 +224,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                               Text(
                                 pet.name ?? 'Unknown Pet'.tr,
                                 style: TextStyle(
-                                  fontSize: 22,
+                                  fontSize: getResponsiveFont(context, 14),
                                   fontWeight: FontWeight.w500,
                                   color: isSelected
                                       ? Colors.brown
@@ -240,7 +254,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
             child: Text(
               'Recent Chat'.tr,
               style: TextStyle(
-                fontSize: 24,
+                fontSize: getResponsiveFont(context, 16),
                 fontWeight: FontWeight.w700,
                 color: Colours.brownColour,
                 fontFamily: FontFamily.Cairo,
@@ -255,11 +269,17 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
 
             if (recentChatController.errorMessage.isNotEmpty) {
               return Center(
-                  child: Text(recentChatController.errorMessage.value));
+                  child: Text(recentChatController.errorMessage.value, style: TextStyle(
+                      fontSize: getResponsiveFont(context, 14),
+                    ),
+                  ));
             }
 
             if (recentChatController.recentChats.isEmpty) {
-              return  Center(child: Text("No recent chats available.".tr));
+              return  Center(child: Text("No recent chats available.".tr, style: TextStyle(
+                  fontSize: getResponsiveFont(context, 14),
+                ),
+              ));
             }
 
             return ListView.separated(
@@ -344,7 +364,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                               child: Text(
                                 petName,
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: getResponsiveFont(context, 14),
                                   fontWeight: FontWeight.w500,
                                   color: Colours.secondarycolour,
                                 ),

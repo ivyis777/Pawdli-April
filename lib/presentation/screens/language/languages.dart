@@ -5,6 +5,20 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:pawlli/presentation/screens/homepage/homepage.dart';
 import 'package:get_storage/get_storage.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class LanguageSelectionPage extends StatefulWidget {
   @override
   _LanguageSelectionPageState createState() =>
@@ -18,42 +32,8 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
   List<String> languages = [
     // 🌐 International
     "English",
-    "Spanish",
-    "French",
+
     "German",
-    "Portuguese",
-    "Italian",
-    "Dutch",
-    "Russian",
-    "Chinese (Simplified)",
-    "Chinese (Traditional)",
-    "Japanese",
-    "Korean",
-    "Arabic",
-    "Turkish",
-    "Persian",
-    "Hebrew",
-    "Greek",
-    "Swedish",
-    "Norwegian",
-    "Danish",
-    "Finnish",
-    "Polish",
-    "Czech",
-    "Hungarian",
-    "Romanian",
-    "Bulgarian",
-    "Ukrainian",
-    "Slovak",
-    "Croatian",
-    "Serbian",
-    "Slovenian",
-    "Lithuanian",
-    "Latvian",
-    "Estonian",
-    "Icelandic",
-    "Irish",
-    "Welsh",
 
     // 🇮🇳 Indian Languages
     "Hindi",
@@ -61,49 +41,7 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
     "Tamil",
     "Telugu",
     "Malayalam",
-    "Marathi",
-    "Gujarati",
-    "Bengali",
-    "Punjabi",
-    "Urdu",
-    "Odia",
-    "Assamese",
-    "Sanskrit",
-    "Konkani",
-    "Manipuri",
-    "Bodo",
-    "Dogri",
-    "Maithili",
-    "Santali",
-    "Kashmiri",
-    "Sindhi",
-
-    // 🌏 Asian Languages
-    "Thai",
-    "Vietnamese",
-    "Indonesian",
-    "Malay",
-    "Filipino (Tagalog)",
-    "Sinhala",
-    "Khmer",
-    "Lao",
-    "Mongolian",
-    "Nepali",
-    "Burmese",
-
-    // 🌍 African Languages
-    "Swahili",
-    "Zulu",
-    "Xhosa",
-    "Afrikaans",
-    "Amharic",
-    "Yoruba",
-    "Igbo",
-    "Hausa",
-
-    // 🌎 Others
-    "Latin",
-    "Esperanto"
+    
   ];
 
   // ✅ ADD THIS FUNCTION HERE
@@ -111,42 +49,8 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
     Map<String, String> langMap = {
       // 🌐 International
       "English": "en",
-      "Spanish": "es",
-      "French": "fr",
+ 
       "German": "de",
-      "Portuguese": "pt",
-      "Italian": "it",
-      "Dutch": "nl",
-      "Russian": "ru",
-      "Chinese (Simplified)": "zh",
-      "Chinese (Traditional)": "zh-TW",
-      "Japanese": "ja",
-      "Korean": "ko",
-      "Arabic": "ar",
-      "Turkish": "tr",
-      "Persian": "fa",
-      "Hebrew": "he",
-      "Greek": "el",
-      "Swedish": "sv",
-      "Norwegian": "no",
-      "Danish": "da",
-      "Finnish": "fi",
-      "Polish": "pl",
-      "Czech": "cs",
-      "Hungarian": "hu",
-      "Romanian": "ro",
-      "Bulgarian": "bg",
-      "Ukrainian": "uk",
-      "Slovak": "sk",
-      "Croatian": "hr",
-      "Serbian": "sr",
-      "Slovenian": "sl",
-      "Lithuanian": "lt",
-      "Latvian": "lv",
-      "Estonian": "et",
-      "Icelandic": "is",
-      "Irish": "ga",
-      "Welsh": "cy",
 
       // 🇮🇳 Indian
       "Hindi": "hi",
@@ -154,49 +58,7 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
       "Tamil": "ta",
       "Telugu": "te",
       "Malayalam": "ml",
-      "Marathi": "mr",
-      "Gujarati": "gu",
-      "Bengali": "bn",
-      "Punjabi": "pa",
-      "Urdu": "ur",
-      "Odia": "or",
-      "Assamese": "as",
-      "Sanskrit": "sa",
-      "Konkani": "gom",
-      "Manipuri": "mni",
-      "Bodo": "brx",
-      "Dogri": "doi",
-      "Maithili": "mai",
-      "Santali": "sat",
-      "Kashmiri": "ks",
-      "Sindhi": "sd",
-
-      // 🌏 Asia
-      "Thai": "th",
-      "Vietnamese": "vi",
-      "Indonesian": "id",
-      "Malay": "ms",
-      "Filipino (Tagalog)": "tl",
-      "Sinhala": "si",
-      "Khmer": "km",
-      "Lao": "lo",
-      "Mongolian": "mn",
-      "Nepali": "ne",
-      "Burmese": "my",
-
-      // 🌍 Africa
-      "Swahili": "sw",
-      "Zulu": "zu",
-      "Xhosa": "xh",
-      "Afrikaans": "af",
-      "Amharic": "am",
-      "Yoruba": "yo",
-      "Igbo": "ig",
-      "Hausa": "ha",
-
-      // Others
-      "Latin": "la",
-      "Esperanto": "eo",
+      
     };
 
     return langMap[language] ?? "en";
@@ -223,7 +85,13 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Language'.tr),
+        title: Text(
+          'Language'.tr,
+          style: TextStyle(
+            fontSize: getResponsiveFont(context, 18),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         centerTitle: true,
       ),
       body: Column(
@@ -232,10 +100,16 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
           Padding(
             padding: const EdgeInsets.all(12),
             child: TextField(
+              style: TextStyle(
+                fontSize: getResponsiveFont(context, 14),
+              ),
               onChanged: filterLanguages,
               decoration: InputDecoration(
                 hintText: 'search_language...'.tr,
-                prefixIcon: Icon(Icons.search),
+                  hintStyle: TextStyle(
+                    fontSize: getResponsiveFont(context, 14),
+                  ),
+                prefixIcon: Icon(Icons.search, size: 20),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -250,15 +124,24 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
               itemBuilder: (context, index) {
                 String language = filteredLanguages[index];
                 return ListTile(
-                  title: Text(language),
-                  trailing: Radio(
-                    value: language,
-                    groupValue: selectedLanguage,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedLanguage = value!;
-                      });
-                    },
+                  title: Text(
+                    language,
+                    style: TextStyle(
+                      fontSize: getResponsiveFont(context, 15),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  trailing: Transform.scale(
+                    scale: 1.0,
+                    child: Radio(
+                      value: language,
+                      groupValue: selectedLanguage,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedLanguage = value!;
+                        });
+                      },
+                    ),
                   ),
                   onTap: () {
                     setState(() {
@@ -289,9 +172,15 @@ class _LanguageSelectionPageState extends State<LanguageSelectionPage> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: Size(double.infinity, 48),
               ),
-              child: Text('continue'.tr),
+              child: Text(
+                'continue'.tr,
+                style: TextStyle(
+                  fontSize: getResponsiveFont(context, 16),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ),
         ],

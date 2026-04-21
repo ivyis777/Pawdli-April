@@ -9,6 +9,20 @@ import 'package:pawlli/data/model/notificationmodel.dart';
 import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
@@ -78,14 +92,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   title: Text(
                     'Notifications'.tr,
                     style: TextStyle(
-                      fontSize: screenHeight * 0.03,
+                      fontSize: getResponsiveFont(context, 18),
                       fontWeight: FontWeight.w600,
                       fontFamily: FontFamily.Cairo,
-                      color: Colours.black,
+                      color: Colours.brownColour,
                     ),
                   ),
                   centerTitle: true,
                   backgroundColor: Colors.transparent,
+                  foregroundColor: Colours.brownColour,
                   elevation: 0,
                 ),
               ),
@@ -97,7 +112,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
                   if (controller.payments.isEmpty) {
                     return  Center(
-                        child: Text("No notifications available".tr));
+                        child: Text(
+                          "No notifications available".tr,
+                          style: TextStyle(
+                            fontSize: getResponsiveFont(context, 14),
+                          ),
+                        ));
                   }
 
                   List<NoticationModel> sortedNotifications = [
@@ -128,7 +148,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               Text(
                                 entry.key,
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: getResponsiveFont(context, 16),
                                   fontFamily: FontFamily.Ubantu,
                                   fontWeight: FontWeight.w700,
                                   color: Colours.primarycolour,
@@ -159,7 +179,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                         Text(
                                           notification.title ?? "No Title".tr,
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: getResponsiveFont(context, 14),
                                             fontWeight: FontWeight.w700,
                                             color: Colours.brownColour,
                                             fontFamilyFallback: [
@@ -168,12 +188,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                             ],
                                           ),
                                         ),
-                                        SizedBox(height: screenHeight * 0.01),
+                                        SizedBox(height: 6),
                                         Text(
                                           notification.message ??
                                               "No Description".tr,
                                           style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: getResponsiveFont(context, 13),
                                             fontWeight: FontWeight.w500,
                                             color: Colours.textColour,
                                             fontFamilyFallback: [

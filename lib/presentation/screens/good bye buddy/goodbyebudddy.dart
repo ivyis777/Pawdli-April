@@ -22,6 +22,20 @@ import 'package:pawlli/presentation/screens/good%20bye%20buddy/superuserdetailsp
 import 'package:pawlli/presentation/screens/good%20bye%20buddy/userdetailspage.dart';
 import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class Goodbyebudddy extends StatefulWidget {
   const Goodbyebudddy({Key? key}) : super(key: key);
 
@@ -169,19 +183,28 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
         final data = jsonDecode(response.body);
         final allRequests = data["data"] ?? [];
 
-        final isSuperUser = box.read(LocalStorageConstants.isSuperUser);
+        // final isSuperUser = box.read(LocalStorageConstants.isSuperUser);
 
         final userId = box.read(LocalStorageConstants.userId);
 
-        print("IS SUPER USER: $isSuperUser");
+        // print("IS SUPER USER: $isSuperUser");
+        // print("USER ID: $userId");
+        // print("TOTAL REQUESTS FROM API: ${allRequests.length}");
+
+        // bool isAdmin = false;
+
+        final isSuperUser =
+          box.read(LocalStorageConstants.isSuperUser) == true;
+
+       print("IS SUPER USER: $isSuperUser");
         print("USER ID: $userId");
         print("TOTAL REQUESTS FROM API: ${allRequests.length}");
 
-        bool isAdmin = false;
+        bool isAdmin = isSuperUser;
 
-        if (isSuperUser == true || isSuperUser == "true" || isSuperUser == 1) {
-          isAdmin = true;
-        }
+        // if (isSuperUser == true || isSuperUser == "true" || isSuperUser == 1) {
+        //   isAdmin = true;
+        // }
 
         if (isAdmin) {
           requests = allRequests;
@@ -499,7 +522,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
             ),
             child:  Text(
               'Confirm Location'.tr,
-              style: TextStyle(fontSize: 18),
+              style: TextStyle(fontSize: getResponsiveFont(context, 15)),
             ),
           ),
         ),
@@ -557,7 +580,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
               Text(
                 "Select Image Source".tr,
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: getResponsiveFont(context, 18),
                   fontWeight: FontWeight.w600,
                   fontFamily: FontFamily.Cairo,
                 ),
@@ -569,7 +592,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                 title: Text(
                   "Gallery".tr,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.020,
+                    fontSize: getResponsiveFont(context, 14),
                     fontWeight: FontWeight.w500,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -585,7 +608,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                 title: Text(
                   "Camera".tr,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.020,
+                    fontSize: getResponsiveFont(context, 14),
                     fontWeight: FontWeight.w500,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -696,7 +719,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
         title: Text(
           pageTitle.tr,
           style: TextStyle(
-            fontSize: 22,
+            fontSize: getResponsiveFont(context, 18),
             fontWeight: FontWeight.w600,
             fontFamily: FontFamily.Cairo,
             color: Colours.brownColour,
@@ -709,9 +732,30 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
           indicatorColor: Colours.primarycolour,
           indicatorWeight: 3,
           tabs:  [
-            Tab(text: "GoodByeBuddy".tr),
-            Tab(text: "Donation".tr),
-            Tab(text: "Requests".tr),
+            Tab(
+              child: Text(
+                "GoodByeBuddy".tr,
+                style: TextStyle(
+                  fontSize: getResponsiveFont(context, 12),
+                ),
+              ),
+            ),
+            Tab(
+              child: Text(
+                "Donation".tr,
+                style: TextStyle(
+                  fontSize: getResponsiveFont(context, 12),
+                ),
+              ),
+            ),
+            Tab(
+              child: Text(
+                "Requests".tr,
+                style: TextStyle(
+                  fontSize: getResponsiveFont(context, 12),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -736,7 +780,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                           SizedBox(height: 16),
 
                           Text('Location:'.tr,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 14))),
                           SizedBox(height: 8),
                           ElevatedButton(
                             onPressed: _openMapForLocationSelection,
@@ -757,10 +801,14 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
-                                child: Center(child: Text("Upload Image".tr)),
+                                child: Center(child: Text("Upload Image".tr,
+                                style: TextStyle(fontSize: getResponsiveFont(context, 14)),
+                                )),
                               ),
                             ),
                           ),
+
+                          SizedBox(height: 10),
 
                           if (_imageFiles != null && _imageFiles!.isNotEmpty)
                             SizedBox(
@@ -771,10 +819,43 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                 itemBuilder: (context, index) {
                                   return Padding(
                                     padding: const EdgeInsets.only(right: 8),
-                                    child: Image.file(
-                                      File(_imageFiles![index].path),
-                                      width: 120,
-                                      fit: BoxFit.cover,
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10),
+                                          child: Image.file(
+                                            File(_imageFiles![index].path),
+                                            width: 120,
+                                            height: 120,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+
+                                        /// ❌ REMOVE BUTTON
+                                        Positioned(
+                                          top: 5,
+                                          right: 5,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _imageFiles!.removeAt(index); // ✅ remove image
+                                              });
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.black54,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              padding: const EdgeInsets.all(4),
+                                              child: const Icon(
+                                                Icons.close,
+                                                size: 18,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   );
                                 },
@@ -785,11 +866,14 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
 
                           Text(
                             'Landmark:'.tr,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 14)),
                           ),
                           SizedBox(height: 8),
                           TextField(
                             controller: landmarkController,
+                            style: TextStyle(
+                              fontSize: getResponsiveFont(context, 14),
+                            ),
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(16),
                               border: OutlineInputBorder(
@@ -812,11 +896,14 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
 
                           Text(
                             'Description:'.tr,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 14)),
                           ),
                           SizedBox(height: 8),
                           TextField(
                             controller: programDescriptionController,
+                            style: TextStyle(
+                              fontSize: getResponsiveFont(context, 14),
+                            ),
                             maxLines: 3,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(16),
@@ -894,7 +981,9 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                               ),
                               child:  Text(
                                 "Submit".tr,
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  fontSize: getResponsiveFont(context, 16),
+                                  color: Colors.white, ),
                               ),
                             ),
                           ),
@@ -916,7 +1005,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                           Text(
                             "Support Paw ❤️".tr,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: getResponsiveFont(context, 16),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -926,13 +1015,16 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                             "Every contribution supports food, medical care, and shelter.".tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: getResponsiveFont(context, 13),
                               color: Colors.grey[700],
                             ),
                           ),
                           SizedBox(height: 20),
                           TextField(
                             controller: donationAmountController,
+                            style: TextStyle(
+                              fontSize: getResponsiveFont(context, 14),
+                            ),
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               hintText: "Enter Amount (₹)".tr,
@@ -942,6 +1034,9 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                           SizedBox(height: 16),
                           TextField(
                             controller: donationMessageController,
+                            style: TextStyle(
+                              fontSize: getResponsiveFont(context, 14),
+                            ),
                             maxLines: 4,
                             decoration: InputDecoration(
                               hintText: "Word of support for the Pets".tr,
@@ -983,6 +1078,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                             child: Text(
                               "Donate".tr,
                               style: TextStyle(
+                                fontSize: getResponsiveFont(context, 16),
                                 color: Colors.white, // ✅ white text
                                 fontWeight: FontWeight.w600,
                               ),
@@ -1042,9 +1138,9 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                           children: [
                                             Text(
                                               "Request No : ${item['id']}",
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 16,
+                                                fontSize: getResponsiveFont(context, 14),
                                               ),
                                             ),
                                             Container(
@@ -1073,13 +1169,19 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                           ],
                                         ),
                                         const SizedBox(height: 8),
-                                        Text(item["location"] ?? ""),
+                                        Text(
+                                          item["location"] ?? "",
+                                          style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 13),
+                                          ),
+                                        ),
                                         const SizedBox(height: 8),
                                         Text(
                                           formatDateTime(
                                               item["created_at"] ?? ""),
-                                          style: const TextStyle(
-                                              color: Colors.grey),
+                                          style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
+                                            color: Colors.grey),
                                         ),
                                       ],
                                     ),

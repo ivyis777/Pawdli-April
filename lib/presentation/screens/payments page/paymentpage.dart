@@ -13,6 +13,20 @@ import 'package:intl/intl.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class MypaymentsPage extends StatefulWidget {
   @override
   _MypaymentsPageState createState() => _MypaymentsPageState();
@@ -85,16 +99,17 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                 preferredSize: Size.fromHeight(screenHeight * 0.12),
                 child: AppBar(
                   title: Text(
-                    ' My Payments'.tr,
+                    'My Payments'.tr,
                     style: TextStyle(
-                      fontSize: screenHeight * 0.03,
+                      fontSize: getResponsiveFont(context, 18),
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Cairo',
-                      color: Colours.black,
+                      color: Colours.brownColour,
                     ),
                   ),
                   centerTitle: true,
                   backgroundColor: Colors.transparent,
+                  foregroundColor: Colours.brownColour,
                   elevation: 0,
                 ),
               ),
@@ -157,7 +172,11 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                     items: uniqueTypes.map((String type) {
                                       return DropdownMenuItem<String>(
                                         value: type,
-                                        child: Text(type),
+                                        child: Text(type,
+                                          style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 14),
+                                          ),
+                                        ),
                                       );
                                     }).toList(),
                                     onChanged: (String? newValue) {
@@ -185,13 +204,13 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                         Text(
                                           selectedPaymentDate ?? "Payment Date".tr,
                                           style: TextStyle(
-                                            fontSize: screenSize.width * 0.040,
+                                            fontSize: getResponsiveFont(context, 14),
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black54,
                                           ),
                                         ),
                                         Icon(Icons.calendar_today,
-                                            size: screenSize.width * 0.05),
+                                            size: 18),
                                       ],
                                     ),
                                   ),
@@ -200,7 +219,12 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                             ),
                             SizedBox(height: screenSize.height * 0.02),
                             if (filteredPayments.isEmpty)
-                              Center(child: Text("No payments found.".tr))
+                              Center(child: Text(
+                                "No payments found.".tr,
+                                style: TextStyle(
+                                  fontSize: getResponsiveFont(context, 14),
+                                ),
+                              ))
                             else
                               ...filteredPayments.map((payment) {
                                 final dateStr =
@@ -236,9 +260,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                                   TextSpan(
                                                     text: payment.purpose,
                                                     style: TextStyle(
-                                                      fontSize:
-                                                          screenSize.width *
-                                                              0.04,
+                                                      fontSize: getResponsiveFont(context, 15),
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       color: Colors.black,
@@ -250,9 +272,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                                       text:
                                                           ' - ${payment.programName}',
                                                       style: TextStyle(
-                                                        fontSize:
-                                                            screenSize.width *
-                                                                0.035,
+                                                        fontSize: getResponsiveFont(context, 13),
                                                         fontWeight:
                                                             FontWeight.w400,
                                                         color: Colors.grey[700],
@@ -267,8 +287,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                             Text(
                                               'Paid on: $dateStr'.tr,
                                               style: TextStyle(
-                                                fontSize:
-                                                    screenSize.width * 0.03,
+                                                fontSize: getResponsiveFont(context, 12),
                                                 color: Colors.grey,
                                               ),
                                             ),
@@ -278,7 +297,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                         Text(
                                           '₹${payment.amount}',
                                           style: TextStyle(
-                                            fontSize: screenSize.width * 0.05,
+                                            fontSize: getResponsiveFont(context, 16),
                                             fontWeight: FontWeight.bold,
                                             color: Colours.black,
                                           ),
@@ -306,9 +325,8 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                           child: payment.purpose != 'Wallet'
                                               ? Image.network(
                                                   'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/pdf.png',
-                                                  width: screenSize.width * 0.1,
-                                                  height:
-                                                      screenSize.height * 0.05,
+                                                  width: 30,
+                                                  height: 30,
                                                   fit: BoxFit.cover,
                                                 )
                                               : Container(), // No image shown for wallet payments

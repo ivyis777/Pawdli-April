@@ -8,6 +8,20 @@ import 'package:get/get.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/meetvetslot.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class MeetVetDoctorList extends StatefulWidget {
   const MeetVetDoctorList({Key? key}) : super(key: key);
 
@@ -53,7 +67,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                 title: Text(
                   'Meet Vet Doctors'.tr,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.035,
+                    fontSize: getResponsiveFont(context, 18),
                     fontWeight: FontWeight.w600,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.brownColour,
@@ -82,7 +96,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                 child: Text(
                   'Selected Date: ${DateFormat.yMMMMd().format(_selectedDate)}'.tr,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.020,
+                    fontSize: getResponsiveFont(context, 14),
                     fontWeight: FontWeight.w500,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.brownColour,
@@ -128,7 +142,9 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                     }
 
                     if (controller.pets.isEmpty) {
-                      return  Center(child: Text('No doctors available'.tr));
+                      return  Center(child: Text('No doctors available'.tr, style: TextStyle(
+                        fontSize: getResponsiveFont(context, 14),
+                      )));
                     }
 
                     return ListView.builder(
@@ -197,7 +213,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                     style: TextStyle(
                       color: Colours.secondarycolour,
                       fontFamily: FontFamily.Cairo,
-                      fontSize: screenWidth * 0.055,
+                      fontSize: getResponsiveFont(context, 16),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -209,7 +225,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                     style: TextStyle(
                       color: Colours.secondarycolour,
                       fontFamily: FontFamily.Cairo,
-                      fontSize: screenWidth * 0.045,
+                      fontSize: getResponsiveFont(context, 13),
                     ),
                   ),
                   const SizedBox(height: 1),
@@ -227,7 +243,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                           style: TextStyle(
                             color: Colours.secondarycolour,
                             fontFamily: FontFamily.Cairo,
-                            fontSize: screenWidth * 0.04,
+                            fontSize: getResponsiveFont(context, 12),
                           ),
                         ),
                       ),
@@ -239,7 +255,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                     style: TextStyle(
                       color: Colours.secondarycolour,
                       fontFamily: FontFamily.Cairo,
-                      fontSize: screenWidth * 0.038,
+                      fontSize: getResponsiveFont(context, 12),
                       fontStyle: FontStyle.italic,
                     ),
                   ),

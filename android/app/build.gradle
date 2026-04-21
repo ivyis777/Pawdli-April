@@ -36,23 +36,23 @@ android {
     }
 
 
-//    signingConfigs {
-//     release {
-//         keyAlias keystoreProperties['keyAlias']
-//         keyPassword keystoreProperties['keyPassword']
-//        storeFile file(keystoreProperties['storeFile'])
+   signingConfigs {
+    release {
+        keyAlias keystoreProperties['keyAlias']
+        keyPassword keystoreProperties['keyPassword']
+       storeFile file(keystoreProperties['storeFile'])
 
-//         storePassword keystoreProperties['storePassword']
-//     }
-// }
+        storePassword keystoreProperties['storePassword']
+    }
+}
 
 
     buildTypes {
         release {
             
-            // signingConfig signingConfigs.release
-            minifyEnabled true
-            shrinkResources true
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

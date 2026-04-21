@@ -10,6 +10,20 @@ import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/descriptionpage/descriptionpage.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class SeeAllPage extends StatefulWidget {
   const SeeAllPage({super.key});
 
@@ -216,7 +230,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                       style: TextStyle(
                         color: Colours.brownColour,
                         fontFamily: FontFamily.Cairo,
-                        fontSize: screenWidth * 0.065,
+                        fontSize: getResponsiveFont(context, 18),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -235,7 +249,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                       hintStyle: TextStyle(
                         color: Colours.textColour,
                         fontFamily: FontFamily.Cairo,
-                        fontSize: screenWidth * 0.05,
+                        fontSize: getResponsiveFont(context, 14),
                         fontWeight: FontWeight.w600,
                       ),
                       prefixIcon: Icon(Icons.search,
@@ -327,8 +341,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                             style: TextStyle(
                               fontFamily: FontFamily.Cairo,
                               fontWeight: FontWeight.w600,
-                              fontSize:
-                                  screenWidth * 0.042, // 🔽 smaller for Android
+                              fontSize: getResponsiveFont(context, 13),
                               color: Colours.brownColour,
                             ),
                           ),
@@ -423,7 +436,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                                 color: Colours.brownColour,
                                 fontFamily: FontFamily.Cairo,
                                 fontWeight: FontWeight.w600,
-                                fontSize: screenWidth * 0.042,
+                                fontSize: getResponsiveFont(context, 13),
                               ),
                             ),
                           ],
@@ -522,7 +535,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                                 Text(
                                   category.name ?? "Default Name".tr,
                                   style: TextStyle(
-                                    fontSize: screenWidth * 0.06,
+                                    fontSize: getResponsiveFont(context, 16),
                                     fontWeight: FontWeight.w600,
                                     color: Colours.secondarycolour,
                                   ),
@@ -534,7 +547,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                                           ? 'Age | ${category.age}y'
                                           : 'Age | N/A'),
                                   style: TextStyle(
-                                      fontSize: screenWidth * 0.04,
+                                      fontSize: getResponsiveFont(context, 12),
                                       color: Colours.secondarycolour),
                                 ),
                                 ConstrainedBox(
@@ -545,7 +558,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                                     category.description ??
                                         "Default Description".tr,
                                     style: TextStyle(
-                                        fontSize: screenWidth * 0.04,
+                                        fontSize: getResponsiveFont(context, 12),
                                         color: Colours.secondarycolour),
                                     softWrap: true,
                                     overflow: TextOverflow.ellipsis,
@@ -563,7 +576,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(
-                                          fontSize: screenWidth * 0.04,
+                                          fontSize: getResponsiveFont(context, 12),
                                           color: Colours.secondarycolour),
                                     ),
                                   ],

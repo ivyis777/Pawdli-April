@@ -1,5 +1,6 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
@@ -7,6 +8,20 @@ import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/controller/signcontroller.dart';
 import 'package:pawlli/data/model/addressmodel.dart';
 import 'package:pawlli/gen/assests.gen.dart';
+
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
 
 class AddAddressPage extends StatefulWidget {
   final bool fromLocation;
@@ -86,7 +101,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
   }) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(color: Colors.grey, fontSize: 15),
+      hintStyle: TextStyle(color: Colors.grey, fontSize: getResponsiveFont(context, 14)),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -118,7 +133,13 @@ class _AddAddressPageState extends State<AddAddressPage> {
       // ---------------- APP BAR WITH IMAGE ----------------
       appBar: AppBar(
         centerTitle: true,
-        title:  Text("Add Address".tr),
+        title: Text(
+          "Add Address".tr,
+          style: TextStyle(
+            fontSize: getResponsiveFont(context, 18),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         flexibleSpace: Stack(
@@ -160,6 +181,9 @@ class _AddAddressPageState extends State<AddAddressPage> {
               Row(
                 children: [
                   CountryCodePicker(
+                    textStyle: TextStyle(
+                      fontSize: getResponsiveFont(context, 13),
+                    ),
                     initialSelection: 'IN',
                     favorite: const ['+91', 'IN'],
                     onChanged: (code) {
@@ -169,10 +193,43 @@ class _AddAddressPageState extends State<AddAddressPage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextFormField(
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(
+                          selectedCountryCode == "+91" ? 10 : 15,
+                        ),
+                      ],
                       controller: phoneCtrl,
                       keyboardType: TextInputType.phone,
                       decoration: _input("Mobile Number".tr),
-                      validator: (v) => _required(v, "Enter mobile number".tr),
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) {
+                          return "Enter mobile number".tr;
+                        }
+
+                        String phone = v.trim();
+
+                        // 🇮🇳 INDIA VALIDATION
+                        if (selectedCountryCode == "+91") {
+                          if (phone.length != 10) {
+                            return "Enter valid 10 digit mobile number".tr;
+                          }
+
+                          // Optional: only digits check
+                          if (!RegExp(r'^[0-9]{10}$').hasMatch(phone)) {
+                            return "Invalid mobile number".tr;
+                          }
+                        } 
+                        // 🌍 OTHER COUNTRIES
+                        else {
+                          // General international format (7–15 digits)
+                          if (!RegExp(r'^[0-9]{7,15}$').hasMatch(phone)) {
+                            return "Enter valid mobile number".tr;
+                          }
+                        }
+
+                        return null;
+                      },
                     ),
                   ),
                 ],
@@ -181,6 +238,9 @@ class _AddAddressPageState extends State<AddAddressPage> {
 
               // ---------------- EMAIL (READ ONLY) ----------------
               TextFormField(
+                style: TextStyle(
+                  fontSize: getResponsiveFont(context, 14),
+                ),
                 controller: emailCtrl,
                 enabled: false,
                 decoration: _input(
@@ -263,7 +323,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
                 },
                 child:  Text(
                   "Save Address".tr,
-                  style: TextStyle(fontSize: 18, color: Colors.white),
+                  style: TextStyle(fontSize: getResponsiveFont(context, 16), color: Colors.white),
                 ),
               ),
             ],

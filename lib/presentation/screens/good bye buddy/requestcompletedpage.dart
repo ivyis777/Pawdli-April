@@ -7,6 +7,20 @@ import 'package:http/http.dart' as http;
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class CompleteRequestPage extends StatefulWidget {
   final int requestId;
   final String location;
@@ -57,11 +71,13 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
       final accessToken = box.read('access') ?? '';
 
       final url = Uri.parse(
-        "https://app.pawdli.com/user/goodbye-buddy/${widget.requestId}/admin-update/",
+        "https://app.pawdli.com/user/goodbye-buddy/${widget.requestId}/admin_update/",
       );
 
+      print("URL: $url");
+
       var request = http.MultipartRequest(
-        "PATCH", // ✅ correct method
+        "PATCH", // ✅ CORRECT METHOD
         url,
       );
 
@@ -69,15 +85,16 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
         'Authorization': 'Bearer $accessToken',
         'Accept': 'application/json',
       });
-      print("TOKEN: $accessToken");
-      request.fields["status"] = "completed";
+
+      /// ✅ MATCH POSTMAN EXACTLY
+      request.fields["status"] = "completed"; 
       request.fields["admin_description"] = descriptionController.text;
 
-      /// 📸 FIXED IMAGE KEY
+      /// ✅ IMAGE FIELD
       for (var img in images) {
         request.files.add(
           await http.MultipartFile.fromPath(
-            "admin_images".tr, 
+            "admin_images",
             img.path,
           ),
         );
@@ -143,7 +160,7 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
         title: Text(
           "Complete Request".tr,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: getResponsiveFont(context, 18),
             fontWeight: FontWeight.w600,
             color: Colours.brownColour,
           ),
@@ -158,7 +175,9 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
             /// REQUEST ID
             Text(
               "Request ID: ${widget.requestId}".tr,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: getResponsiveFont(context, 14),
+                fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 8),
@@ -166,7 +185,7 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
             /// LOCATION
             Text(
               "Location: ${widget.location}".tr,
-              style: const TextStyle(fontSize: 14),
+              style: TextStyle(fontSize: getResponsiveFont(context, 13),),
             ),
 
             const SizedBox(height: 25),
@@ -174,7 +193,9 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
             /// UPLOAD TITLE
             Text(
               "Upload Completion Images".tr ,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: getResponsiveFont(context, 14),
+                fontWeight: FontWeight.w600),
             ),
 
             const SizedBox(height: 15),
@@ -210,7 +231,44 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
                   mainAxisSpacing: 8,
                 ),
                 itemBuilder: (context, index) {
-                  return Image.file(images[index], fit: BoxFit.cover);
+                  return Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.file(
+                          images[index],
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+
+                      /// ❌ REMOVE BUTTON
+                      Positioned(
+                        top: 5,
+                        right: 5,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              images.removeAt(index); // ✅ remove image
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black54,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(4),
+                            child: const Icon(
+                              Icons.close,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
                 },
               ),
 
@@ -219,7 +277,9 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
             /// DESCRIPTION
              Text(
               "Completion Description".tr,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: getResponsiveFont(context, 14), 
+                fontWeight: FontWeight.w600),
             ),
 
             const SizedBox(height: 10),
@@ -232,6 +292,9 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
               ),
               child: TextField(
                 controller: descriptionController,
+                style: TextStyle(
+                  fontSize: getResponsiveFont(context, 14),
+                ),
                 maxLines: 3,
                 decoration: const InputDecoration(
                   border: InputBorder.none,
@@ -250,15 +313,16 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 100, vertical: 14),
+                  fixedSize: Size(MediaQuery.of(context).size.width * 0.8, 50),
                 ),
                 onPressed: isLoading ? null : completeRequest,
                 child: isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
                     :  Text(
                         "Request Completed".tr,
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          fontSize: getResponsiveFont(context, 16),
+                          color: Colors.white),
                       ),
               ),
             ),

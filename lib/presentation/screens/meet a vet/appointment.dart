@@ -6,6 +6,20 @@ import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/meetvetdoctor.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/quick_appointment.dart/petdetailspage.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class AppointmentPage extends StatelessWidget {
   const AppointmentPage({Key? key}) : super(key: key);
 
@@ -36,7 +50,7 @@ class AppointmentPage extends StatelessWidget {
                 title: Text(
                   'Appointment Mode'.tr,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.035,
+                    fontSize: getResponsiveFont(context, 18),
                     fontWeight: FontWeight.w600,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.brownColour,
@@ -76,7 +90,7 @@ class AppointmentPage extends StatelessWidget {
                         child: Text(
                           "Quick Appointment".tr,
                           style: TextStyle(
-                            fontSize: screenHeight * 0.022,
+                            fontSize: getResponsiveFont(context, 16),
                             fontWeight: FontWeight.bold,
                             fontFamily: FontFamily.Cairo,
                             color: Colours.secondarycolour,

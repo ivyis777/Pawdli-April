@@ -10,6 +10,20 @@ import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:pawlli/presentation/screens/pet%20therapy/book_therapyslot.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class Meetvetslot extends StatefulWidget {
   final int? petid;
   final DateTime selectedDate;
@@ -89,7 +103,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
               title: Text(
                 'Book Slots'.tr,
                 style: TextStyle(
-                  fontSize: screenHeight * 0.035,
+                  fontSize: getResponsiveFont(context, 18),
                   fontWeight: FontWeight.w600,
                   fontFamily: FontFamily.Cairo,
                   color: Colours.brownColour,
@@ -139,7 +153,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                           Text(
                             "Dr. Chomon Aktar".tr, // replace with API data
                             style: TextStyle(
-                              fontSize: screenHeight * 0.022,
+                              fontSize: getResponsiveFont(context, 15),
                               fontWeight: FontWeight.bold,
                               color: Colours.primarycolour,
                             ),
@@ -148,7 +162,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                           Text(
                             "Dermatopathologist".tr, // replace with API data
                             style: TextStyle(
-                              fontSize: screenHeight * 0.018,
+                              fontSize: getResponsiveFont(context, 13),
                               color: Colors.grey[700],
                             ),
                           ),
@@ -165,7 +179,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                                 child: Text(
                                   "350+ Patients".tr,
                                   style: TextStyle(
-                                    fontSize: screenHeight * 0.016,
+                                    fontSize: getResponsiveFont(context, 12),
                                     fontWeight: FontWeight.w600,
                                     color: Colours.primarycolour,
                                   ),
@@ -182,7 +196,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                                 child: Text(
                                   "15+ Years".tr,
                                   style: TextStyle(
-                                    fontSize: screenHeight * 0.016,
+                                    fontSize: getResponsiveFont(context, 12),
                                     fontWeight: FontWeight.w600,
                                     color: Colours.brownColour,
                                   ),
@@ -207,7 +221,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                   child: Text(
                     "About Doctor".tr,
                     style: TextStyle(
-                      fontSize: screenHeight * 0.024,
+                      fontSize: getResponsiveFont(context, 16),
                       fontWeight: FontWeight.bold,
                       fontFamily: FontFamily.Cairo,
                       color: Colours.black,
@@ -220,7 +234,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                     child: Text(
                       'Dermatopathologist, Dermatopathologist Dermatopathologist \n DermatopathologistDermatopathologistDermatopathologist'.tr,
                       style: TextStyle(
-                        fontSize: screenHeight * 0.022,
+                        fontSize: getResponsiveFont(context, 15),
                         fontWeight: FontWeight.w500,
                         fontFamily: FontFamily.Cairo,
                         color: Colours.primarycolour,
@@ -254,7 +268,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                               'Selected Slots:'.tr,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: screenHeight * 0.018,
+                                fontSize: getResponsiveFont(context, 14),
                               ),
                             ),
                             SizedBox(height: screenHeight * 0.01),
@@ -266,7 +280,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                                   label: Text(
                                     '${slot.startTime}',
                                     style: TextStyle(
-                                        fontSize: screenHeight * 0.015),
+                                        fontSize: getResponsiveFont(context, 11)),
                                   ),
                                   backgroundColor:
                                       Colours.primarycolour.withOpacity(0.2),
@@ -281,7 +295,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                               'Total Amount: ₹$_totalAmount'.tr,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: screenHeight * 0.018,
+                                fontSize: getResponsiveFont(context, 14),
                                 color: Colours.primarycolour,
                               ),
                             ),
@@ -298,7 +312,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                           child: Text(
                             "No slots available".tr,
                             style: TextStyle(
-                              fontSize: screenHeight * 0.02,
+                              fontSize: getResponsiveFont(context, 14),
                               color: Colors.grey,
                             ),
                           ),
@@ -327,7 +341,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                               Text(
                                 date,
                                 style: TextStyle(
-                                  fontSize: screenHeight * 0.022,
+                                  fontSize: getResponsiveFont(context, 15),
                                   fontWeight: FontWeight.bold,
                                   color: Colours.primarycolour,
                                 ),
@@ -391,7 +405,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                                               '${slot.startTime} - ${slot.endTime ?? 'N/A'}',
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                fontSize: screenHeight * 0.01,
+                                                fontSize: getResponsiveFont(context, 10),
                                                 fontWeight: FontWeight.bold,
                                                 color: isSelected
                                                     ? Colors.white
@@ -405,7 +419,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                                             Text(
                                               ' ₹ ${slot.amount}',
                                               style: TextStyle(
-                                                fontSize: screenHeight * 0.014,
+                                                fontSize: getResponsiveFont(context, 11),
                                                 fontWeight: FontWeight.w500,
                                                 color: isSelected
                                                     ? Colors.white
@@ -471,7 +485,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                           child: Text(
                             "Continue".tr,
                             style: TextStyle(
-                              fontSize: screenHeight * 0.022,
+                              fontSize: getResponsiveFont(context, 16),
                               fontWeight: FontWeight.w600,
                               color: Colours.secondarycolour,
                             ),

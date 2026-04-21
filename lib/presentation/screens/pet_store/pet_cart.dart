@@ -8,6 +8,20 @@ import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/presentation/screens/pet_store/placeorderpage.dart';
 import '../../../data/controller/cartviewcontroller.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
 
@@ -134,6 +148,7 @@ class _CartPageState extends State<CartPage> {
                 child: Text(
                   "Cart".tr,
                   style: TextStyle(
+                    fontSize: getResponsiveFont(context, 18),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -150,7 +165,7 @@ class _CartPageState extends State<CartPage> {
 
         if (cartController.cartItems.isEmpty) {
           return  Center(
-            child: Text("Your cart is empty".tr, style: TextStyle(fontSize: 18)),
+            child: Text("Your cart is empty".tr, style: TextStyle(fontSize: getResponsiveFont(context, 16))),
           );
         }
 
@@ -181,11 +196,11 @@ class _CartPageState extends State<CartPage> {
                       children: [
                          Text("Total amount".tr,
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
+                                fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold)),
                         Text(
                           "₹${_calculateSelectedTotal().toStringAsFixed(2)}",
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: getResponsiveFont(context, 16), fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -207,11 +222,11 @@ class _CartPageState extends State<CartPage> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colours.primarycolour,
-                          padding: const EdgeInsets.all(14),
+                          padding: EdgeInsets.symmetric(vertical: 12),
                         ),
                         child:  Text(
                           "Place Order".tr,
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          style: TextStyle(fontSize: getResponsiveFont(context, 15), color: Colors.white),
                         ),
                       ),
                     )
@@ -297,8 +312,8 @@ class _CartPageState extends State<CartPage> {
                     item.storeProductName ?? "",
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                        fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.w600),
                   ),
 
                   const SizedBox(height: 5),
@@ -308,8 +323,8 @@ class _CartPageState extends State<CartPage> {
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
                         item.variantName!,
-                        style: const TextStyle(
-                          fontSize: 12,
+                        style: TextStyle(
+                          fontSize: getResponsiveFont(context, 12),
                           color: Colors.grey,
                           fontWeight: FontWeight.w500,
                         ),
@@ -323,8 +338,8 @@ class _CartPageState extends State<CartPage> {
                       if (regularPrice != discountedPrice)
                         Text(
                           "₹$regularPrice",
-                          style: const TextStyle(
-                            fontSize: 14,
+                          style: TextStyle(
+                            fontSize: getResponsiveFont(context, 13),
                             color: Colors.grey,
                             decoration: TextDecoration.lineThrough,
                           ),
@@ -332,8 +347,8 @@ class _CartPageState extends State<CartPage> {
                       const SizedBox(width: 8),
                       Text(
                         "₹$discountedPrice",
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style: TextStyle(
+                          fontSize: getResponsiveFont(context, 15),
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -362,7 +377,7 @@ class _CartPageState extends State<CartPage> {
                         ),
                       ),
                       Text("${item.quantity}",
-                          style: const TextStyle(fontSize: 14)),
+                          style: TextStyle(fontSize: getResponsiveFont(context, 13),)),
                       IconButton(
                         onPressed: () => _incrementQuantity(index),
                         icon: CircleAvatar(

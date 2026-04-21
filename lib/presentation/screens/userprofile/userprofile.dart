@@ -21,6 +21,20 @@ import 'package:pawlli/presentation/screens/pet_store/myorders.dart';
 import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class ProfilePage extends StatefulWidget {
   final bool fromUpdateFlow;
   const ProfilePage({
@@ -100,7 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     title: Text(
                       'User Profile'.tr,
                       style: TextStyle(
-                        fontSize: screenHeight * 0.035,
+                        fontSize: getResponsiveFont(context, 18),
                         fontWeight: FontWeight.w600,
                         fontFamily: FontFamily.Cairo,
                         color: Colours.brownColour,
@@ -152,8 +166,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ? (user?.username ?? '')
                                   : user!.name!,
                               style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
+                                fontSize: getResponsiveFont(context, 20),
+                                fontWeight: FontWeight.w500,
                                 color: Colors.brown,
                               ),
                               textAlign: TextAlign.center,
@@ -297,7 +311,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     child: Text(
                                       "Logout".tr,
                                       style: TextStyle(
-                                        fontSize: screenHeight * 0.025,
+                                        fontSize: getResponsiveFont(context, 16),
                                         fontWeight: FontWeight.w600,
                                         color: Colors.white,
                                       ),
@@ -350,7 +364,7 @@ class _ProfilePageState extends State<ProfilePage> {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 22,
+                fontSize: getResponsiveFont(context, 16),
                 fontWeight: FontWeight.bold,
                 color: Colors.brown.shade800,
               ),

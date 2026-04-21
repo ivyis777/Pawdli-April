@@ -18,6 +18,20 @@ import 'package:pawlli/presentation/screens/userprofile/userprofile.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:get/get.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class PersonalInfoPage extends StatefulWidget {
   @override
   _PersonalInfoPageState createState() => _PersonalInfoPageState();
@@ -280,7 +294,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               title: Text(
                 'Profile'.tr,
                 style: TextStyle(
-                  fontSize: screenHeight * 0.035,
+                  fontSize: getResponsiveFont(context, 18),
                   fontWeight: FontWeight.w600,
                   fontFamily: FontFamily.Cairo,
                   color: Colours.brownColour,
@@ -379,9 +393,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             // Name Field
                             TextFormField(
                               controller: _nameController,
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14),
+                              ),
                               decoration: InputDecoration(
                                 labelText: 'Name'.tr,
-                                labelStyle: TextStyle(color: Colors.brown[600]),
+                                labelStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                  color: Colors.brown[600],
+                                ),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
                                   borderRadius: BorderRadius.circular(10),
@@ -404,9 +424,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
 
                             TextFormField(
                               controller: _ageController,
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14),
+                              ),
                               decoration: InputDecoration(
                                 labelText: 'Age'.tr,
-                                labelStyle: TextStyle(color: Colors.brown[600]),
+                                labelStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                  color: Colors.brown[600],
+                                ),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
                                   borderRadius: BorderRadius.circular(10),
@@ -444,7 +470,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   Text(
                                     'Gender:'.tr,
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: getResponsiveFont(context, 14),
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Column(
@@ -488,7 +514,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                                 horizontal: 10),
                                             child: Text('Male'.tr,
                                                 style: TextStyle(
-                                                    fontSize: 14,
+                                                    fontSize: getResponsiveFont(context, 13),
                                                     fontWeight:
                                                         FontWeight.w500)),
                                           ),
@@ -497,7 +523,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                                 horizontal: 10),
                                             child: Text('Female'.tr,
                                                 style: TextStyle(
-                                                    fontSize: 14,
+                                                    fontSize: getResponsiveFont(context, 13),
                                                     fontWeight:
                                                         FontWeight.w500)),
                                           ),
@@ -506,7 +532,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                                 horizontal: 10),
                                             child: Text('Others'.tr,
                                                 style: TextStyle(
-                                                    fontSize: 14,
+                                                    fontSize: getResponsiveFont(context, 13),
                                                     fontWeight:
                                                         FontWeight.w500)),
                                           ),
@@ -534,6 +560,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 selectorType: PhoneInputSelectorType.DIALOG,
                               ),
                               textFieldController: _phoneController,
+                              
                               formatInput: false,
                               initialValue: _phoneNumber,
                               validator: (value) {
@@ -544,7 +571,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               },
                               inputDecoration: InputDecoration(
                                 labelText: 'Phone Number'.tr,
-                                labelStyle: TextStyle(color: Colors.brown[600]),
+                                labelStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                  color: Colors.brown[600],
+                                ),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
                                   borderRadius: BorderRadius.circular(10),
@@ -560,11 +590,17 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
 
                             TextFormField(
                               controller: _emailController,
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14, ), color: Colors.grey
+                              ),
                               readOnly: true,
-                              style: TextStyle(color: Colors.grey), // Grey text
+                              // style: TextStyle(color: Colors.grey), // Grey text
                               decoration: InputDecoration(
                                 labelText: 'Email ID'.tr,
-                                labelStyle: TextStyle(color: Colors.grey),
+                                labelStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                  color: Colors.brown[600],
+                                ),
                                 filled: true,
                                 fillColor: Colors.grey[
                                     100], // Optional: light grey background
@@ -584,9 +620,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             // Address 1 Field
                             TextFormField(
                               controller: _address1Controller,
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14),
+                              ),
                               decoration: InputDecoration(
                                 labelText: 'Address '.tr,
-                                labelStyle: TextStyle(color: Colors.brown[600]),
+                                labelStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                  color: Colors.brown[600],
+                                ),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
                                   borderRadius: BorderRadius.circular(10),
@@ -608,9 +650,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             SizedBox(height: 15),
                             TextFormField(
                               controller: _cityController,
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14),
+                              ),
                               decoration: InputDecoration(
                                 labelText: 'City'.tr,
-                                labelStyle: TextStyle(color: Colors.brown[600]),
+                                labelStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                  color: Colors.brown[600],
+                                ),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
                                   borderRadius: BorderRadius.circular(10),
@@ -634,9 +682,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             // State Field
                             TextFormField(
                               controller: _stateController,
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14),
+                              ),
                               decoration: InputDecoration(
                                 labelText: 'State'.tr,
-                                labelStyle: TextStyle(color: Colors.brown[600]),
+                                labelStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                  color: Colors.brown[600],
+                                ),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
                                   borderRadius: BorderRadius.circular(10),
@@ -660,9 +714,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             // Country Field
                             TextFormField(
                               controller: _countryController,
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14),
+                              ),
                               decoration: InputDecoration(
                                 labelText: 'Country'.tr,
-                                labelStyle: TextStyle(color: Colors.brown[600]),
+                                labelStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                  color: Colors.brown[600],
+                                ),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
                                   borderRadius: BorderRadius.circular(10),
@@ -686,9 +746,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             // Pincode Field
                             TextFormField(
                               controller: _pincodeController,
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14),
+                              ),
                               decoration: InputDecoration(
                                 labelText: 'Pincode'.tr,
-                                labelStyle: TextStyle(color: Colors.brown[600]),
+                                labelStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                  color: Colors.brown[600],
+                                ),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
                                   borderRadius: BorderRadius.circular(10),
@@ -743,8 +809,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor:
                                               Colours.primarycolour,
-                                          fixedSize: Size(screenWidth * 0.8,
-                                              screenHeight * 0.07),
+                                          fixedSize: Size(
+                                            screenWidth * 0.8,
+                                            50, // fixed height better for all devices
+                                          ),
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(15),
@@ -752,7 +820,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                         ),
                                         child: Text('Update'.tr,
                                             style: TextStyle(
-                                              fontSize: screenHeight * 0.025,
+                                              fontSize: getResponsiveFont(context, 16),
                                               fontWeight: FontWeight.w600,
                                               color: Colors.white,
                                             )),

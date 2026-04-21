@@ -33,6 +33,20 @@ import 'package:get/get.dart';
 // NEW import for file picker
 import 'package:file_picker/file_picker.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class RadioProgramPage extends StatefulWidget {
   final List selectedSlots;
   final double totalAmount;
@@ -769,7 +783,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                         title: Text(
                           'Book Slots'.tr,
                           style: TextStyle(
-                            fontSize: screenHeight * 0.03,
+                            fontSize: getResponsiveFont(context, 18),
                             fontWeight: FontWeight.w600,
                             fontFamily: FontFamily.Cairo,
                             color: Colours.black,
@@ -801,19 +815,21 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                 children: [
                                   Row(
                                     children: [
-                                      Text('Radio: '.tr,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
+                                      // Text('Radio: '.tr,
+                                      //     style: TextStyle(
+                                      //       fontSize: getResponsiveFont(context, 14),
+                                      //         fontWeight: FontWeight.bold)),
                                       Text('Radio: ${widget.radioname}'.tr,
                                           style: TextStyle(
+                                              fontSize: getResponsiveFont(context, 14),
                                               fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                   SizedBox(height: 8),
                                   ...parsedSlots.asMap().entries.map((entry) {
                                     int index = entry.key + 1;
-                                    String start = entry.value["start".tr]!;
-                                    String end = entry.value["end".tr]!;
+                                    String start = entry.value["start"]!;
+                                    String end = entry.value["end"]!;
 
                                     return Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -823,7 +839,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                           Text('Slot $index: '.tr,
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold)),
-                                          Text("$start - $end"),
+                                          Text("$start - $end", style: TextStyle(fontSize: getResponsiveFont(context, 13))),
                                         ],
                                       ),
                                     );
@@ -835,14 +851,22 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
 
                           SizedBox(height: 16),
                           Text('Program Name:'.tr,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14),
+                                fontWeight: FontWeight.bold)),
                           SizedBox(height: 8),
                           Material(
                             child: TextField(
                               controller: programNameController,
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14),
+                              ),
                               focusNode: _programNameFocus,
                               decoration: InputDecoration(
                                 hintText: 'Enter program name'.tr,
+                                hintStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
@@ -858,7 +882,9 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                           ),
                           SizedBox(height: 16),
                           Text('Program Description:'.tr,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14),
+                                fontWeight: FontWeight.bold)),
                           SizedBox(height: 8),
                           Material(
                             child: TextField(
@@ -867,6 +893,9 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                               controller: programDescriptionController,
                               decoration: InputDecoration(
                                 hintText: 'Enter Description'.tr,
+                                hintStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
@@ -882,7 +911,9 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                           ),
                           SizedBox(height: 16),
                           Text('Language:'.tr,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14),
+                                fontWeight: FontWeight.bold)),
                           SizedBox(height: 8),
 
                           Obx(() {
@@ -902,7 +933,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                               title: Text("Select Languages".tr,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      fontSize: 20)),
+                                      fontSize: getResponsiveFont(context, 16))),
                               searchable: true,
                               searchHint: "Search languages...".tr,
                               selectedColor: Colours.primarycolour,
@@ -917,7 +948,9 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                               buttonIcon: Icon(Icons.arrow_drop_down,
                                   color: Colours.primarycolour),
                               buttonText: Text("Select Languages".tr,
-                                  style: TextStyle(color: Colours.textColour)),
+                                  style: TextStyle(
+                                    fontSize: getResponsiveFont(context, 14),
+                                    color: Colours.textColour)),
                               onConfirm: (results) {
                                 languageController.selectedLanguages
                                     .assignAll(results.cast<String>());
@@ -935,13 +968,15 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
 
                           /// 🆕 Program Mode Section
                           Text('Program Mode:'.tr,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 14),
+                                fontWeight: FontWeight.bold)),
                           Row(
                             children: [
                               Expanded(
                                 child: RadioListTile<String>(
                                   title: Text('Live'.tr,
-                                      style: TextStyle(fontSize: 13)),
+                                      style: TextStyle(fontSize: getResponsiveFont(context, 13))),
                                   value: 'Live',
                                   groupValue: programMode,
                                   onChanged: (value) {
@@ -962,7 +997,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                               Expanded(
                                 child: RadioListTile<String>(
                                   title: Text('Recorded'.tr,
-                                      style: TextStyle(fontSize: 13)),
+                                      style: TextStyle(fontSize: getResponsiveFont(context, 13))),
                                   value: 'Recorded',
                                   groupValue: programMode,
                                   onChanged: (value) {
@@ -984,7 +1019,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                 Expanded(
                                   child: RadioListTile<String>(
                                     title: Text('Single Time'.tr,
-                                        style: TextStyle(fontSize: 13)),
+                                        style: TextStyle(fontSize: getResponsiveFont(context, 13))),
                                     value: 'Single',
                                     groupValue: repeatType,
                                     onChanged: (value) {
@@ -997,7 +1032,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                 Expanded(
                                   child: RadioListTile<String>(
                                     title: Text('Repeat'.tr,
-                                        style: TextStyle(fontSize: 13)),
+                                        style: TextStyle(fontSize: getResponsiveFont(context, 13))),
                                     value: 'Repeated',
                                     groupValue: repeatType,
                                     onChanged: (value) {
@@ -1031,7 +1066,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                           SizedBox(height: 15),
                           Center(
                             child: ToggleSwitch(
-                              minWidth: 100.0,
+                              minWidth: 90.0,
                               initialLabelIndex: selectedIndex,
                               cornerRadius: 20.0,
                               activeFgColor: Colors.white,
@@ -1092,7 +1127,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                           selectedFile!.name,
                                           softWrap: false,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 14),
+                                          style: TextStyle(fontSize: getResponsiveFont(context, 13)),
                                         ),
                                       ),
                                       SizedBox(height: 4),
@@ -1101,7 +1136,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                             ? '${(selectedFile!.size / 1024 / 1024).toStringAsFixed(2)} MB'
                                             : '',
                                         style: TextStyle(
-                                            fontSize: 12,
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colors.grey[700]),
                                       ),
 
@@ -1119,7 +1154,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                         Text(
                                           "${(uploadProgress * 100).toStringAsFixed(0)}%", // 0% → 100%
                                           style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: getResponsiveFont(context, 12),
                                               color: Colors.black87),
                                         ),
                                       ],
@@ -1166,8 +1201,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              fixedSize:
-                                  Size(screenWidth * 0.8, screenHeight * 0.06),
+                              fixedSize: Size(screenWidth * 0.8, 50),
                               backgroundColor: Colours.primarycolour,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
@@ -1177,7 +1211,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                               'Book slot'.tr,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 22,
+                                fontSize: getResponsiveFont(context, 16),
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

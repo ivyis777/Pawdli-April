@@ -11,9 +11,24 @@ import 'package:pawlli/data/controller/storepromotioncontroller.dart';
 import 'package:pawlli/data/model/petstoresubcategaries.dart';
 import 'package:pawlli/data/model/storeprocductmodel.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
+import 'package:pawlli/presentation/screens/pet_store/myorders.dart';
 import 'package:pawlli/presentation/screens/pet_store/pet_cart.dart';
 import 'package:pawlli/presentation/screens/pet_store/store_categaries.dart';
 import 'package:pawlli/presentation/screens/pet_store/storesearchpage.dart';
+
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
 
 class PetstorePage extends StatefulWidget {
   const PetstorePage({super.key});
@@ -55,17 +70,17 @@ class _PetstorePageState extends State<PetstorePage> {
 
   // Map category names to images
   final Map<String, String> categoryImages = {
-    'Cloths'.tr:
+    'Cloths':
         'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/cloths.png',
-    'Accessories'.tr:
+    'Accessories':
         'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/accessories.png',
-    'Food'.tr:
+    'Food':
         'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/food.png',
-    'Grooming'.tr:
+    'Grooming':
         'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Grooming.png',
-    'Toys'.tr:
+    'Toys':
         'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Toys.png',
-    'Unknown'.tr: 'assets/icons/default.png',
+    'Unknown': 'assets/icons/default.png',
   };
 
   // -------------------------------
@@ -181,7 +196,7 @@ class _PetstorePageState extends State<PetstorePage> {
             hintStyle: TextStyle(
               color: Colours.textColour,
               fontFamily: FontFamily.Cairo,
-              fontSize: screenWidth * 0.05,
+              fontSize: getResponsiveFont(context, 15),
               fontWeight: FontWeight.w600,
             ),
             prefixIcon: Icon(Icons.search, color: Colours.textColour),
@@ -236,7 +251,7 @@ class _PetstorePageState extends State<PetstorePage> {
         hintText: categoryHints.isEmpty
             ? ''
             : 'Paw ${categoryHints[_categoryHintIndex]}'.tr,
-        prefixIcon: const Icon(Icons.search, size: 20),
+        prefixIcon: const Icon(Icons.search, size: 18),
       ),
     );
   }
@@ -287,40 +302,90 @@ class _PetstorePageState extends State<PetstorePage> {
     final CartController cartController = Get.find<CartController>();
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           //top image
-          Positioned(
-            top: 0,
-            left: 0,
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.55,
-              height: 80,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(
-                      'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
+          // Positioned(
+          //   top: 0,
+          //   left: 0,
+          //   child: Container(
+          //     width: MediaQuery.of(context).size.width * 0.55,
+          //     height: 80,
+          //     decoration: BoxDecoration(
+          //       image: DecorationImage(
+          //         image: NetworkImage(
+          //             'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+          //         fit: BoxFit.cover,
+          //       ),
+          //     ),
+          //   ),
+          // ),
 
           /// ✅ YOUR ORIGINAL SCROLL VIEW (UNCHANGED)
           CustomScrollView(
             slivers: [
               SliverAppBar(
                 pinned: true,
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.white,
                 foregroundColor: Colours.brownColour,
-                elevation: 0,
-                toolbarHeight: 80,
-                title: SizedBox(
-                  height: 45,
-                  child: _buildSearchBarCollapsed(),
-                ),
+                elevation: 4,
+                toolbarHeight: 60,
                 centerTitle: true,
+
+                flexibleSpace: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Image.network(
+                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png',
+                        width: MediaQuery.of(context).size.width * 0.55,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                ),
+
+                title: SizedBox(
+                  height: 40,
+                  child: Row(
+                    children: [
+                      /// 🔍 SEARCH BAR
+                      Expanded(
+                        child: _buildSearchBarCollapsed(),
+                      ),
+
+                      const SizedBox(width: 5),
+
+                      /// 📦 MY ORDERS ICON
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrdersPage(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Image.asset(
+                            'assets/icons/orders.png',
+                            height: 30,
+                            width: 30,
+                            fit: BoxFit.contain,
+                            color: Colours.primarycolour, // optional
+                          )
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               SliverPersistentHeader(
                 pinned: true,
@@ -405,9 +470,9 @@ class _PetstorePageState extends State<PetstorePage> {
                         child: Text(
                           count.toString(),
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: getResponsiveFont(context, 11),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -455,8 +520,8 @@ class _PetstorePageState extends State<PetstorePage> {
               Flexible(
                 child: Text(
                   categoryName,
-                  style: const TextStyle(
-                    fontSize: 13,
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 13),
                     fontWeight: FontWeight.bold,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -489,7 +554,7 @@ class _PetstorePageState extends State<PetstorePage> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: getResponsiveFont(context, 13),
               fontWeight: FontWeight.w600,
               color:
                   isSelected ? Colors.white : Colors.black, // ✅ better contrast
@@ -513,7 +578,10 @@ class _PetstorePageState extends State<PetstorePage> {
       final subs = _subCategoryController.subCategories;
 
       if (subs.isEmpty) {
-        return  Center(child: Text('No subcategories available'.tr));
+        return  Center(child: Text('No subcategories available'.tr, style: TextStyle(
+            fontSize: getResponsiveFont(context, 14),
+          ),
+        ));
       }
 
       return Column(
@@ -539,8 +607,8 @@ class _PetstorePageState extends State<PetstorePage> {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
+          style: TextStyle(
+            fontSize: getResponsiveFont(context, 15),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -550,8 +618,8 @@ class _PetstorePageState extends State<PetstorePage> {
 
   Widget _horizontalProductList(SubCategoryData sub) {
     return SizedBox(
-      height: 200,
-      width: 450,
+      height: 180,
+      width: double.infinity,
       child: GestureDetector(
         onTap: () {
           final subId = sub.storeSubcategoryId;
@@ -610,11 +678,11 @@ class _PetstorePageState extends State<PetstorePage> {
                   fit: BoxFit.contain,
                   alignment: Alignment.center,
                   errorBuilder: (_, __, ___) => const Center(
-                    child: Icon(Icons.pets, size: 50, color: Colors.grey),
+                    child: Icon(Icons.pets, size: 40, color: Colors.grey),
                   ),
                 )
               : const Center(
-                  child: Icon(Icons.pets, size: 50, color: Colors.grey),
+                  child: Icon(Icons.pets, size: 40, color: Colors.grey),
                 ),
         ),
       ),

@@ -4,6 +4,19 @@ import 'package:get/utils.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
 
 class SymptomWidget extends StatefulWidget {
   const SymptomWidget({super.key});
@@ -30,7 +43,7 @@ class _SymptomWidgetState extends State<SymptomWidget> {
         Text(
           "Write Your Problem:".tr,
           style: TextStyle(
-        fontSize: screenWidth * 0.045,
+        fontSize: getResponsiveFont(context, 14),
                     fontWeight: FontWeight.w500,
                    fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -48,11 +61,14 @@ class _SymptomWidgetState extends State<SymptomWidget> {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: _otherProblemController,
+              style: TextStyle(
+                fontSize: getResponsiveFont(context, 14),
+              ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: 'Enter Your Problem'.tr,
                 hintStyle: TextStyle(
-                  fontSize: 16,
+                  fontSize: getResponsiveFont(context, 13),
                   fontFamily: FontFamily.Cairo,
                   color: Colors.grey,
                 ),
@@ -65,7 +81,7 @@ class _SymptomWidgetState extends State<SymptomWidget> {
         Text(
           "Symptoms:".tr,
           style: TextStyle(
-              fontSize: screenWidth * 0.045,
+              fontSize: getResponsiveFont(context, 14),
                     fontWeight: FontWeight.w500,
                    fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -111,7 +127,7 @@ class _SymptomWidgetState extends State<SymptomWidget> {
       child: Text(
         symptom,
         style: TextStyle(
-          fontSize: 16,
+          fontSize: getResponsiveFont(context, 13),
           fontFamily: FontFamily.Cairo,
           color: isSelected ? Colours.secondarycolour : Colours.primarycolour,
         ),

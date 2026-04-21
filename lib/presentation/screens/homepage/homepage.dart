@@ -94,6 +94,20 @@ class _MarqueeTextState extends State<MarqueeText> {
   }
 }
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85; // small phones
+  } else if (screenWidth < 400) {
+    return size; // normal phones
+  } else if (screenWidth < 600) {
+    return size * 1.1; // big phones
+  } else {
+    return size * 1.3; // tablets
+  }
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -210,8 +224,8 @@ class _HomePageState extends State<HomePage> {
                                             Image.asset(Assets
                                                 .images.hpsittingdog.path),
                                       )
-                                    : Image.network(
-                                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/hpsittingdog.png',
+                                    : CachedNetworkImage(
+                                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/hpsittingdog.png',
                                         width: 60,
                                         height: 60,
                                         fit: BoxFit.cover,
@@ -360,7 +374,7 @@ class _HomePageState extends State<HomePage> {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontFamily: FontFamily.Cairo,
-                                        fontSize: screenWidth * 0.04,
+                                        fontSize: getResponsiveFont(context, 14),
                                         color: Colours.brownColour,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -384,11 +398,13 @@ class _HomePageState extends State<HomePage> {
                                 } else if (petImage.startsWith('/media')) {
                                   imageProvider = CachedNetworkImageProvider(
                                       '$baseUrl$petImage');
-                                } else {
+                                } 
+                                else {
                                   imageProvider = const NetworkImage(
                                       'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/golden+retriverr.png');
                                 }
-                              } else {
+                              } 
+                              else {
                                 imageProvider = const NetworkImage(
                                     'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/golden+retriverr.png');
                               }
@@ -408,18 +424,26 @@ class _HomePageState extends State<HomePage> {
                                       horizontal: 6.0),
                                   child: Column(
                                     children: [
+
                                       CircleAvatar(
                                         radius: screenWidth * 0.08,
-                                        backgroundColor:
-                                            Colours.secondarycolour,
+                                        backgroundColor: Colours.secondarycolour,
                                         backgroundImage: imageProvider,
-                                        child: petImage == null ||
-                                                petImage.isEmpty
-                                            ? const Icon(Icons.pets,
-                                                color: Color.fromARGB(
-                                                    255, 255, 255, 255))
-                                            : null, // 🐾 Default paw icon if no image
+                                        child: null,
                                       ),
+
+                                      // CircleAvatar(
+                                      //   radius: screenWidth * 0.08,
+                                      //   backgroundColor:
+                                      //       Colours.secondarycolour,
+                                      //   backgroundImage: imageProvider,
+                                      //   child: petImage == null ||
+                                      //           petImage.isEmpty
+                                      //       ? const Icon(Icons.pets,
+                                      //           color: Color.fromARGB(
+                                      //               255, 255, 255, 255))
+                                      //       : null, // 🐾 Default paw icon if no image
+                                      // ),
                                     ],
                                   ),
                                 ),
@@ -543,9 +567,9 @@ class _HomePageState extends State<HomePage> {
                                             text: reel.username.isNotEmpty
                                                 ? reel.username
                                                 : "Unknown",
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 12,
+                                              fontSize: getResponsiveFont(context, 12),
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
@@ -566,9 +590,9 @@ class _HomePageState extends State<HomePage> {
                                               const SizedBox(width: 3),
                                               Text(
                                                 reel.likesCount.toString(),
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 11,
+                                                  fontSize: getResponsiveFont(context, 11),
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               ),
@@ -869,10 +893,12 @@ class _HomePageState extends State<HomePage> {
                           screenWidth * 1, // Adjust the width to fit the screen
                       height: screenHeight *
                           0.2, // Adjust the height to fit the design
-                      child: Image.network(
-                          'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png',
+                      child: CachedNetworkImage(
+                          imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png',
                           width: screenWidth * 0.1,
-                          height: screenHeight * 0.12),
+                          height: screenHeight * 0.12,
+                          fit: BoxFit.cover,
+                          ),
                     ),
 
                     // Text content on the left
@@ -889,7 +915,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colours
                                   .black, // Use a contrasting color for visibility
                               fontFamily: FontFamily.Cairo,
-                              fontSize: screenWidth * 0.07,
+                              fontSize: getResponsiveFont(context, 18),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -900,7 +926,7 @@ class _HomePageState extends State<HomePage> {
                               color:
                                   Colours.black, // Slightly transparent white
                               fontFamily: FontFamily.Cairo,
-                              fontSize: screenWidth * 0.055,
+                              fontSize: getResponsiveFont(context, 14),
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -913,8 +939,8 @@ class _HomePageState extends State<HomePage> {
                       right: screenWidth * -0.04, // Adjust horizontal position
                       bottom:
                           screenHeight * -0.0001, // Adjust vertical position
-                      child: Image.network(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/PetRadio.png', // Updated image path
+                      child: CachedNetworkImage(
+                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/PetRadio.png', // Updated image path
                         width: screenWidth * 0.50, // Adjust width
                         height: screenHeight * 0.25, // Adjust height
                         fit: BoxFit.contain, // Ensures the image fits properly
@@ -951,10 +977,12 @@ class _HomePageState extends State<HomePage> {
                           screenWidth * 1, // Adjust the width to fit the screen
                       height: screenHeight *
                           0.2, // Adjust the height to fit the design
-                      child: Image.network(
-                          'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png',
-                          width: screenWidth * 0.1,
-                          height: screenHeight * 0.12),
+                      child: CachedNetworkImage(
+                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png',
+                        width: screenWidth * 0.1,
+                        height: screenHeight * 0.12,
+                        fit: BoxFit.cover,
+                      ),
                     ),
 
                     // Text content on the left
@@ -990,8 +1018,8 @@ class _HomePageState extends State<HomePage> {
                     Positioned(
                       right: screenWidth * 0.06, // Adjust horizontal position
                       bottom: screenHeight * 0.03, // Adjust vertical position
-                      child: Image.network(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/petstore_icon.png', // Updated image path
+                      child: CachedNetworkImage(
+                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/petstore_icon.png', // Updated image path
                         width: screenWidth * 0.9,
                         height: screenHeight * 0.16, // Adjust height
                         fit: BoxFit.cover, // Ensures the image fits properly
@@ -1060,10 +1088,12 @@ class _HomePageState extends State<HomePage> {
                             1, // Adjust the width to fit the screen
                         height: screenHeight *
                             0.2, // Adjust the height to fit the design
-                        child: Image.network(
-                            'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png',
+                        child: CachedNetworkImage(
+                            imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png',
                             width: screenWidth * 0.05,
-                            height: screenHeight * 0.12),
+                            height: screenHeight * 0.12,
+                            fit: BoxFit.cover,
+                        ),
                       ),
 
                       // Text content on the left
@@ -1081,7 +1111,7 @@ class _HomePageState extends State<HomePage> {
                                 color: Colours
                                     .black, // Use a contrasting color for visibility
                                 fontFamily: FontFamily.Cairo,
-                                fontSize: screenWidth * 0.07,
+                                fontSize: getResponsiveFont(context, 18),
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -1092,7 +1122,7 @@ class _HomePageState extends State<HomePage> {
                                 color:
                                     Colours.black, // Slightly transparent white
                                 fontFamily: FontFamily.Cairo,
-                                fontSize: screenWidth * 0.055,
+                                fontSize: getResponsiveFont(context, 14),
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -1106,8 +1136,8 @@ class _HomePageState extends State<HomePage> {
                             -0.05, // Adjust the horizontal position
                         bottom: screenHeight *
                             -0.050, // Adjust the vertical position
-                        child: Image.network(
-                          'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/PetTherapy.png',
+                        child: CachedNetworkImage(
+                          imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/PetTherapy.png',
                           width: screenWidth * 0.55, // Adjust width
                           height: screenHeight * 0.30, // Adjust height
                           fit: BoxFit.fill, // Ensures the image fits properly
@@ -1143,10 +1173,12 @@ class _HomePageState extends State<HomePage> {
                           screenWidth * 1, // Adjust the width to fit the screen
                       height: screenHeight *
                           0.2, // Adjust the height to fit the design
-                      child: Image.network(
-                          'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png',
-                          width: screenWidth * 0.1,
-                          height: screenHeight * 0.12),
+                      child: CachedNetworkImage(
+                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png',
+                        width: screenWidth * 0.1,
+                        height: screenHeight * 0.12,
+                        fit: BoxFit.cover,
+                      ),
                     ),
 
                     // Text content on the left
@@ -1163,7 +1195,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colours
                                   .secondarycolour, // Use a contrasting color for visibility
                               fontFamily: FontFamily.Cairo,
-                              fontSize: screenWidth * 0.07,
+                              fontSize: getResponsiveFont(context, 18),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -1174,7 +1206,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colours
                                   .secondarycolour, // Slightly transparent white
                               fontFamily: FontFamily.Cairo,
-                              fontSize: screenWidth * 0.055,
+                              fontSize: getResponsiveFont(context, 14),
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -1187,17 +1219,16 @@ class _HomePageState extends State<HomePage> {
                       bottom: screenHeight * -0.04, // Adjust vertical position
                       // child: Image.asset(
                       //   'assets/images/allanimals.png', // Updated image path
-                      child: Image.network(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/allanimals.png', // Dynamic Image
+                      child: CachedNetworkImage(
+                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/allanimals.png', // Dynamic Image
                         width: screenWidth * 0.60, // Adjust width
                         height: screenHeight * 0.30, // Adjust height
                         fit:
                             BoxFit.scaleDown, // Ensures the image fits properly
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
+                        placeholder: (context, url) {
                           return const CircularProgressIndicator();
                         },
-                        errorBuilder: (context, error, stackTrace) {
+                        errorWidget: (context, error, stackTrace) {
                           return const Icon(Icons.error);
                         }, //Network image Handler
                       ),
@@ -1217,13 +1248,13 @@ class _HomePageState extends State<HomePage> {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          title: Text("Coming Soon"),
+                          title: Text("Coming Soon".tr),
                           content: Text(
-                              "Pet Podcast feature will be available soon!"),
+                              "Pet Podcast feature will be available soon!".tr),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: Text("OK"),
+                              child: Text("OK".tr),
                             ),
                           ],
                         );
@@ -1238,10 +1269,12 @@ class _HomePageState extends State<HomePage> {
                             1, // Adjust the width to fit the screen
                         height: screenHeight *
                             0.2, // Adjust the height to fit the design
-                        child: Image.network(
-                            'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png',
-                            width: screenWidth * 0.1,
-                            height: screenHeight * 0.12),
+                        child: CachedNetworkImage(
+                          imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png',
+                          width: screenWidth * 0.1,
+                          height: screenHeight * 0.12,
+                          fit: BoxFit.cover,
+                        ),
                       ),
 
                       // Text content on the left
@@ -1259,7 +1292,7 @@ class _HomePageState extends State<HomePage> {
                                 color: Colours
                                     .black, // Use a contrasting color for visibility
                                 fontFamily: FontFamily.Cairo,
-                                fontSize: screenWidth * 0.07,
+                                fontSize: getResponsiveFont(context, 18),
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -1270,7 +1303,7 @@ class _HomePageState extends State<HomePage> {
                                 color:
                                     Colours.black, // Slightly transparent white
                                 fontFamily: FontFamily.Cairo,
-                                fontSize: screenWidth * 0.055,
+                                fontSize: getResponsiveFont(context, 14),
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -1284,8 +1317,8 @@ class _HomePageState extends State<HomePage> {
                             -0.062, // Adjust the horizontal position
                         bottom: screenHeight *
                             -0.012, // Adjust the vertical position
-                        child: Image.network(
-                          'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Pet_Podcast1.png',
+                        child: CachedNetworkImage(
+                          imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Pet_Podcast1.png',
                           width: screenWidth * 0.6, // Adjust width
                           height: screenHeight * 0.28, // Adjust height
                           fit: BoxFit.fill,
@@ -1304,12 +1337,12 @@ class _HomePageState extends State<HomePage> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: Text("Coming Soon"),
-                        content: Text("This feature will be available soon!"),
+                        title: Text("Coming Soon".tr),
+                        content: Text("This feature will be available soon!".tr),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: Text("OK"),
+                            child: Text("OK".tr),
                           ),
                         ],
                       );
@@ -1324,10 +1357,12 @@ class _HomePageState extends State<HomePage> {
                           screenWidth * 1, // Adjust the width to fit the screen
                       height: screenHeight *
                           0.2, // Adjust the height to fit the design
-                      child: Image.network(
-                          'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png',
-                          width: screenWidth * 0.1,
-                          height: screenHeight * 0.12),
+                      child: CachedNetworkImage(
+                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png',
+                        width: screenWidth * 0.1,
+                        height: screenHeight * 0.12,
+                        fit: BoxFit.cover,
+                      ),
                     ),
 
                     // Text content on the left
@@ -1344,7 +1379,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colours
                                   .secondarycolour, // Use a contrasting color for visibility
                               fontFamily: FontFamily.Cairo,
-                              fontSize: screenWidth * 0.07,
+                              fontSize: getResponsiveFont(context, 18),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -1356,7 +1391,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colours
                                   .secondarycolour, // Slightly transparent white
                               fontFamily: FontFamily.Cairo,
-                              fontSize: screenWidth * 0.055,
+                              fontSize: getResponsiveFont(context, 14),
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -1371,8 +1406,8 @@ class _HomePageState extends State<HomePage> {
                       bottom: screenHeight * -0.03,
 
                       /// Adjust the vertical position
-                      child: Image.network(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/MeetAVet.png',
+                      child: CachedNetworkImage(
+                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/MeetAVet.png',
                         width: screenWidth * 0.58, // Adjust width
                         height: screenHeight * 0.28, // Adjust height
                         fit: BoxFit.contain, // Ensures the image fits properly
@@ -1418,30 +1453,32 @@ class _HomePageState extends State<HomePage> {
                                 Positioned(
                                   top: screenHeight * 0.048,
                                   left: screenWidth * 0.001,
-                                  child: Image.network(
-                                    'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/homeallbg.png',
+                                  child: CachedNetworkImage(
+                                    imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/homeallbg.png',
                                     width: screenWidth * 0.29,
                                     height: screenHeight * 0.14,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
                                 Positioned(
                                   top: screenHeight * -0.01,
                                   left: screenWidth * -0.04,
-                                  child: Image.network(
-                                    'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Pet_Adoption.png',
+                                  child: CachedNetworkImage(
+                                    imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Pet_Adoption.png',
                                     width: screenWidth * 0.38,
                                     height: screenHeight * 0.18,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
                                 Positioned(
-                                  top: screenHeight * 0.13,
-                                  left: screenWidth * 0.05,
+                                  top: screenHeight * 0.155,
+                                  left: screenWidth * 0.08,
                                   child: Text(
                                     ("Adoption").tr,
                                     style: TextStyle(
                                       color: Colours.secondarycolour,
                                       fontFamily: FontFamily.Cairo,
-                                      fontSize: screenWidth * 0.05,
+                                      fontSize: getResponsiveFont(context, 14),
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -1484,22 +1521,23 @@ class _HomePageState extends State<HomePage> {
                                 // ),
                                 Positioned(
                                   bottom: screenHeight * 0.060,
-                                  right: screenWidth * 0.09,
-                                  child: Image.network(
-                                    'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Goodbye_Buddy.png',
+                                  right: screenWidth * 0.04,
+                                  child: CachedNetworkImage (
+                                    imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Goodbye_Buddy.png',
                                     width: screenWidth * 0.40,
                                     height: screenHeight * 0.15,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
                                 Positioned(
-                                  top: screenHeight * 0.14,
-                                  left: screenWidth * 0.04,
+                                  top: screenHeight * 0.15,
+                                  left: screenWidth * 0.13,
                                   child: Text(
                                     ("Good bye Buddy").tr,
                                     style: TextStyle(
                                       color: Colours.brownColour,
                                       fontFamily: FontFamily.Cairo,
-                                      fontSize: screenWidth * 0.05,
+                                      fontSize: getResponsiveFont(context, 14),
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),

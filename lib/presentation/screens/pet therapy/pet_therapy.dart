@@ -10,6 +10,20 @@ import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class PetTherapy extends StatefulWidget {
   const PetTherapy({Key? key}) : super(key: key);
 
@@ -58,7 +72,7 @@ class _PetTherapyState extends State<PetTherapy> {
                 title: Text(
                   'Pet Therapy'.tr,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.035,
+                    fontSize: getResponsiveFont(context, 18),
                     fontWeight: FontWeight.w600,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.brownColour,
@@ -87,7 +101,7 @@ class _PetTherapyState extends State<PetTherapy> {
                 child: Text(
                   'Selected Date: ${DateFormat.yMMMMd().format(_selectedDate)}'.tr,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.020,
+                    fontSize: getResponsiveFont(context, 14),
                     fontWeight: FontWeight.w500,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.brownColour,
@@ -138,7 +152,12 @@ class _PetTherapyState extends State<PetTherapy> {
                     }
 
                     if (controller.pets.isEmpty) {
-                      return  Center(child: Text('No pets available'.tr));
+                      return  Center(child: Text(
+                        'No pets available'.tr,
+                        style: TextStyle(
+                          fontSize: getResponsiveFont(context, 14),
+                        ),
+                      ));
                     }
 
                     return ListView.builder(
@@ -207,7 +226,7 @@ class _PetTherapyState extends State<PetTherapy> {
                     style: TextStyle(
                       color: Colours.secondarycolour,
                       fontFamily: FontFamily.Cairo,
-                      fontSize: screenWidth * 0.055,
+                      fontSize: getResponsiveFont(context, 16),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -219,7 +238,7 @@ class _PetTherapyState extends State<PetTherapy> {
                     style: TextStyle(
                       color: Colours.secondarycolour,
                       fontFamily: FontFamily.Cairo,
-                      fontSize: screenWidth * 0.045,
+                      fontSize: getResponsiveFont(context, 13),
                     ),
                   ),
                   const SizedBox(height: 1),
@@ -237,7 +256,7 @@ class _PetTherapyState extends State<PetTherapy> {
                           style: TextStyle(
                             color: Colours.secondarycolour,
                             fontFamily: FontFamily.Cairo,
-                            fontSize: screenWidth * 0.04,
+                            fontSize: getResponsiveFont(context, 12),
                           ),
                         ),
                       ),
@@ -249,7 +268,7 @@ class _PetTherapyState extends State<PetTherapy> {
                     style: TextStyle(
                       color: Colours.secondarycolour,
                       fontFamily: FontFamily.Cairo,
-                      fontSize: screenWidth * 0.038,
+                      fontSize: getResponsiveFont(context, 12),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -301,7 +320,7 @@ class _PetTherapyState extends State<PetTherapy> {
                         'Images'.tr,
                         style: TextStyle(
                           color: Colours.secondarycolour,
-                          fontSize: screenWidth * 0.035,
+                          fontSize: getResponsiveFont(context, 12),
                           fontFamily: FontFamily.Cairo,
                           fontWeight: FontWeight.w600,
                         ),
@@ -367,7 +386,13 @@ class _ImageGalleryScreenState extends State<ImageGalleryScreen> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         iconTheme: const IconThemeData(color: Colors.white),
-        title:  Text("Gallery".tr, style: TextStyle(color: Colors.white)),
+        title:  Text(
+          "Gallery".tr,
+          style: TextStyle(
+            fontSize: getResponsiveFont(context, 16),
+            color: Colors.white,
+          ),
+        ),
       ),
       body: Stack(
         alignment: Alignment.center,

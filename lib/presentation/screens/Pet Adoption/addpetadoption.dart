@@ -14,6 +14,20 @@ import 'package:toggle_switch/toggle_switch.dart';
 import 'dart:io';
 import 'package:get/get.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class AddPetAdoption extends StatefulWidget {
   @override
   _AddPetAdoptionState createState() => _AddPetAdoptionState();
@@ -232,6 +246,9 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
         controller: controller,
         readOnly: readOnly,
         onTap: onTap,
+        style: TextStyle(
+          fontSize: getResponsiveFont(context, 14),
+        ),
         validator: (value) {
           if (requireValidation && (value == null || value.trim().isEmpty)) {
             return 'Please enter this field'.tr;
@@ -241,7 +258,8 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
-              fontWeight: FontWeight.w500, color: Colours.brownColour),
+            fontSize: getResponsiveFont(context, 13),
+            fontWeight: FontWeight.w500, color: Colours.brownColour),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -263,7 +281,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
         children: <Widget>[
           Text(
             'Gender:'.tr,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold),
           ),
           ToggleSwitch(
             minWidth: 90.0,
@@ -300,7 +318,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
           children: <Widget>[
             Text(
               'Neutered/Spayed:'.tr,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold),
             ),
             ToggleSwitch(
               minWidth: 90.0,
@@ -338,7 +356,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
         children: <Widget>[
           Text(
             'Is Free:'.tr,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold),
           ),
           ToggleSwitch(
             minWidth: 90.0,
@@ -374,7 +392,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
         children: <Widget>[
           Text(
             'Status:'.tr,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold),
           ),
           IgnorePointer(
             // Prevent interaction
@@ -422,7 +440,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
           title: Text(
             'Add Pet'.tr,
             style: TextStyle(
-              fontSize: screenHeight * 0.035,
+              fontSize: getResponsiveFont(context, 18),
               fontWeight: FontWeight.w600,
               fontFamily:
                   'Cairo', // Ensure this font is properly defined in pubspec.yaml
@@ -523,7 +541,9 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
                         inputDecoration: InputDecoration(
                           labelText: 'Phone Number'.tr,
                           fillColor: Colors.white,
-                          labelStyle: TextStyle(color: Colors.brown[600]),
+                          labelStyle: TextStyle(
+                            fontSize: getResponsiveFont(context, 13),
+                            color: Colors.brown[600]),
                           border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.brown),
                             borderRadius: BorderRadius.circular(10),
@@ -634,8 +654,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colours.primarycolour,
-                            fixedSize:
-                                Size(screenWidth * 0.8, screenHeight * 0.07),
+                            fixedSize: Size(screenWidth * 0.8, 50),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
@@ -643,7 +662,7 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
                           child: Text(
                             "Save".tr,
                             style: TextStyle(
-                              fontSize: screenHeight * 0.025,
+                              fontSize: getResponsiveFont(context, 16),
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
                             ),

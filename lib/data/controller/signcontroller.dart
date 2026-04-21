@@ -17,10 +17,30 @@ class SignupController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      final fcmToken = box.read('fcm_token') ?? "";
-      final apnsToken = box.read('apns_token') ?? "";
 
+      // 🔥 STEP 1: GET FCM TOKEN
+      String? fcmToken;
+      try {
+        fcmToken = await FirebaseMessaging.instance.getToken();
+        print("🔥 FCM TOKEN: $fcmToken");
+      } catch (e) {
+        print("❌ FCM error: $e");
+      }
 
+      // 🔥 STEP 2: GET APNS TOKEN (RETRY)
+      String? apnsToken;
+      try {
+        for (int i = 0; i < 5; i++) {
+          apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+          if (apnsToken != null) break;
+          await Future.delayed(const Duration(seconds: 1));
+        }
+        print("🍎 APNS TOKEN: $apnsToken");
+      } catch (e) {
+        print("❌ APNS error: $e");
+      }
+
+      // 🔥 STEP 3: CALL API
       final response = await ApiService.signupApi(
         username: username,
         mobile: mobile,
@@ -30,13 +50,14 @@ class SignupController extends GetxController {
         apns_token: apnsToken,
       );
 
-      print("✅ Parsed signup status: ${response.status}");
+      print("📥 FINAL STATUS: ${response.status}");
+      print("📥 FINAL MESSAGE: ${response.message}");
 
+      // ✅ SUCCESS FLOW
       if (response.status == true &&
           response.data != null &&
           response.data!.tokens?.access != null) {
 
-        // ✅ SAVE TOKENS
         box.write(LocalStorageConstants.sessionManager, true);
         box.write(LocalStorageConstants.access, response.data!.tokens!.access);
         box.write(LocalStorageConstants.refresh, response.data!.tokens!.refresh);
@@ -45,27 +66,32 @@ class SignupController extends GetxController {
         box.write(LocalStorageConstants.username, response.data!.username);
         box.write(LocalStorageConstants.name, response.data!.name ?? '');
 
-        print("✅ Tokens saved correctly");
+        print("✅ Tokens saved");
 
-        // 🔔 ✅ SUBSCRIBE TO ALL USERS TOPIC
-        try {
-          await FirebaseMessaging.instance.subscribeToTopic("all_users");
-          print("✅ Subscribed to topic: all_users");
-        } catch (e) {
-          print("❌ Topic subscription failed: $e");
-        }
+        // 🔔 Subscribe topic
+        Future.delayed(const Duration(seconds: 3), () async {
+          try {
+            String? apns = await FirebaseMessaging.instance.getAPNSToken();
 
-        // ⏳ Small delay
+            if (apns != null) {
+              await FirebaseMessaging.instance.subscribeToTopic("all_users");
+              print("✅ Topic subscribed AFTER APNS ready");
+            } else {
+              print("⚠️ APNS not ready → skipping topic subscription");
+            }
+          } catch (e) {
+            print("❌ Topic error after delay: $e");
+          }
+        });
+
         await Future.delayed(const Duration(milliseconds: 300));
-
-        print("🚀 Navigating to MainLayout");
         Get.offAll(() => MainLayout());
+
       } else {
-        Get.snackbar(
-          "Signup Failed".tr,
-          response.message ?? "Invalid OTP".tr,
-        );
+        print("❌ Signup failed: ${response.message}");
+        Get.snackbar("Signup Failed", response.message ?? "Invalid OTP");
       }
+
     } catch (e) {
       print("❌ Signup error: $e");
       Get.snackbar("Error", e.toString());

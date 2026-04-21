@@ -11,6 +11,20 @@ import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class Chat1to1 extends StatefulWidget {
   final String receiverId;
   final String receiverName;
@@ -241,12 +255,15 @@ void _reconnectWebSocket() {
               children: [
                 Text(
                   widget.receiverName,
-                  style: const TextStyle(fontSize: 16),
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 15),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 Text(
                   'Online'.tr,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: getResponsiveFont(context, 11),
                     color: Colors.grey[300],
                   ),
                 ),
@@ -303,8 +320,14 @@ void _reconnectWebSocket() {
           Expanded(
             child: TextField(
               controller: _messageController,
+              style: TextStyle(
+                fontSize: getResponsiveFont(context, 14),
+              ),
               decoration: InputDecoration(
                 hintText: 'Type a message...'.tr,
+                hintStyle: TextStyle(
+                  fontSize: getResponsiveFont(context, 13),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide.none,
@@ -375,8 +398,8 @@ class MessageBubble extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 4),
                 child: Text(
                   message.sender,
-                  style: const TextStyle(
-                    fontSize: 12,
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 11),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -407,6 +430,7 @@ class MessageBubble extends StatelessWidget {
                   Text(
                     message.text,
                     style: TextStyle(
+                      fontSize: getResponsiveFont(context, 14),
                       color: message.isMe ? Colors.white : Colors.black,
                     ),
                   ),
@@ -416,8 +440,8 @@ class MessageBubble extends StatelessWidget {
                     children: [
                       Text(
                         DateFormat('h:mm a').format(message.time),
-                        style: const TextStyle(
-                          fontSize: 10,
+                        style: TextStyle(
+                          fontSize: getResponsiveFont(context, 10),
                           color: Colors.grey,
                         ),
                       ),
@@ -425,8 +449,8 @@ class MessageBubble extends StatelessWidget {
                         const SizedBox(width: 8),
                         Text(
                           statusText,
-                          style: const TextStyle(
-                            fontSize: 10,
+                          style: TextStyle(
+                            fontSize: getResponsiveFont(context, 10),
                             color: Colors.grey,
                           ),
                         ),

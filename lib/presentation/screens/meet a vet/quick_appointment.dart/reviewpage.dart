@@ -3,6 +3,19 @@ import 'package:get/utils.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
 
 class Appointmentreviewpage extends StatefulWidget {
   const Appointmentreviewpage({super.key});
@@ -23,7 +36,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
         title: Text(
           "Appointment Details".tr,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: getResponsiveFont(context, 18),
    
             fontWeight: FontWeight.w500,
          fontFamily: FontFamily.Cairo,
@@ -57,7 +70,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
                         Text(
                           'Patient Name: Rakesh Kumar K'.tr,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: getResponsiveFont(context, 14),
                  
                             fontWeight: FontWeight.w500,
                              fontFamily: FontFamily.Cairo,
@@ -68,7 +81,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
                         Text(
                           'Age: 24 Years'.tr,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: getResponsiveFont(context, 14),
                             fontWeight: FontWeight.w500,
                 
                                    fontFamily: FontFamily.Cairo,
@@ -79,7 +92,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
                         Text(
                           'Doctor: Dr. Chomon Aktar'.tr,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: getResponsiveFont(context, 14),
                             fontWeight: FontWeight.w500,
                       
                                 fontFamily: FontFamily.Cairo,
@@ -98,7 +111,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
               Text(
                 'Images'.tr,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: getResponsiveFont(context, 16),
          
                   fontWeight: FontWeight.w500,
                       fontFamily: FontFamily.Cairo,
@@ -115,7 +128,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
               Text(
                 'Issue Description:'.tr,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: getResponsiveFont(context, 16),
                   fontWeight: FontWeight.w500,
                fontFamily: FontFamily.Cairo,
                                  color: Colours.black,
@@ -125,7 +138,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
               Text(
                 'I Have Problem in My Hair. I Have Problem in My Hair. I Have Problem in My Hair.'.tr,
                 style: TextStyle(
-                  fontSize: 17,
+                  fontSize: getResponsiveFont(context, 14),
                   fontWeight: FontWeight.w400,
                       fontFamily: FontFamily.Cairo,
                                  color: Colours.black,
@@ -135,7 +148,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
               Text(
                 'Symptoms'.tr,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: getResponsiveFont(context, 16),
              
                   fontWeight: FontWeight.w500,
                          fontFamily: FontFamily.Cairo,
@@ -146,7 +159,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
               Text(
                 'Pimples ,Rashes,Pimples,Rashes'.tr,
                 style: TextStyle(
-                  fontSize: 17,
+                  fontSize: getResponsiveFont(context, 14),
                   fontWeight: FontWeight.w400,
                       fontFamily: FontFamily.Cairo,
                                  color: Colours.black,
@@ -160,7 +173,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
                   Text(
                     'Paid'.tr,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: getResponsiveFont(context, 15),
                       fontWeight: FontWeight.w500,
                   fontFamily: FontFamily.Cairo,
                                  color: Colours.black,
@@ -169,7 +182,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
                   Text(
                     '\$367.65',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: getResponsiveFont(context, 15),
                          fontFamily: FontFamily.Cairo,
                                  color: Colours.primarycolour,
                       fontWeight: FontWeight.w500,
@@ -198,7 +211,7 @@ class _AppointmentreviewpageState extends State<Appointmentreviewpage> {
                     child: Text(
                       'Join Now'.tr,
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: getResponsiveFont(context, 16),
                         fontWeight: FontWeight.w500,
                                 fontFamily: FontFamily.Cairo,
                                  color: Colours.secondarycolour,

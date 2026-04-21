@@ -5,6 +5,20 @@ import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/quick_appointment.dart/reviewpage.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class ReviewandpayPage extends StatefulWidget {
   const ReviewandpayPage({super.key});
   @override
@@ -24,7 +38,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
         title: Text(
           "Review & Pay".tr,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: getResponsiveFont(context, 18),
             fontWeight: FontWeight.w500,
             fontFamily: FontFamily.Cairo,
             color: Colours.brownColour,
@@ -57,7 +71,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                         Text(
                           'Patient Name: Rakesh Kumar K'.tr,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: getResponsiveFont(context, 14),
                             fontWeight: FontWeight.w500,
                             fontFamily: FontFamily.Cairo,
                             color: Colours.black,
@@ -67,7 +81,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                         Text(
                           'Age: 24 Years'.tr,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: getResponsiveFont(context, 14),
                             fontWeight: FontWeight.w500,
                             fontFamily: FontFamily.Cairo,
                             color: Colours.black,
@@ -77,7 +91,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                         Text(
                           'Doctor: Dr. Chomon Aktar'.tr,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: getResponsiveFont(context, 14),
                             fontWeight: FontWeight.w500,
                             fontFamily: FontFamily.Cairo,
                             color: Colours.black,
@@ -93,7 +107,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
               Text(
                 'Images'.tr,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: getResponsiveFont(context, 16),
                   fontWeight: FontWeight.w500,
                   fontFamily: FontFamily.Cairo,
                   color: Colours.black,
@@ -109,7 +123,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
               Text(
                 'Issue Description:'.tr,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: getResponsiveFont(context, 16),
                   fontWeight: FontWeight.w500,
                   fontFamily: FontFamily.Cairo,
                   color: Colours.black,
@@ -119,7 +133,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
               Text(
                 'I Have Problem in My Hair. I Have Problem in My Hair. I Have Problem in My Hair.'.tr,
                 style: TextStyle(
-                  fontSize: 17,
+                  fontSize: getResponsiveFont(context, 14),
                   fontWeight: FontWeight.w400,
                   fontFamily: FontFamily.Cairo,
                   color: Colours.black,
@@ -129,7 +143,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
               Text(
                 'Symptoms'.tr,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: getResponsiveFont(context, 16),
                   fontWeight: FontWeight.w500,
                   fontFamily: FontFamily.Cairo,
                   color: Colours.black,
@@ -139,7 +153,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
               Text(
                 'Pimples ,Rashes,Pimples,Rashes'.tr,
                 style: TextStyle(
-                  fontSize: 17,
+                  fontSize: getResponsiveFont(context, 14),
                   fontWeight: FontWeight.w400,
                   fontFamily: FontFamily.Cairo,
                   color: Colours.black,
@@ -178,7 +192,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                   Text(
                     'Total Cost'.tr,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: getResponsiveFont(context, 15),
                       fontWeight: FontWeight.w500,
                       fontFamily: FontFamily.Cairo,
                       color: Colours.black,
@@ -187,7 +201,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                   Text(
                     '\$367.65',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: getResponsiveFont(context, 15),
                       fontWeight: FontWeight.w500,
                       fontFamily: FontFamily.Cairo,
                       color: Colours.primarycolour,
@@ -199,6 +213,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                 leading: Text(
                   'Coupon '.tr,
                   style: TextStyle(
+                    fontSize: getResponsiveFont(context, 14),
                     fontWeight: FontWeight.w500,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -222,7 +237,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                 trailing: Text(
                   '\$0.00',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: getResponsiveFont(context, 15),
                     fontWeight: FontWeight.w500,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.primarycolour,
@@ -242,7 +257,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                 title: Text(
                   'Use Wallet - \$1200',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: getResponsiveFont(context, 15),
                     fontWeight: FontWeight.w500,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -251,7 +266,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                 trailing: Text(
                   '\$0.00',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: getResponsiveFont(context, 15),
                     fontWeight: FontWeight.w500,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -265,7 +280,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                   Text(
                     'Net Payable'.tr,
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: getResponsiveFont(context, 16),
                       fontWeight: FontWeight.w500,
                       fontFamily: FontFamily.Cairo,
                       color: Colours.black,
@@ -274,7 +289,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                   Text(
                     '\$367.65',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: getResponsiveFont(context, 16),
                       fontWeight: FontWeight.w500,
                       fontFamily: FontFamily.Cairo,
                       color: Colours.black,
@@ -302,7 +317,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                     child: Text(
                       'Payment now'.tr,
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: getResponsiveFont(context, 14),
                         fontWeight: FontWeight.w500,
                         fontFamily: FontFamily.Cairo,
                         color: Colours.secondarycolour,
@@ -348,7 +363,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                 Text(
                   'Your Payment \n  Is Successful!'.tr,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: getResponsiveFont(context, 16),
                     fontWeight: FontWeight.w600,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.black,
@@ -371,7 +386,7 @@ class _ReviewandpayPageState extends State<ReviewandpayPage> {
                     child: Text(
                       'okay'.tr,
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: getResponsiveFont(context, 16),
                         fontWeight: FontWeight.w500,
                         fontFamily: FontFamily.Cairo,
                         color: Colours.secondarycolour,

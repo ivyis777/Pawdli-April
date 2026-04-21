@@ -24,6 +24,20 @@ import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class pettherapyslotPage extends StatefulWidget {
   final List selectedSlots;
   final double totalAmount;
@@ -637,6 +651,9 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
         controller: controller,
         readOnly: readOnly,
         onTap: onTap,
+        style: TextStyle(
+          fontSize: getResponsiveFont(context, 14),
+        ),
         validator: (value) {
           if (requireValidation && (value == null || value.trim().isEmpty)) {
             return 'Please enter this field'.tr;
@@ -646,6 +663,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
+            fontSize: getResponsiveFont(context, 13),
             fontWeight: FontWeight.w500,
             color: Colours.brownColour,
           ),
@@ -670,7 +688,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
         children: <Widget>[
           Text(
             'Mode:'.tr,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold),
           ),
           ToggleSwitch(
             minWidth: 90.0,
@@ -784,7 +802,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                         title: Text(
                           'Book Slots'.tr,
                           style: TextStyle(
-                            fontSize: screenHeight * 0.03,
+                            fontSize: getResponsiveFont(context, 18),
                             fontWeight: FontWeight.w600,
                             fontFamily: FontFamily.Cairo,
                             color: Colours.black,
@@ -820,7 +838,8 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                       children: [
                                         Text('Therapy: '.tr,
                                             style: TextStyle(
-                                                fontWeight: FontWeight.bold)),
+                                              fontSize: getResponsiveFont(context, 14),
+                                              fontWeight: FontWeight.w600)),
                                       ],
                                     ),
                                     SizedBox(height: 8),
@@ -846,6 +865,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                                         FontWeight.bold)),
                                             Text("$startTime - $endTime",
                                                 style: TextStyle(
+                                                  fontSize: getResponsiveFont(context, 13),
                                                     fontWeight: FontWeight.w500,
                                                     fontFamily:
                                                         FontFamily.Cairo)),
@@ -912,7 +932,9 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                               },
                               inputDecoration: InputDecoration(
                                 labelText: 'Phone Number'.tr,
-                                labelStyle: TextStyle(color: Colors.brown[600]),
+                                labelStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                  color: Colors.brown[600]),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.brown),
                                   borderRadius: BorderRadius.circular(10),
@@ -932,10 +954,15 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                 focusNode: _addressFocus,
                                 maxLines: 3,
                                 controller: Addresscontroller,
+                                style: TextStyle(
+                                  fontSize: getResponsiveFont(context, 14),
+                                ),
                                 decoration: InputDecoration(
                                   labelText: 'Enter Place'.tr,
                                   labelStyle:
-                                      TextStyle(color: Colors.brown[600]),
+                                      TextStyle(
+                                        fontSize: getResponsiveFont(context, 13),
+                                        color: Colors.brown[600]),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                     borderSide:
@@ -975,7 +1002,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
                             /// Q1: Previous Pet Therapy
                             Text('Have you taken any pet therapy previously?'.tr,
-                                style: TextStyle(fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 14))),
                             SizedBox(height: 8),
                             _buildYesNoToggle(
                                 index: _therapyTakenIndex,
@@ -993,7 +1020,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
                             /// Q2: Individual/Group Therapy
                             Text('Is this therapy for Individual/Group?'.tr,
-                                style: TextStyle(fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 14))),
                             SizedBox(height: 8),
                             _buildYesNoToggle(
                                 index: _groupTherapyIndex,
@@ -1009,7 +1036,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
                             /// Q3: Is it for Students?
                             Text('Is this therapy for Students?'.tr,
-                                style: TextStyle(fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 14))),
                             SizedBox(height: 8),
                             _buildYesNoToggle(
                                 index: _studentsIndex,
@@ -1025,7 +1052,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
                             /// Q4: Is it for Employees?
                             Text('Is this therapy for Employees?'.tr,
-                                style: TextStyle(fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 14))),
                             SizedBox(height: 8),
                             _buildYesNoToggle(
                                 index: _employeesIndex,
@@ -1050,7 +1077,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                   Text(
                                     'Description:'.tr,
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: getResponsiveFont(context, 14),
                                         fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: 8),
@@ -1097,7 +1124,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                   return Text(
                                     'Wallet Balance: ₹ ${walletBalanceController.walletBalanceAmount.value}'.tr,
                                     style: TextStyle(
-                                      fontSize: screenHeight * 0.02,
+                                      fontSize: getResponsiveFont(context, 13),
                                       fontWeight: FontWeight.w500,
                                       color: Colours.black,
                                     ),
@@ -1156,8 +1183,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  fixedSize: Size(
-                                      screenWidth * 0.8, screenHeight * 0.07),
+                                  fixedSize: Size(screenWidth * 0.8, 50),
                                   backgroundColor: Colours.primarycolour,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
@@ -1166,7 +1192,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                 child: Text(
                                   "Pay ₹${widget.totalAmount}".tr,
                                   style: TextStyle(
-                                    fontSize: screenHeight * 0.025,
+                                    fontSize: getResponsiveFont(context, 16),
                                     fontWeight: FontWeight.w600,
                                     color: Colours.secondarycolour,
                                   ),

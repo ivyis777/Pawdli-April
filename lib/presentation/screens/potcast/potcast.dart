@@ -4,6 +4,20 @@ import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/controller/podcastlistcontrolller.dart';
 import 'package:pawlli/presentation/screens/potcast/ontappodcast.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class PodcastScreen extends StatefulWidget {
   @override
   _PodcastScreenState createState() => _PodcastScreenState();
@@ -22,7 +36,7 @@ class _PodcastScreenState extends State<PodcastScreen> {
         title: Text(
           'Pet Podcast'.tr,
           style: TextStyle(
-            fontSize: 24,
+            fontSize: getResponsiveFont(context, 18),
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
@@ -77,9 +91,13 @@ class _PodcastScreenState extends State<PodcastScreen> {
                   }
 
                   if (controller.podcasts.isEmpty) {
-                    return Center(child: Text(controller.message.value));
+                    return Center(child: Text(
+                      controller.message.value,
+                      style: TextStyle(
+                        fontSize: getResponsiveFont(context, 14),
+                      ),
+                    ));
                   }
-
                   return selectedCategory == 'Library'
                       ? _buildLibraryGrid()
                       : selectedCategory == 'Explore'
@@ -116,7 +134,7 @@ class _PodcastScreenState extends State<PodcastScreen> {
             title,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 14,
+              fontSize: getResponsiveFont(context, 12),
               color: selectedCategory == title ? Colors.brown : Colors.black,
             ),
           ),
@@ -190,9 +208,9 @@ Widget _buildExploreContent(BuildContext context) {
                 Text(
                   podcast.title ?? "No Title".tr,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: getResponsiveFont(context, 15),
                     color: Colors.black,
                   ),
                 ),
@@ -203,8 +221,8 @@ Widget _buildExploreContent(BuildContext context) {
                   child: Text(
                     podcast.description ?? "",
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 14,
+                    style: TextStyle(
+                      fontSize: getResponsiveFont(context, 13),
                       color: Colors.black87,
                       height: 1.5,
                     ),
@@ -260,7 +278,10 @@ Widget _buildPodcastCard(podcast) {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             podcast.title ?? "No Title".tr,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: TextStyle(
+              fontWeight: FontWeight.bold, 
+              fontSize: getResponsiveFont(context, 14),
+              ),
           ),
         ),
         // Podcast Description
@@ -272,7 +293,7 @@ Widget _buildPodcastCard(podcast) {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Colours.darkgreyColour,
-              fontSize: 12,
+              fontSize: getResponsiveFont(context, 11),
             ),
           ),
         ),

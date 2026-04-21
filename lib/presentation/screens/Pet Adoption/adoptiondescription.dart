@@ -9,6 +9,20 @@ import 'package:get/get.dart';
 import 'package:pawlli/presentation/screens/commonfullimage/fullimageview.dart';
 import 'package:pawlli/presentation/screens/homepage/homepage.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class AdoptionDescriptionPage extends StatefulWidget {
     final int Id;
   final String petProfileImage;
@@ -97,7 +111,8 @@ final pet = _controller.adoptionPets
           return  Center(
             child: Text(
               "No pet data available".tr,
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              style: TextStyle(fontSize: getResponsiveFont(context, 14),
+              color: Colors.white),
             ),
           );
         }
@@ -134,7 +149,7 @@ final pet = _controller.adoptionPets
                                   style: TextStyle(
                                     color: Colours.brownColour,
                                     fontFamily: FontFamily.Cairo,
-                                    fontSize: screenWidth * 0.15,
+                                    fontSize: getResponsiveFont(context, 20),
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -157,7 +172,7 @@ final pet = _controller.adoptionPets
                                     style: TextStyle(
                                       color: Colours.brownColour,
                                       fontFamily: FontFamily.Cairo,
-                                      fontSize: screenWidth * 0.045, // slightly smaller for safety
+                                      fontSize: getResponsiveFont(context, 14), // slightly smaller for safety
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
@@ -172,7 +187,7 @@ final pet = _controller.adoptionPets
                                   pet.description ?? "No Description".tr,
                                   style: TextStyle(
                                     fontFamily: FontFamily.Cairo,
-                                    fontSize: screenWidth * 0.05,
+                                    fontSize: getResponsiveFont(context, 13),
                                     color: Colours.textColour,
                                   ),
                                 ),
@@ -196,6 +211,7 @@ final pet = _controller.adoptionPets
                                         Text(
                                           'Age'.tr,
                                           style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colours.black,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -205,6 +221,7 @@ final pet = _controller.adoptionPets
                                         Text(
                                           getPetAgeText(),
                                           style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colours.brownColour,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -228,6 +245,7 @@ final pet = _controller.adoptionPets
                                         Text(
                                           'Gender'.tr,
                                           style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colours.black,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -237,6 +255,7 @@ final pet = _controller.adoptionPets
                                         Text(
                                           pet.gender ?? "Unknown".tr,
                                           style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colours.brownColour,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -260,6 +279,7 @@ final pet = _controller.adoptionPets
                                         Text(
                                           'Weight'.tr,
                                           style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colours.black,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -269,6 +289,7 @@ final pet = _controller.adoptionPets
                                         Text(
                                           '${pet.weight ?? 0} kg',
                                           style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colours.brownColour,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -292,14 +313,14 @@ final pet = _controller.adoptionPets
                                   child: Text(
                                     '${pet.mobileNumber ?? 0}',
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: getResponsiveFont(context, 15),
                                       fontWeight: FontWeight.w500,
                                       fontFamily: FontFamily.Ubantu,
                                       color: Colours.secondarycolour,
                                     ),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    fixedSize: const Size(350, 60),
+                                    fixedSize: Size(MediaQuery.of(context).size.width * 0.8, 50),
                                     backgroundColor: Colours.primarycolour,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),

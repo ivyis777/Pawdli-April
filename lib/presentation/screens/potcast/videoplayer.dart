@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class ApiVideoPlayer extends StatefulWidget {
   final String videoUrl; // <-- Pass video URL from API
 
@@ -112,11 +126,11 @@ class _ApiVideoPlayerState extends State<ApiVideoPlayer> {
                                 children: [
                                   Text(
                                     formatTime(_currentPosition),
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(color: Colors.white, fontSize: getResponsiveFont(context, 12)),
                                   ),
                                   Text(
                                     formatTime(_controller.value.duration),
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(color: Colors.white, fontSize: getResponsiveFont(context, 12)),
                                   ),
                                 ],
                               ),

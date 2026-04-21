@@ -25,6 +25,7 @@ import 'package:pawlli/data/notification_service.dart';
 import 'package:pawlli/presentation/screens/loginpage/loginpage.dart';
 import 'package:pawlli/presentation/screens/splashcreen/splashscreen.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pawlli/presentation/widgets/app_update/app_updatepage.dart';
 import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 import 'package:pawlli/presentation/widgets/fcm.dart';
 
@@ -130,6 +131,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: child!,
+        );
+      },
+
       translations: Messages(),
       locale: getSavedLocale(),
       fallbackLocale: const Locale('en'),
@@ -145,7 +154,7 @@ class MyApp extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasData && snapshot.data == true) {
-            return MainLayout();
+            return UpdateWrapper(child: MainLayout());
           }
           return LoginPage();
         },

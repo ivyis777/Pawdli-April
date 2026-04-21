@@ -8,6 +8,19 @@ import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/bookslot/bookslot.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
 
 class TimeSlotPage extends StatefulWidget {
   final String radioname;
@@ -102,7 +115,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
           ),
           SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -112,7 +125,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                       title: Text(
                         'Book Slots'.tr,
                         style: TextStyle(
-                          fontSize: screenHeight * 0.03,
+                          fontSize: getResponsiveFont(context, 18),
                           fontWeight: FontWeight.w600,
                           fontFamily: FontFamily.Cairo,
                           color: Colours.black,
@@ -180,7 +193,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                                 Text(
                                   '${dateToShow.day}',
                                   style: TextStyle(
-                                    fontSize: screenHeight * 0.015,
+                                    fontSize: getResponsiveFont(context, 12),
                                     fontWeight: FontWeight.bold,
                                     color: isSelected ? Colors.white : Colors.black,
                                   ),
@@ -188,7 +201,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                                 Text(
                                   DateFormat('EEE').format(dateToShow),
                                   style: TextStyle(
-                                    fontSize: screenHeight * 0.020,
+                                    fontSize: getResponsiveFont(context, 13),
                                     color: isSelected ? Colors.white : Colors.black,
                                   ),
                                 ),
@@ -217,7 +230,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                             'Selected Slots:'.tr,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: screenHeight * 0.018,
+                              fontSize: getResponsiveFont(context, 14),
                             ),
                           ),
                           SizedBox(height: screenHeight * 0.01),
@@ -228,7 +241,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                               return Chip(
                                 label: Text(
                                   '${DateFormat('MMM d').format(DateTime.parse(slot.date!))}: ${slot.startTime}',
-                                  style: TextStyle(fontSize: screenHeight * 0.015),
+                                  style: TextStyle(fontSize: getResponsiveFont(context, 12),),
                                 ),
                                 backgroundColor: Colours.primarycolour.withOpacity(0.2),
                                 deleteIcon: Icon(Icons.close, size: screenHeight * 0.018),
@@ -241,7 +254,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                             'Total Amount:'.tr + ' ₹$_totalAmount',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: screenHeight * 0.018,
+                              fontSize: getResponsiveFont(context, 14),
                               color: Colours.primarycolour,
                             ),
                           ),
@@ -257,7 +270,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                       return Center(
                         child: Text(
                           "No slots available for this date".tr,
-                          style: TextStyle(fontSize: screenHeight * 0.02, color: Colors.grey),
+                          style: TextStyle(fontSize: getResponsiveFont(context, 14), color: Colors.grey),
                         ),
                       );
                     }
@@ -270,8 +283,8 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                           physics: NeverScrollableScrollPhysics(),
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: crossAxisCount,
-                            crossAxisSpacing: screenWidth * 0.02,
-                            mainAxisSpacing: screenHeight * 0.010,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
                             childAspectRatio: 1.9,
                           ),
                           itemCount: slotController.slotList.length,
@@ -318,7 +331,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                                         '${slot.startTime} - ${slot.endTime ?? 'N/A'}',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          fontSize: screenHeight * 0.01,
+                                          fontSize: getResponsiveFont(context, 8),
                                           fontWeight: FontWeight.bold,
                                           color: isSelected
                                               ? Colors.white
@@ -331,7 +344,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                                       Text(
                                         ' ₹ ${slot.amount}',
                                         style: TextStyle(
-                                          fontSize: screenHeight * 0.014,
+                                          fontSize: getResponsiveFont(context, 12),
                                           fontWeight: FontWeight.w500,
                                           color: isSelected
                                               ? Colors.white
@@ -381,7 +394,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                             : null,
                             
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                          padding: EdgeInsets.symmetric(vertical: 14),
                           backgroundColor: _allSelectedSlots.isNotEmpty ? Colours.primarycolour : Colors.grey,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -390,7 +403,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                         child: Text(
                           "Continue".tr,
                           style: TextStyle(
-                            fontSize: screenHeight * 0.022,
+                            fontSize: getResponsiveFont(context, 15),
                             fontWeight: FontWeight.w600,
                             color: Colours.secondarycolour,
                           ),

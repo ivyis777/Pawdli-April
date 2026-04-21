@@ -10,6 +10,20 @@ import 'package:share_plus/share_plus.dart';
 import '../../../data/model/storeprocductmodel.dart'
     show Data, SelectedVariant, StoreProductData;
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class ProductDetailsScreen extends StatefulWidget {
   final StoreProductData product;
   // final productId = productId;
@@ -246,7 +260,8 @@ https://pawlli.app/product/$productId
             flex: 3,
             child: Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
+                fontSize: getResponsiveFont(context, 13),
                 color: Colors.grey,
                 fontWeight: FontWeight.w500,
               ),
@@ -256,7 +271,8 @@ https://pawlli.app/product/$productId
             flex: 5,
             child: Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
+                fontSize: getResponsiveFont(context, 13),
                 fontWeight: FontWeight.w600,
                 color: Colors.black,
               ),
@@ -336,8 +352,8 @@ https://pawlli.app/product/$productId
               ? const CircularProgressIndicator(color: Colors.white)
               : Text(
                   isOutOfStock ? 'OUT OF STOCK'.tr : 'ADD TO CART'.tr,
-                  style: const TextStyle(
-                    fontSize: 18,
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 16),
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
@@ -381,7 +397,7 @@ https://pawlli.app/product/$productId
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: screenHeight * 0.022,
+                      fontSize: getResponsiveFont(context, 16),
                       fontWeight: FontWeight.w600,
                       color: Colours.brownColour,
                     ),
@@ -412,8 +428,8 @@ https://pawlli.app/product/$productId
 
                 Text(
                   productName,
-                  style: const TextStyle(
-                    fontSize: 20,
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 18),
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -428,7 +444,7 @@ https://pawlli.app/product/$productId
                     : variants.isEmpty
                         ?  Text(
                             "No variants available".tr,
-                            style: TextStyle(color: Colors.red),
+                            style: TextStyle(color: Colors.red, fontSize: getResponsiveFont(context, 13)),
                           )
                         : Wrap(
                             spacing: 8,
@@ -439,6 +455,9 @@ https://pawlli.app/product/$productId
                               return ChoiceChip(
                                 label: Text(
                                   variant.variantName ?? "Variant".tr,
+                                  style: TextStyle(
+                                    fontSize: getResponsiveFont(context, 13),
+                                  ),
                                 ),
                                 selected: isSelected,
                                 onSelected: (_) {
@@ -466,8 +485,8 @@ https://pawlli.app/product/$productId
                             if (hasDiscount)
                               Text(
                                 '$discountPercent% OFF  ',
-                                style: const TextStyle(
-                                  fontSize: 22,
+                                style: TextStyle(
+                                  fontSize: getResponsiveFont(context, 18),
                                   fontWeight: FontWeight.w600,
                                   color: Colors.redAccent,
                                 ),
@@ -475,8 +494,8 @@ https://pawlli.app/product/$productId
                             // ✅ MAIN PRICE
                             Text(
                               '₹ ${hasDiscount ? discountedPriceValue.toStringAsFixed(0) : regularPriceValue.toStringAsFixed(0)}',
-                              style: const TextStyle(
-                                fontSize: 22,
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 18),
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
@@ -488,8 +507,8 @@ https://pawlli.app/product/$productId
                             if (hasDiscount)
                               Text(
                                 '₹ ${regularPriceValue.toStringAsFixed(0)}',
-                                style: const TextStyle(
-                                  fontSize: 16,
+                                style: TextStyle(
+                                  fontSize: getResponsiveFont(context, 14),
                                   color: Colors.grey,
                                   decoration: TextDecoration.lineThrough,
                                 ),
@@ -503,8 +522,8 @@ https://pawlli.app/product/$productId
                             padding: const EdgeInsets.only(top: 4),
                             child: Text(
                               'You save ₹${discountAmount.toStringAsFixed(0)}'.tr,
-                              style: const TextStyle(
-                                fontSize: 14,
+                              style: TextStyle(
+                                fontSize: getResponsiveFont(context, 13),
                                 fontWeight: FontWeight.w600,
                                 color: Colors.green,
                               ),
@@ -522,7 +541,8 @@ https://pawlli.app/product/$productId
                         else if (availableStock <= 5)
                           Text(
                             "Only $availableStock left".tr,
-                            style: const TextStyle(
+                            style: TextStyle(
+                              fontSize: getResponsiveFont(context, 13),
                               color: Colors.orange,
                               fontWeight: FontWeight.w600,
                             ),
@@ -549,7 +569,7 @@ https://pawlli.app/product/$productId
                           child: Text(
                             quantity.toString(),
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: getResponsiveFont(context, 14),
                               fontWeight: FontWeight.w600,
                               color: isOutOfStock ? Colors.grey : Colors.black,
                             ),
@@ -569,8 +589,8 @@ https://pawlli.app/product/$productId
 
                 Text(
                   productDescription,
-                  style: const TextStyle(
-                    fontSize: 14,
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 13),
                     height: 1.5,
                     color: Colors.black87,
                   ),
@@ -597,7 +617,7 @@ https://pawlli.app/product/$productId
                  Text(
                   "Product Details".tr,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: getResponsiveFont(context, 16),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -691,9 +711,9 @@ https://pawlli.app/product/$productId
                         child: Text(
                           count.toString(),
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: getResponsiveFont(context, 11),
                             fontWeight: FontWeight.bold,
                           ),
                         ),

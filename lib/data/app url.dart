@@ -60,7 +60,7 @@ class AppUrl {
   static String cartupdateURL = "$mainURL/user/cart/update/";
   static String cartRemoveURL = "$mainURL/user/cart/remove/";
   static String FileuploadUrl = "$mainURL/user/radio_book_slot/";
-  static String OrdersUrl = "$mainURL/user/orders_details";
+  static String OrdersUrl = "$mainURL/user/orders/";
   static String storeProductVariant = "$mainURL/user/storeproducts/subcategory/?productId";
   static String ProductVarientList = "$mainURL/user/storeproductvariants/?productId/";
   static String ProductInventory = "$mainURL/user/storeproductinventory/?productId/";

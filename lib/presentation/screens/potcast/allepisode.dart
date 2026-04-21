@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class Allepisode extends StatefulWidget {
   final String imagePath;
 
@@ -73,7 +87,7 @@ class _AllepisodeState extends State<Allepisode> {
                       Text(
                         "The Honest Bunch".tr,
                         style: TextStyle(
-                          fontSize: 22,
+                          fontSize: getResponsiveFont(context, 18),
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -81,11 +95,19 @@ class _AllepisodeState extends State<Allepisode> {
                       SizedBox(height: 4),
                       Text(
                         "Nedu".tr,
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.grey),
+                        style: TextStyle(
+                          fontSize: getResponsiveFont(context, 13),
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey,
+                        ),
                       ),
                       Text(
                         "1.2m listeners   240 Episodes".tr,
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.grey),
+                        style: TextStyle(
+                          fontSize: getResponsiveFont(context, 13),
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
@@ -100,7 +122,7 @@ class _AllepisodeState extends State<Allepisode> {
                 children: [
                   Text(
                     "A Nigerian podcast hosted by FK Abudu and Jola Ayeye, covering relatable millennial experiences, pop culture, and societal issues.".tr,
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                    style: TextStyle(fontSize: getResponsiveFont(context, 13), color: Colors.grey),
                   ),
                   SizedBox(height: 10),
                   Row(
@@ -114,7 +136,7 @@ class _AllepisodeState extends State<Allepisode> {
                             minimumSize: Size(double.infinity, 50),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           ),
-                          child: Text("FOLLOW".tr, style: TextStyle(color: Colors.white, fontSize: 16)),
+                          child: Text("FOLLOW".tr, style: TextStyle(color: Colors.white, fontSize: getResponsiveFont(context, 14))),
                         ),
                       ),
                       SizedBox(width: 10),
@@ -132,11 +154,11 @@ class _AllepisodeState extends State<Allepisode> {
                     children: [
                       Text(
                         "Episodes".tr,
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: getResponsiveFont(context, 16), fontWeight: FontWeight.bold),
                       ),
                       Text(
                         "All Episodes".tr,
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+                        style: TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.w300),
                       ),
                     ],
                   ),
@@ -173,7 +195,7 @@ class _AllepisodeState extends State<Allepisode> {
               ),
               child: Text(
                 epNumber,
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.purple),
+                style: TextStyle(fontSize: getResponsiveFont(context, 13), fontWeight: FontWeight.bold, color: Colors.purple),
               ),
             ),
             SizedBox(width: 12),
@@ -183,11 +205,13 @@ class _AllepisodeState extends State<Allepisode> {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold),
                   ),
                   Text(
                     "$duration   |   $date",
-                    style: TextStyle(color: Colors.grey[700]),
+                    style: TextStyle(
+                      fontSize: getResponsiveFont(context, 12),
+                      color: Colors.grey[700]),
                   ),
                 ],
               ),

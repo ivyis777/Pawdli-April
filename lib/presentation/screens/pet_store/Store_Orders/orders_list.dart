@@ -6,7 +6,19 @@ import 'package:pawlli/data/controller/admin_ordercontroller.dart';
 import 'package:pawlli/data/model/admin_ordermodel.dart';
 import 'package:pawlli/presentation/screens/pet_store/Store_Orders/admin_order_detailspage.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
 
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
 
 class AdminOrderListPage extends StatelessWidget {
   AdminOrderListPage({Key? key}) : super(key: key);
@@ -77,7 +89,7 @@ Color getStatusColor(String status) {
               title:  Text(
                 "Order Requests".tr, // change text if needed
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: getResponsiveFont(context, 18),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -93,7 +105,12 @@ Color getStatusColor(String status) {
 
         /// 🔹 EMPTY
         if (controller.orderList.isEmpty) {
-          return  Center(child: Text("No Orders Found".tr));
+          return  Center(child: Text(
+            "No Orders Found".tr,
+            style: TextStyle(
+              fontSize: getResponsiveFont(context, 14),
+            ),
+          ));
         }
 
         /// 🔹 LIST
@@ -105,22 +122,31 @@ Color getStatusColor(String status) {
               final AdminOrdermodel order = controller.orderList[index];
 
               return Card(
+                elevation: 4,
                 color: const Color.fromARGB(255, 251, 236, 210),
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ListTile(
-                  title: Text("Order No: ${order.orderId}".tr),
+                  title: Text("Order No: ${order.orderId}".tr,
+                    style: TextStyle(
+                      fontSize: getResponsiveFont(context, 14),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
 
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Amount: ₹${order.finalAmount}".tr),
+                      Text("Amount: ₹${order.finalAmount}".tr,
+                      style: TextStyle(
+                        fontSize: getResponsiveFont(context, 13),
+                      )),
                       const SizedBox(height: 4),
                       Text(
                         "Date: ${formatToIndianTime(order.createdAt)}".tr,
-                        style: const TextStyle(fontSize: 12, color: Colors.black54),
+                        style: TextStyle(fontSize: getResponsiveFont(context, 12), color: Colors.black54),
                       ),
                     ],
                   ),
@@ -138,9 +164,9 @@ Color getStatusColor(String status) {
                         ),
                         child: Text(
                           order.status.capitalizeFirst ?? "".tr,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: getResponsiveFont(context, 12),
                           ),
                         ),
                       ),

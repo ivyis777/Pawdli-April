@@ -305,26 +305,38 @@ static Future<OptModel> OtpApi({
     throw Exception('UNKNOWN_ERROR: Something went wrong. Please try again.');
   }
 }
+
 static Future<SignupModel> signupApi({
   required String username,
   required String mobile,
   required String email,
   required String otp,
-  required String fcm_token,
-  required String apns_token,
-
+  String? fcm_token,
+  String? apns_token,
 }) async {
+
   final headers = {'Content-Type': 'application/json'};
-  final body = jsonEncode({
+
+  // 🔥 BUILD BODY DYNAMICALLY
+  Map<String, dynamic> bodyMap = {
     "username": username,
     "mobile": mobile,
     "email": email,
     "otp": otp,
-    "fcm_token": fcm_token,
-    "apns_token": apns_token,
-  });
+  };
 
-  print('Request Body: $body');
+  // ✅ ONLY ADD IF NOT EMPTY
+  if (fcm_token != null && fcm_token.isNotEmpty) {
+    bodyMap["fcm_token"] = fcm_token;
+  }
+
+  if (apns_token != null && apns_token.isNotEmpty) {
+    bodyMap["apns_token"] = apns_token;
+  }
+
+  final body = jsonEncode(bodyMap);
+
+  print("📤 FINAL REQUEST BODY: $body");
 
   try {
     final response = await http.post(
@@ -333,18 +345,20 @@ static Future<SignupModel> signupApi({
       headers: headers,
     );
 
-    print('Response Body: ${response.body}');
+    print("📥 STATUS CODE: ${response.statusCode}");
+    print("📥 RESPONSE BODY: ${response.body}");
 
     final json = jsonDecode(response.body);
     final signupModel = SignupModel.fromJson(json);
 
-    print('Parsed status: ${signupModel.status}');
+    print("✅ Parsed status: ${signupModel.status}");
+    print("✅ Parsed message: ${signupModel.message}");
 
-    // Return the model regardless of status code — your backend seems to always return JSON in response body
     return signupModel;
 
   } catch (e) {
-    print('Signup API error: $e');
+    print("❌ Signup API error: $e");
+
     return SignupModel(
       status: false,
       message: 'Something went wrong. Please try again.',
@@ -2591,6 +2605,7 @@ static Future<List<PaymentModel>?> fetchpayments({required int userId}) async {
     return null;
   }
 }
+
 static Future<List<NoticationModel>?> fetchnotifications({required int userId}) async {
   try {
     String? accessToken = await getAccessToken(); 
@@ -4204,7 +4219,7 @@ static Future<bool> confirmOrder({
 
 static Future<List<Order>> getOrders() async {
   final token = await getAccessToken();
-  final uri = Uri.parse("${AppUrl.OrdersUrl}/");
+  final uri = Uri.parse("${AppUrl.OrdersUrl}");
 
   final res = await http.get(uri, headers: _headers(token));
 
@@ -4259,7 +4274,7 @@ static Future<List<Order>> getOrders() async {
 
   static Future<Order> getOrderDetails(int orderId) async {
     final token = await getAccessToken();
-    final uri = Uri.parse("${AppUrl.OrdersUrl}/$orderId/");
+    final uri = Uri.parse("${AppUrl.OrdersUrl}$orderId/");
 
     final res = await http.get(uri, headers: _headers(token));
 
@@ -4276,7 +4291,7 @@ static Future<List<Order>> getOrders() async {
 
 static Future<bool> cancelOrder(int orderId) async {
   final token = await getAccessToken();
-  final uri = Uri.parse("${AppUrl.OrdersUrl}/$orderId/cancel/");
+  final uri = Uri.parse("${AppUrl.OrdersUrl}$orderId/cancel/");
 
   final res = await http.post(uri, headers: _headers(token));
 
@@ -4294,7 +4309,7 @@ static Future<bool> cancelOrder(int orderId) async {
 
 static Future<bool> reorder(int orderId) async {
   final token = await getAccessToken();
-  final uri = Uri.parse("${AppUrl.OrdersUrl}/$orderId/reorder/");
+  final uri = Uri.parse("${AppUrl.OrdersUrl}$orderId/reorder/");
 
   final res = await http.post(uri, headers: _headers(token));
 

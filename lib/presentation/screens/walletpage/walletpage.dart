@@ -17,6 +17,20 @@ import 'package:pawlli/presentation/screens/payment%20failure/payment_failure.da
 import 'package:pawlli/presentation/screens/payment%20success/paymentsuccess.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class MyWalletPage extends StatefulWidget {
   final bool fromPaymentFlow;
   const MyWalletPage({super.key, this.fromPaymentFlow = false});
@@ -277,7 +291,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                       title: Text(
                         'My Wallet'.tr,
                         style: TextStyle(
-                          fontSize: screenHeight * 0.03,
+                          fontSize: getResponsiveFont(context, 18),
                           fontWeight: FontWeight.w600,
                           color: Colours.brownColour,
                         ),
@@ -317,7 +331,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                     Text(
                                       'Balance:'.tr,
                                       style: TextStyle(
-                                        fontSize: 20,
+                                        fontSize: getResponsiveFont(context, 16),
                                         fontWeight: FontWeight.bold,
                                         color: Colours.secondarycolour,
                                       ),
@@ -333,7 +347,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                         walletController
                                             .walletBalanceAmount.value,
                                         style: TextStyle(
-                                          fontSize: 20,
+                                          fontSize: getResponsiveFont(context, 16),
                                           fontWeight: FontWeight.bold,
                                           color: Colours.secondarycolour,
                                         ),
@@ -352,7 +366,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                           Text(
                             'Top Up'.tr,
                             style: TextStyle(
-                              fontSize: 22,
+                              fontSize: getResponsiveFont(context, 18),
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
@@ -361,8 +375,14 @@ class _MyWalletPageState extends State<MyWalletPage> {
                           TextField(
                             controller: myController,
                             keyboardType: TextInputType.number,
+                            style: TextStyle(
+                              fontSize: getResponsiveFont(context, 14),
+                            ),
                             decoration: InputDecoration(
                               hintText: 'Enter amount'.tr,
+                              hintStyle: TextStyle(
+                                fontSize: getResponsiveFont(context, 13),
+                              ),
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -383,7 +403,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                   child: Text(
                                     '₹$amount',
                                     style: TextStyle(
-                                        color: Colors.white, fontSize: 18),
+                                        color: Colors.white, fontSize: getResponsiveFont(context, 14)),
                                   ),
                                 ),
                               );
@@ -406,7 +426,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                     messageText: Text(
                                       "Enter a valid amount".tr,
                                       style: TextStyle(
-                                        fontSize: 19,
+                                        fontSize: getResponsiveFont(context, 15),
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
                                       ),
@@ -417,15 +437,14 @@ class _MyWalletPageState extends State<MyWalletPage> {
                               child: Text(
                                 "Top Up".tr,
                                 style: TextStyle(
-                                  fontSize: 22,
+                                  fontSize: getResponsiveFont(context, 16),
                                   fontWeight: FontWeight.bold,
                                   color: Colours.secondarycolour,
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colours.primarycolour,
-                                fixedSize: Size(
-                                    screenWidth * 0.8, screenHeight * 0.07),
+                                fixedSize: Size(screenWidth * 0.8, 50),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
@@ -437,7 +456,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                           Text(
                             'Transaction History'.tr,
                             style: TextStyle(
-                              fontSize: 22,
+                              fontSize: getResponsiveFont(context, 18),
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
@@ -454,7 +473,12 @@ class _MyWalletPageState extends State<MyWalletPage> {
 
                             if (transactions.isEmpty) {
                               return Center(
-                                  child: Text("No transactions found".tr));
+                                  child: Text(
+                                    "No transactions found".tr,
+                                    style: TextStyle(
+                                      fontSize: getResponsiveFont(context, 14),
+                                    ),
+                                  ));
                             }
 
                             return Card(
@@ -487,8 +511,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                                 padding: EdgeInsets.all(8.0),
                                                 child: Text('Date'.tr,
                                                     style: TextStyle(
-                                                      fontSize:
-                                                          screenHeight * 0.02,
+                                                      fontSize: getResponsiveFont(context, 13),
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       color: Colours.black,
@@ -498,8 +521,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                                 padding: EdgeInsets.all(8.0),
                                                 child: Text('Type'.tr,
                                                     style: TextStyle(
-                                                      fontSize:
-                                                          screenHeight * 0.02,
+                                                      fontSize: getResponsiveFont(context, 13),
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       color: Colours.black,
@@ -509,8 +531,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                                 padding: EdgeInsets.all(8.0),
                                                 child: Text('Amount'.tr,
                                                     style: TextStyle(
-                                                      fontSize:
-                                                          screenHeight * 0.02,
+                                                      fontSize: getResponsiveFont(context, 13),
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       color: Colours.black,
@@ -540,8 +561,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                                                 .createdAt!)
                                                         : 'N/A',
                                                     style: TextStyle(
-                                                      fontSize:
-                                                          screenHeight * 0.02,
+                                                      fontSize: getResponsiveFont(context, 13),
                                                       fontWeight:
                                                           FontWeight.w400,
                                                       color: Colours.black,
@@ -555,8 +575,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                                             .transactionType ??
                                                         'N/A',
                                                     style: TextStyle(
-                                                      fontSize:
-                                                          screenHeight * 0.02,
+                                                      fontSize: getResponsiveFont(context, 13),
                                                       fontWeight:
                                                           FontWeight.w400,
                                                       color: (transaction
@@ -572,9 +591,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                                   child: Text(
                                                       "₹${transaction.amount ?? '0'}",
                                                       style: TextStyle(
-                                                          fontSize:
-                                                              screenHeight *
-                                                                  0.02,
+                                                          fontSize: getResponsiveFont(context, 13),
                                                           fontWeight:
                                                               FontWeight.w400,
                                                           color: (transaction

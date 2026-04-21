@@ -20,6 +20,20 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class EditPetPage extends StatefulWidget {
   final int? PetId;
   const EditPetPage({super.key, required this.PetId});
@@ -316,15 +330,18 @@ class _EditPetPageState extends State<EditPetPage> {
     TextEditingController controller, {
     Widget? suffixIcon,
     bool requireValidation = true,
-    bool readOnly = false, // 👈 add readOnly
-    VoidCallback? onTap, // <- add this flag
+    bool readOnly = false, 
+    VoidCallback? onTap, 
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: TextFormField(
         controller: controller,
-        readOnly: readOnly, // 👈 apply readOnly
+        readOnly: readOnly, 
         onTap: onTap,
+        style: TextStyle(
+          fontSize: getResponsiveFont(context, 14),
+        ),
         validator: (value) {
           if (requireValidation && (value == null || value.trim().isEmpty)) {
             return 'Please enter this field'.tr;
@@ -334,6 +351,7 @@ class _EditPetPageState extends State<EditPetPage> {
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
+            fontSize: getResponsiveFont(context, 13),
               fontWeight: FontWeight.w500, color: Colours.brownColour),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           focusedBorder: OutlineInputBorder(
@@ -375,7 +393,7 @@ class _EditPetPageState extends State<EditPetPage> {
           items: validCategoryNames.map((name) {
             return DropdownMenuItem<String>(
               value: name,
-              child: Text(name),
+              child: Text(name, style: TextStyle(fontSize: getResponsiveFont(context, 14))),
             );
           }).toList(),
           onChanged: (newValue) {
@@ -397,7 +415,9 @@ class _EditPetPageState extends State<EditPetPage> {
           decoration: InputDecoration(
             labelText: 'Select Type'.tr,
             labelStyle:
-                TextStyle(fontWeight: FontWeight.bold, color: Colors.brown),
+                TextStyle(
+                  fontSize: getResponsiveFont(context, 13),
+                  fontWeight: FontWeight.bold, color: Colors.brown),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(color: Colours.primarycolour, width: 1),
@@ -441,7 +461,7 @@ class _EditPetPageState extends State<EditPetPage> {
           items: validBreeds.map((name) {
             return DropdownMenuItem<String>(
               value: name,
-              child: Text(name),
+              child: Text(name, style: TextStyle(fontSize: getResponsiveFont(context, 14))),
             );
           }).toList(),
           onChanged: (newValue) {
@@ -486,10 +506,10 @@ class _EditPetPageState extends State<EditPetPage> {
           children: <Widget>[
             Text(
               'Gender:'.tr,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold),
             ),
             ToggleSwitch(
-              minWidth: 90.0,
+              minWidth: 80.0,
               initialLabelIndex: _selectedGenderIndex ?? 0,
               cornerRadius: 20.0,
               activeFgColor: Colors.white,
@@ -523,10 +543,10 @@ class _EditPetPageState extends State<EditPetPage> {
           children: <Widget>[
             Text(
               'Neutered/Spayed:'.tr,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold),
             ),
             ToggleSwitch(
-              minWidth: 90.0,
+              minWidth: 80.0,
               cornerRadius: 20.0,
               activeBgColors: [
                 [Colours.primarycolour],
@@ -573,15 +593,15 @@ class _EditPetPageState extends State<EditPetPage> {
           title: Text(
             'Edit Pet'.tr,
             style: TextStyle(
-              fontSize: screenHeight * 0.035,
+              fontSize: getResponsiveFont(context, 18),
               fontWeight: FontWeight.w600,
               fontFamily:
-                  'Cairo', // Ensure this font is properly defined in pubspec.yaml
+                  'Cairo',
               color:
-                  Colors.brown, // Change Colours.brownColour to an actual color
+                  Colours.brownColour, 
             ),
           ),
-          foregroundColor: Colors.brown,
+          foregroundColor: Colours.brownColour,
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -661,7 +681,7 @@ class _EditPetPageState extends State<EditPetPage> {
                               child: Icon(
                                 Icons.camera_alt,
                                 color: Colors.brown,
-                                size: 24,
+                                size: getResponsiveFont(context, 22),
                               ),
                             ),
                           ),
@@ -731,8 +751,7 @@ class _EditPetPageState extends State<EditPetPage> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colours.primarycolour,
-                              fixedSize:
-                                  Size(screenWidth * 0.8, screenHeight * 0.07),
+                              fixedSize: Size(screenWidth * 0.8, 50),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
@@ -740,7 +759,7 @@ class _EditPetPageState extends State<EditPetPage> {
                             child: Text(
                               "Update".tr,
                               style: TextStyle(
-                                fontSize: screenHeight * 0.025,
+                                fontSize: getResponsiveFont(context, 16),
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
                               ),

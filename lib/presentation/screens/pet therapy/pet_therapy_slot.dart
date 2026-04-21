@@ -8,6 +8,20 @@ import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/pet%20therapy/book_therapyslot.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class PetTherapySlot extends StatefulWidget {
   final int? petid;
   final DateTime selectedDate;
@@ -89,7 +103,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                 title: Text(
                   'Book Slots'.tr,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.035,
+                    fontSize: getResponsiveFont(context, 18),
                     fontWeight: FontWeight.w600,
                     fontFamily: FontFamily.Cairo,
                     color: Colours.brownColour,
@@ -107,7 +121,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                   child: Text(
                     'Selected Date: ${DateFormat.yMMMMd().format(widget.selectedDate)}'.tr,
                     style: TextStyle(
-                      fontSize: screenHeight * 0.022,
+                      fontSize: getResponsiveFont(context, 14),
                       fontWeight: FontWeight.w500,
                       fontFamily: FontFamily.Cairo,
                       color: Colours.primarycolour,
@@ -138,7 +152,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                                 'Selected Slots:'.tr,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: screenHeight * 0.018,
+                                  fontSize: getResponsiveFont(context, 14),
                                 ),
                               ),
                               SizedBox(height: screenHeight * 0.01),
@@ -150,12 +164,12 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                                     label: Text(
                                       '${slot.startTime}',
                                       style: TextStyle(
-                                          fontSize: screenHeight * 0.015),
+                                          fontSize: getResponsiveFont(context, 12)),
                                     ),
                                     backgroundColor:
                                         Colours.primarycolour.withOpacity(0.2),
                                     deleteIcon: Icon(Icons.close,
-                                        size: screenHeight * 0.018),
+                                        size: getResponsiveFont(context, 12)),
                                     onDeleted: () => _toggleSlotSelection(slot),
                                   );
                                 }).toList(),
@@ -165,7 +179,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                                 'Total Amount: ₹$_totalAmount'.tr,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: screenHeight * 0.018,
+                                  fontSize: getResponsiveFont(context, 14),
                                   color: Colours.primarycolour,
                                 ),
                               ),
@@ -182,7 +196,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                             child: Text(
                               "No slots available".tr,
                               style: TextStyle(
-                                fontSize: screenHeight * 0.02,
+                                fontSize: getResponsiveFont(context, 14),
                                 color: Colors.grey,
                               ),
                             ),
@@ -211,7 +225,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                                 Text(
                                   date,
                                   style: TextStyle(
-                                    fontSize: screenHeight * 0.022,
+                                    fontSize: getResponsiveFont(context, 15),
                                     fontWeight: FontWeight.bold,
                                     color: Colours.primarycolour,
                                   ),
@@ -277,7 +291,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                                                 '${slot.startTime} - ${slot.endTime ?? 'N/A'}',
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
-                                                  fontSize: screenHeight * 0.01,
+                                                  fontSize: getResponsiveFont(context, 11),
                                                   fontWeight: FontWeight.bold,
                                                   color: isSelected
                                                       ? Colors.white
@@ -291,8 +305,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                                               Text(
                                                 ' ₹ ${slot.amount}',
                                                 style: TextStyle(
-                                                  fontSize:
-                                                      screenHeight * 0.014,
+                                                  fontSize: getResponsiveFont(context, 12),
                                                   fontWeight: FontWeight.w500,
                                                   color: isSelected
                                                       ? Colors.white
@@ -363,7 +376,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                                 child: Text(
                                   "Continue".tr,
                                   style: TextStyle(
-                                    fontSize: screenHeight * 0.022,
+                                    fontSize: getResponsiveFont(context, 15),
                                     fontWeight: FontWeight.w600,
                                     color: Colours.secondarycolour,
                                   ),

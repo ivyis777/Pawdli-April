@@ -5,6 +5,20 @@ import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/presentation/screens/loginpage/loginpage.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class DeleteAccountPage extends StatefulWidget {
   const DeleteAccountPage({super.key});
 
@@ -55,15 +69,30 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title:  Text("Confirm Deletion".tr),
+          title:  Text(
+            "Confirm Deletion".tr,
+            style: TextStyle(
+              fontSize: getResponsiveFont(context, 16),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           content:  Text(
-              "Are you sure you want to delete your account? This action is irreversible.".tr),
+              "Are you sure you want to delete your account? This action is irreversible.".tr, 
+              style: TextStyle(
+                fontSize: getResponsiveFont(context, 14),
+              ),
+            ),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child:  Text("Cancel".tr),
+              child:  Text(
+                "Cancel".tr,
+                style: TextStyle(
+                  fontSize: getResponsiveFont(context, 14),
+                ),
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -72,7 +101,12 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                 Navigator.pop(context);
                 _deleteAccount();
               },
-              child:  Text("Delete".tr),
+              child: Text(
+                "Delete".tr,
+                style: TextStyle(
+                  fontSize: getResponsiveFont(context, 14),
+                ),
+              ),
             ),
           ],
         ),
@@ -132,7 +166,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                 title: Text(
                   'Delete Account'.tr,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.03,
+                    fontSize: getResponsiveFont(context, 18),
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Cairo',
                     color: Colors.brown,
@@ -155,12 +189,15 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                          Text(
                           "Delete Your Account".tr,
                           style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
+                              fontSize: getResponsiveFont(context, 18), fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
                          Text(
                           "Enter your email and OTP to confirm deletion.".tr,
                           textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: getResponsiveFont(context, 14),
+                          ),
                         ),
                         const SizedBox(height: 30),
 
@@ -168,8 +205,14 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                         TextField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
+                          style: TextStyle(
+                            fontSize: getResponsiveFont(context, 14),
+                          ),
                           decoration: InputDecoration(
                             labelText: "Email".tr,
+                            labelStyle: TextStyle(
+                              fontSize: getResponsiveFont(context, 13),
+                            ),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12)),
                           ),
@@ -180,8 +223,14 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                         TextField(
                           controller: _otpController,
                           keyboardType: TextInputType.number,
+                          style: TextStyle(
+                            fontSize: getResponsiveFont(context, 14),
+                          ),
                           decoration: InputDecoration(
                             labelText: "Enter OTP".tr,
+                            labelStyle: TextStyle(
+                              fontSize: getResponsiveFont(context, 13),
+                            ),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12)),
                           ),
@@ -201,7 +250,8 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                           child: Text(
                             "Send OTP".tr,
                             style: TextStyle(
-                                color: Colours.brownColour, fontSize: 15),
+                                color: Colours.brownColour, fontSize: getResponsiveFont(context, 15)),
+
                           ),
                         ),
                         const SizedBox(height: 30),
@@ -219,7 +269,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                           child: Text(
                             "Delete Account".tr,
                             style: TextStyle(
-                                color: Colours.brownColour, fontSize: 15),
+                                color: Colours.brownColour, fontSize: getResponsiveFont(context, 15),),
                           ),
                         ),
                       ],

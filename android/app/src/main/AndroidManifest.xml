@@ -12,9 +12,22 @@
     android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"
     tools:node="remove" />
 
+    <!-- ✅ ADD THIS LINE HERE -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+
      <!-- Add these permission lines right after the manifest opening tag -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- ✅ CAMERA -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!-- ✅ STORAGE (for gallery / image picker) -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <!-- ✅ For Android 13+ -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
 
    
 

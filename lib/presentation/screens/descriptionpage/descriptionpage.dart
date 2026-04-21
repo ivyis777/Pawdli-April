@@ -9,6 +9,20 @@ import 'package:get/get.dart';
 import 'package:pawlli/presentation/screens/commonfullimage/fullimageview.dart';
 import 'package:pawlli/presentation/screens/pet%20swicth/petswitch.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 
 class DescriptionPage extends StatefulWidget {
   final int petId;
@@ -58,7 +72,7 @@ void initState() {
           return  Center(
             child: Text(
               "No pet data available".tr,
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              style: TextStyle(fontSize: getResponsiveFont(context, 14), color: Colors.white),
             ),
           );
         }
@@ -95,7 +109,7 @@ void initState() {
                                   style: TextStyle(
                                     color: Colours.brownColour,
                                     fontFamily: FontFamily.Cairo,
-                                    fontSize: screenWidth * 0.15,
+                                    fontSize: getResponsiveFont(context, 20),
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -118,7 +132,7 @@ void initState() {
                                           style: TextStyle(
                                             color: Colours.brownColour,
                                             fontFamily: FontFamily.Cairo,
-                                            fontSize: screenWidth * 0.06,
+                                            fontSize: getResponsiveFont(context, 14),
                                             fontWeight: FontWeight.w700,
                                           ),
                                         ),
@@ -135,7 +149,7 @@ void initState() {
                                   pet.description ?? "No Description".tr,
                                   style: TextStyle(
                                     fontFamily: FontFamily.Cairo,
-                                    fontSize: screenWidth * 0.05,
+                                    fontSize: getResponsiveFont(context, 13),
                                     color: Colours.textColour,
                                   ),
                                 ),
@@ -159,6 +173,7 @@ void initState() {
                                         Text(
                                           'Age'.tr,
                                           style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colours.black,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -168,6 +183,7 @@ void initState() {
                                         Text(
                                           '${pet.age ?? 0}',
                                           style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colours.brownColour,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -191,6 +207,7 @@ void initState() {
                                         Text(
                                           'Gender'.tr,
                                           style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colours.black,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -200,6 +217,7 @@ void initState() {
                                         Text(
                                           pet.gender ?? "Unknown".tr,
                                           style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colours.brownColour,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -223,6 +241,7 @@ void initState() {
                                         Text(
                                           'Weight'.tr,
                                           style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colours.black,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -232,6 +251,7 @@ void initState() {
                                         Text(
                                           '${pet.weight ?? 0} kg',
                                           style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 12),
                                             color: Colours.brownColour,
                                             fontWeight: FontWeight.w700,
                                           ),
@@ -256,14 +276,14 @@ void initState() {
                                   child: Text(
                                     "Connect".tr,
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: getResponsiveFont(context, 15),
                                       fontWeight: FontWeight.w500,
                                       fontFamily: FontFamily.Ubantu,
                                       color: Colours.secondarycolour,
                                     ),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    fixedSize: const Size(350, 60),
+                                    fixedSize: Size(MediaQuery.of(context).size.width * 0.8, 50),
                                     backgroundColor: Colours.primarycolour,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
@@ -295,7 +315,7 @@ void initState() {
                             }
                           },
                           child: CircleAvatar(
-                            radius: screenWidth * 0.30,
+                            radius: screenWidth * 0.29,
                             backgroundColor: Colors.grey.shade200,
                             backgroundImage: widget.petProfileImage.isNotEmpty
                                 ? CachedNetworkImageProvider(widget.petProfileImage)

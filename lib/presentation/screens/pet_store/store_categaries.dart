@@ -9,6 +9,20 @@ import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/presentation/screens/pet_store/pet_storeproduct.dart';
 import 'package:pawlli/presentation/screens/pet_store/pet_cart.dart';
 
+double getResponsiveFont(BuildContext context, double size) {
+  double screenWidth = MediaQuery.of(context).size.width;
+
+  if (screenWidth < 360) {
+    return size * 0.85;
+  } else if (screenWidth < 400) {
+    return size;
+  } else if (screenWidth < 600) {
+    return size * 1.1;
+  } else {
+    return size * 1.3;
+  }
+}
+
 class ProductListScreen extends StatefulWidget {
   final int? storeSubcategoryId;
   final String? searchQuery;
@@ -59,7 +73,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
              Center(
               child: Text("Sort By".tr,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: getResponsiveFont(context, 16), fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 20),
             ...sortOptions.map((option) {
@@ -82,7 +96,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   ),
                   child: Text(option,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: getResponsiveFont(context, 14),
                         color: isSelected ? Colors.white : Colors.black,
                       )),
                 ),
@@ -138,7 +152,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                             : storeProductController
                                 .selectedSubCategoryName.value),
                     style: TextStyle(
-                      fontSize: screenHeight * 0.03,
+                      fontSize: getResponsiveFont(context, 18),
                       fontWeight: FontWeight.w600,
                       color: Colours.brownColour,
                     ),
@@ -154,8 +168,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: TextField(
                     onChanged: controller.search,
+                    style: TextStyle(
+                      fontSize: getResponsiveFont(context, 14),
+                    ),
                     decoration: InputDecoration(
                       hintText: 'Search for Products'.tr,
+                      hintStyle: TextStyle(
+                        fontSize: getResponsiveFont(context, 14),
+                      ),
                       prefixIcon: Icon(
                         Icons.search,
                         color: Colours.textColour,
@@ -219,11 +239,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   child: Row(children: [
                      Text("Sort by:".tr,
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600)),
+                            fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.w600)),
                     const SizedBox(width: 5),
                     Text(selectedSort,
                         style: TextStyle(
-                            fontSize: 16,
+                            fontSize: getResponsiveFont(context, 14),
                             color: Colours.primarycolour,
                             fontWeight: FontWeight.w600)),
                     const Spacer(),
@@ -375,9 +395,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         child: Text(
                           count.toString(),
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: getResponsiveFont(context, 11),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -434,7 +454,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          fontSize: 14,
+                          fontSize: getResponsiveFont(context, 14),
                           fontWeight: FontWeight.bold,
                           color: Colours.black)),
                   SizedBox(height: 5),
@@ -442,7 +462,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          fontSize: 12,
+                          fontSize: getResponsiveFont(context, 12),
                           color: Colours.secondarycolour,
                           fontWeight: FontWeight.bold)),
                 ],
@@ -488,7 +508,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   "OUT OF STOCK".tr,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 12,
+                    fontSize: getResponsiveFont(context, 11),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -516,9 +536,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 ),
                 child: Text(
                   "$discountPercent% OFF",
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 12,
+                    fontSize: getResponsiveFont(context, 11),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -565,21 +585,21 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   if (hasDiscount && regularPrice != null)
                     Text(
                       "₹$regularPrice ",
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         decoration: TextDecoration.lineThrough,
                         decorationColor: Colors.white,
                         decorationThickness: 1,
                         fontWeight: FontWeight.bold,
-                        fontSize: 15,
+                        fontSize: getResponsiveFont(context, 13),
                       ),
                     ),
                   Text(
                     "₹$price",
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: getResponsiveFont(context, 14),
                     ),
                   )
                 ]),
