@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 class ProgramListModel {
   String? message;
@@ -106,7 +105,7 @@ class Data {
   int? get dateEpoch => dateTime?.millisecondsSinceEpoch;
 
   Data.fromJson(Map<String, dynamic> json) {
-    type = json['type'] as String?;
+    // type = json['type'] as String?;
     bookingId = json['booking_id'] as int?;
     slotId = json['slot_id'] as int?;
     slotTime = json['slot_time'] as String?;
@@ -116,11 +115,37 @@ class Data {
     programDescription = json['program_description'] as String?;
     programType = json['program_type'] as String?;
 
-    // 🚑 TEMP FIX: Backend not sending program type
-if (type == null) {
-  debugPrint("⚠️ BACKEND MISSING 'type' → DEFAULTING TO LIVE");
-  type = "live";
-}
+    // 🔥 FINAL TYPE FIX (FRONTEND SAFE VERSION)
+    // 1️⃣ If backend sends program_mode → use it
+    if (json['program_mode'] != null &&
+        json['program_mode'].toString().isNotEmpty) {
+      type = json['program_mode'].toString().toLowerCase();
+    }
+
+    // 2️⃣ If recorded_url exists → recorded
+    else if (json['recorded_url'] != null &&
+        json['recorded_url'].toString().isNotEmpty) {
+      type = "recorded";
+    }
+
+    // 3️⃣ 🔥 TEMP FIX: detect from booking data (IMPORTANT)
+    else if ((json['program_name'] ?? "")
+        .toString()
+        .toLowerCase()
+        .contains("recorded")) {
+      type = "recorded";
+    }
+
+    // 4️⃣ fallback
+    else {
+      type = "live";
+    }
+
+//     // 🚑 TEMP FIX: Backend not sending program type
+// if (type == null) {
+//   debugPrint("⚠️ BACKEND MISSING 'type' → DEFAULTING TO LIVE");
+//   type = "live";
+// }
 
 
     // Language can be string or list

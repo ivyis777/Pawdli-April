@@ -79,5 +79,10 @@ class AppUrl {
   static String ActiveCoupons = "$mainURL/user/coupon/available/";
   static String ApplyCouponURL = "$mainURL/user/coupon/detail/";
   static String AdminOrderList = "$mainURL/user/admin/orders/";
+  static String FollowersList = "$mainURL/user/followers/";
+  static String FollowingList = "$mainURL/user/following/";
+  static String UserProfile = "$mainURL/user/userprofile/";
+  static String Follow = "$mainURL/user/follow/";
+
 
 }

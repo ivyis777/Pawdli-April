@@ -33,6 +33,15 @@ class ReelsController extends GetxController {
       page: page,
     );
 
+    for (var reel in newReels) {
+      final profileData = await ApiService.getUserProfile(reel.userId);
+
+      reel.userProfilePic =
+          profileData?["user"]["profile_picture"] ?? "";
+
+      print("INJECTED IMAGE: ${reel.userProfilePic}");
+    }
+
     if (newReels.isEmpty) {
       hasMore.value = false;
     } else {

@@ -1,42 +1,110 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pawlli/core/storage_manager/colors.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'package:pawlli/data/controller/myreelscontroller.dart';
-import 'package:pawlli/gen/assests.gen.dart';
+import 'package:pawlli/data/api service.dart';
+import 'package:pawlli/presentation/screens/reelspage/followerslist.dart';
+import 'package:pawlli/presentation/screens/reelspage/followingflist.dart';
 import 'package:pawlli/presentation/screens/reelspage/reels.dart';
-import 'package:pawlli/presentation/screens/reelspage/savereel.dart';
 
-class MyReelsPage extends StatelessWidget {
-  MyReelsPage({super.key});
+class MyReelsPage extends StatefulWidget {
+  const MyReelsPage({super.key});
 
-  // ❗ Do NOT create a new controller here
+  @override
+  State<MyReelsPage> createState() => _MyReelsPageState();
+}
+
+class _MyReelsPageState extends State<MyReelsPage> {
   final MyReelsController controller = Get.find<MyReelsController>();
+
+  List<Map<String, dynamic>> followersList = [];
+  List<Map<String, dynamic>> followingList = [];
+
+  int followersCount = 0;
+  int followingCount = 0;
+
+  String profileImage = "";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProfileData();
+  }
+
+  /// 🔥 FETCH PROFILE (BEST - SINGLE API)
+  Future<void> fetchProfileData() async {
+    final userId = GetStorage().read("user_id") ?? 0;
+
+    final data = await ApiService.getUserProfile(userId);
+
+    if (data != null) {
+      setState(() {
+        profileImage = data["user"]["profile_picture"] ?? "";
+        followersCount = data["stats"]["followers_count"];
+        followingCount = data["stats"]["following_count"];
+      });
+
+      print("PROFILE IMAGE: $profileImage"); // debug
+    }
+
+    /// also fetch full lists
+    await fetchFollowers();
+    await fetchFollowing();
+  }
+
+  Future<void> fetchFollowers() async {
+    final userId = GetStorage().read("user_id") ?? 0;
+
+    final data = await ApiService.getFollowers(userId);
+
+    setState(() {
+      followersList = data;
+    });
+  }
+
+  Future<void> fetchFollowing() async {
+    final userId = GetStorage().read("user_id") ?? 0;
+
+    final data = await ApiService.getFollowing(userId);
+
+    setState(() {
+      followingList = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final String? username = LocalStorage.getUserName();
+
     return Scaffold(
       backgroundColor: Colors.white,
+
+      /// 🔥 APP BAR
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
         child: Stack(
           children: [
             AppBar(
               centerTitle: true,
-              title:  Text("My Videos".tr),
+              title: Text(
+                username ?? "User",
+                style: const TextStyle(color: Colors.black),
+              ),
               backgroundColor: Colors.white,
             ),
 
-            // ---------------- TOP IMAGE POSITIONED ----------------
             Positioned(
               top: 0,
               left: 0,
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.55,
                 height: MediaQuery.of(context).size.height * 0.10,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                      'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png',
+                    ),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -45,196 +113,233 @@ class MyReelsPage extends StatelessWidget {
           ],
         ),
       ),
-      body: Obx(() {
-        print("📌 UI Rebuild — Reels Count: ${controller.myReels.length}");
 
+      body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(
-              child: CircularProgressIndicator(color: Colors.white));
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (controller.myReels.isEmpty) {
-          return  Center(
-            child:
-                Text("No reels found".tr, style: TextStyle(color: Colors.white70)),
+          return Center(
+            child: Text("No reels found".tr),
           );
         }
 
-        return GridView.builder(
-          padding: const EdgeInsets.all(6),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // 2 per row
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 0.65, // Taller TikTok style
-          ),
-          itemCount: controller.myReels.length,
-          itemBuilder: (_, i) {
-            final reel = controller.myReels[i];
+        return Column(
+          children: [
 
-            return GestureDetector(
-              onTap: () {
-                Navigator.of(context, rootNavigator: true).push(
-                  MaterialPageRoute(
-                    builder: (_) => ReelsPage(
-                      reels: controller.myReels,
-                      startIndex: i,
+            /// 🔥 PROFILE HEADER
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              child: Row(
+                children: [
+
+                  /// PROFILE IMAGE
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Colors.transparent,
+                    child: ClipOval(
+                      child: profileImage.isNotEmpty
+                          ? Image.network(
+                              profileImage,
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) {
+                                print("❌ IMAGE ERROR: $profileImage");
+                                return Image.asset(
+                                  "assets/images/profile_avatar1.png",
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            )
+                          : Image.asset(
+                              "assets/images/profile_avatar1.png",
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
-                );
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(14),
-                child: Stack(
-                  children: [
-                    // ---------------------- THUMBNAIL ----------------------
-                    Positioned.fill(
-                      child: FadeInImage.assetNetwork(
-                        placeholder:
-                            "assets/images/profile_avatar.png", // Add a placeholder image
-                        image: reel.thumbnailUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
 
-                    // ---------------------- GRADIENT OVERLAY ----------------------
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              Colors.black.withOpacity(0.35),
-                              Colors.transparent,
+                  /// STATS
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+
+                        /// POSTS
+                        Column(
+                          children: [
+                            Text(
+                              controller.myReels.length.toString(),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const Text("Posts"),
+                          ],
+                        ),
+
+                        /// FOLLOWERS
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => FollowersScreen(
+                                  followers: followersList,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                followersCount.toString(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const Text("Pawllowers"),
                             ],
                           ),
                         ),
-                      ),
-                    ),
 
-                    // ---------------------- MORE OPTIONS (⋮) ----------------------
-                    Positioned(
-                      top: 6,
-                      left: 6,
-                      child: PopupMenuButton<String>(
-                        icon: const Icon(Icons.more_vert, color: Colors.white),
-                        onSelected: (value) async {
-                          if (value == 'delete') {
-                            Get.defaultDialog(
-                              title: "Delete Video".tr,
-                              middleText:
-                                  "Are you sure you want to delete this video permanently?".tr,
-                              textConfirm: "Delete".tr,
-                              textCancel: "Cancel".tr,
-                              confirmTextColor: Colors.white,
-                              onConfirm: () {
-                                controller.deleteReel(reel.id);
-                                Get.back();
-                              },
+                        /// FOLLOWING
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => FollowingScreen(
+                                  following: followingList,
+                                ),
+                              ),
                             );
-                          }
-                        },
-                        itemBuilder: (_) => [
-                           PopupMenuItem(
-                            value: 'delete'.tr,
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete, size: 18, color: Colors.red),
-                                SizedBox(width: 8),
-                                Text("Delete".tr),
-                              ],
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                followingCount.toString(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const Text("Pawllowing"),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            /// 🔥 REELS GRID
+            Expanded(
+              child: GridView.builder(
+                padding: const EdgeInsets.all(6),
+                gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  childAspectRatio: 0.65,
+                ),
+                itemCount: controller.myReels.length,
+                itemBuilder: (_, i) {
+                  final reel = controller.myReels[i];
+
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                          builder: (_) => ReelsPage(
+                            reels: controller.myReels,
+                            startIndex: i,
+                          ),
+                        ),
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Stack(
+                        children: [
+
+                          Positioned.fill(
+                            child: FadeInImage.assetNetwork(
+                              placeholder:
+                                  "assets/images/profile_avatar1.png",
+                              image: reel.thumbnailUrl,
+                              fit: BoxFit.cover,
                             ),
                           ),
+
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                  colors: [
+                                    Colors.black.withOpacity(0.35),
+                                    Colors.transparent,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          Positioned(
+                            bottom: 8,
+                            right: 8,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.6),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                _formatDuration(reel.duration),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 11),
+                              ),
+                            ),
+                          ),
+
+                          if (reel.likesCount > 0)
+                            Positioned(
+                              bottom: 8,
+                              left: 8,
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.favorite,
+                                      color: Colors.red, size: 18),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    reel.likesCount.toString(),
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
                         ],
                       ),
                     ),
-
-// ---------------------- DESCRIPTION (SINGLE LINE) ----------------------
-                    if (reel.caption.isNotEmpty)
-                      Positioned(
-                        bottom: 30, // 👈 ABOVE like & play icons
-                        left: 8,
-                        right: 8,
-                        child: Text(
-                          reel.caption,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 6,
-                                color: Colors.black,
-                                offset: Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                    // ---------------------- PLAY ICON ----------------------
-                    // const Positioned(
-                    //   bottom: 8,
-                    //   right: 8,
-                    //   child: Icon(
-                    //     Icons.play_circle_fill,
-                    //     size: 26,
-                    //     color: Colors.white,
-                    //   ),
-                    // ),
-
-                    // ---------------------- DURATION BADGE ----------------------
-                    Positioned(
-                      bottom: 8,
-                      right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.6),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          _formatDuration(reel.duration),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 11),
-                        ),
-                      ),
-                    ),
-
-                    // ---------------------- LIKES COUNT ----------------------
-                    if (reel.likesCount > 0)
-                      Positioned(
-                        bottom: 8,
-                        left: 8,
-                        child: Row(
-                          children: [
-                            const Icon(Icons.favorite,
-                                color: Colors.red, size: 18),
-                            const SizedBox(width: 4),
-                            Text(
-                              reel.likesCount.toString(),
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ],
         );
       }),
     );
   }
 }
 
-/// ⭐ ADD THIS OUTSIDE THE CLASS
+/// ✅ KEEP THIS
 String _formatDuration(double seconds) {
   final int s = seconds.toInt();
   final int min = s ~/ 60;

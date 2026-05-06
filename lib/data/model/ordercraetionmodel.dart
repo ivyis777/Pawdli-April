@@ -30,14 +30,16 @@ class OrderCreationModel {
 
 class SlotDetails {
   int? slotId;
+  int? sessionId;
   String? startTime;
   String? endTime;
   String? station;
 
-  SlotDetails({this.slotId, this.startTime, this.endTime, this.station});
+  SlotDetails({this.slotId, this.sessionId, this.startTime, this.endTime, this.station});
 
   SlotDetails.fromJson(Map<String, dynamic> json) {
     slotId = json['slot_id'];
+    sessionId = json['session_id'];
     startTime = json['start_time'];
     endTime = json['end_time'];
     station = json['station'];
@@ -46,6 +48,7 @@ class SlotDetails {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['slot_id'] = this.slotId;
+    data['session_id'] = this.sessionId;
     data['start_time'] = this.startTime;
     data['end_time'] = this.endTime;
     data['station'] = this.station;

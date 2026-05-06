@@ -20,6 +20,7 @@ import 'package:pawlli/presentation/screens/pawlli%20radio/streamvideopage.dart'
 import 'package:pawlli/presentation/screens/slots/slots_and_time.dart';
 import 'package:pawlli/presentation/slotpaymentverificationpage/paymentfailure.dart';
 import 'package:pawlli/presentation/slotpaymentverificationpage/paymentsuccess.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
@@ -142,36 +143,49 @@ class _PawlliRadioState extends State<PawlliRadio> {
   }
 
   DateTime? _parseStartTime(String date, String timeRange) {
-    try {
-      if (date.trim().isEmpty || timeRange.trim().isEmpty)
-        throw FormatException('Empty date or timeRange');
-      final startTimeStr = timeRange.split('-').first.trim(); // e.g. "15:00"
-      final combined = "$date $startTimeStr"; // e.g. "2025-06-04 15:00"
-      final format = DateFormat("yyyy-MM-dd HH:mm");
-      final parsed = format.parseStrict(combined).toLocal();
-      // debugPrint("✅ Parsed local start time: $parsed");
-      return parsed;
-    } catch (e) {
-      debugPrint("❌ Failed to parse start time ($date, $timeRange): $e");
-      return null;
+  try {
+    if (date.trim().isEmpty || timeRange.trim().isEmpty) {
+      throw FormatException('Empty date or timeRange');
     }
+
+    // ✅ CLEAN TIME STRING PROPERLY
+    final rawStart = timeRange.split('-').first;
+    final cleanedStart = rawStart
+        .replaceAll('\u00A0', '') // remove non-breaking space
+        .replaceAll(RegExp(r'\s+'), '') // remove all spaces
+        .trim();
+
+    final combined = "$date $cleanedStart";
+
+    print("🧪 Cleaned Start Time: $combined");
+
+    final format = DateFormat("yyyy-MM-dd HH:mm");
+
+    return format.parseStrict(combined).toLocal();
+  } catch (e) {
+    debugPrint("❌ Failed to parse start time ($date, $timeRange): $e");
+    return null;
   }
+}
 
   DateTime? _parseEndTime(String date, String timeRange) {
-    try {
-      if (date.trim().isEmpty || timeRange.trim().isEmpty)
-        throw FormatException('Empty date or timeRange');
-      final endTimeStr = timeRange.split('-').last.trim();
-      final combined = "$date $endTimeStr";
-      final format = DateFormat("yyyy-MM-dd HH:mm");
-      final parsed = format.parseStrict(combined).toLocal();
-      // debugPrint("✅ Parsed local end time: $parsed");
-      return parsed;
-    } catch (e) {
-      debugPrint("❌ Failed to parse end time ($date, $timeRange): $e");
-      return null;
-    }
+  try {
+    final rawEnd = timeRange.split('-').last;
+    final cleanedEnd = rawEnd
+        .replaceAll('\u00A0', '')
+        .replaceAll(RegExp(r'\s+'), '')
+        .trim();
+
+    final combined = "$date $cleanedEnd";
+
+    final format = DateFormat("yyyy-MM-dd HH:mm");
+
+    return format.parseStrict(combined).toLocal();
+  } catch (e) {
+    debugPrint("❌ Failed to parse end time ($date, $timeRange): $e");
+    return null;
   }
+}
 
   bool isProgramExpired(String date, String timeRange) {
     try {
@@ -955,6 +969,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
         debugPrint("📌 Program Type: ${program.type}");
         debugPrint("📌 Booking ID: ${program.bookingId}");
         debugPrint("📌 Session ID: ${program.sessionId}");
+        debugPrint("📌 LOCAL Session ID: $_sessionId");
         debugPrint("📌 Is Host: ${program.isHost}");
 
         if (program.type == "recorded") {
@@ -971,7 +986,11 @@ class _PawlliRadioState extends State<PawlliRadio> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
-                radius: screenWidth * 0.06, backgroundImage: AssetImage(image)),
+              radius: screenWidth * 0.06,
+              backgroundImage: image.toString().startsWith("http")
+                  ? NetworkImage(image)
+                  : AssetImage(image) as ImageProvider,
+            ),
             SizedBox(width: screenWidth * 0.04),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1251,6 +1270,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
   }
 
   Future<void> handleProgramStart(
+    
     int userId,
     int bookingId,
     String programTime,
@@ -1262,7 +1282,9 @@ class _PawlliRadioState extends State<PawlliRadio> {
     try {
       _isRejoinInProgress = true;
       setState(() => _isLoading = true);
-
+      print("🔥 handleProgramStart CALLED");
+      print("🔥 handleProgramStart CALLED");
+      print("🚀 CALLING startCall API");
       // Time validation
       final parts = programTime.split('-');
       if (parts.length != 2) throw FormatException("Invalid time range format");
@@ -1317,6 +1339,8 @@ class _PawlliRadioState extends State<PawlliRadio> {
         bookingId: bookingId,
         callType: programType,
       );
+
+      print("🚀 CALLING startCall API");
       print('Start Call API Result: $result');
 
       if (!mounted) return;
@@ -1344,7 +1368,14 @@ class _PawlliRadioState extends State<PawlliRadio> {
 
       _sessionId = responseData['session_id'] ?? responseData['new_session_id'];
 
-      await Future.delayed(Duration(milliseconds: 300));
+        // ✅ ADD THIS LINE (VERY IMPORTANT)
+        await programController.loadProgramList(
+          userId!,
+          widget.radioid!,
+          DateFormat('yyyy-MM-dd').format(_selectedDate),
+        );
+
+        await Future.delayed(Duration(milliseconds: 300));
 
       if (!mounted) return;
 
@@ -1436,6 +1467,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
             programType: callType,
             isCaller: false,
             sessionId: sessionId,
+            hostUid: response['host_uid'], 
           ),
         ),
       );
@@ -1474,39 +1506,204 @@ class _PawlliRadioState extends State<PawlliRadio> {
   }
 
   Future<void> _handleLiveProgram(dynamic program) async {
-    final int uid = userId ?? 0;
-    final int bookingId = program.bookingId;
-    final int? sessionId = program.sessionId;
+  final int uid = userId ?? 0;
+  final int bookingId = program.bookingId;
+  final int? sessionId = program.sessionId;
 
-    debugPrint("🟢 LIVE PROGRAM FLOW");
-    debugPrint("👤 User ID: $uid");
-    debugPrint("📘 Booking ID: $bookingId");
-    debugPrint("🎥 Session ID: $sessionId");
+  debugPrint("🟢 LIVE PROGRAM FLOW");
+  debugPrint("👤 User ID: $uid");
+  debugPrint("📘 Booking ID: $bookingId");
+  debugPrint("🎥 Session ID: $sessionId");
 
-    // ---------------- HOST ----------------
-    if (program.isHost == true) {
-      debugPrint("🎙 HOST STARTING SESSION");
+  // ---------------- HOST ----------------
+  if (program.isHost == true) {
+    debugPrint("🎙 HOST FLOW");
 
-      await handleProgramStart(
-        uid,
-        bookingId,
-        program.slotTime,
-        program.date,
-        program.programType,
-      );
+    if (sessionId != null) {
+      debugPrint("♻️ HOST REJOIN → restartCall");
+
+      final restartResult = await ApiService.restartCall(uid, sessionId);
+
+      print("🔁 Restart API Result: $restartResult");
+
+      if (restartResult != null) {
+        final response = restartResult['response'] ?? restartResult;
+
+        Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (_) => VideoCallPage(
+              userId: uid,
+              channelName: response['channel_name'],
+              token: response['token'],
+              uid: response['agora_uid'],
+              appId: "daed82b7feea4990bf7fb43d9addd091",
+              programType: program.programType,
+              isCaller: true,
+              sessionId: response['new_session_id'] ?? sessionId,
+            ),
+          ),
+        );
+      } else {
+        Fluttertoast.showToast(msg: "Failed to rejoin session");
+      }
+
       return;
     }
 
-    // ---------------- LISTENER ----------------
-    if (sessionId == null) {
-      Fluttertoast.showToast(
-        msg: "Host has not started the session yet".tr,
-      );
-      return;
-    }
+    // 🆕 START NEW SESSION
+    await handleProgramStart(
+      uid,
+      bookingId,
+      program.slotTime,
+      program.date,
+      program.programType,
+    );
 
-    debugPrint("🎧 LISTENER JOINING SESSION");
-
-    await handleJoinCall(uid, sessionId);
+    return;
   }
+
+  // ---------------- LISTENER ----------------
+  // ---------------- LISTENER ----------------
+debugPrint("🎧 LISTENER FLOW");
+
+// ✅ STEP 1: Refresh program list to get latest sessionId
+await programController.loadProgramList(
+  userId!,
+  widget.radioid!,
+  DateFormat('yyyy-MM-dd').format(_selectedDate),
+);
+
+// small delay to ensure data updated
+await Future.delayed(Duration(milliseconds: 300));
+
+// ✅ STEP 2: Get updated program
+dynamic updatedProgram;
+
+try {
+  updatedProgram = programController.programList.value?.data
+      ?.firstWhere((p) => p.bookingId == program.bookingId);
+} catch (e) {
+  updatedProgram = null;
+}
+
+// ✅ STEP 3: Get latest sessionId
+final int? updatedSessionId = updatedProgram?.sessionId;
+
+print("🔥 UPDATED SESSION ID: $updatedSessionId");
+
+// ✅ STEP 4: Check again
+if (updatedSessionId == null) {
+  Fluttertoast.showToast(
+    msg: "Host has not started the session yet",
+  );
+  return;
+}
+
+// ---------------- PERMISSIONS ----------------
+if (await Permission.camera.isPermanentlyDenied ||
+    await Permission.microphone.isPermanentlyDenied) {
+  await openAppSettings();
+  return;
+}
+
+final status = await [
+  Permission.camera,
+  Permission.microphone,
+].request();
+
+if (!status[Permission.camera]!.isGranted ||
+    !status[Permission.microphone]!.isGranted) {
+  Fluttertoast.showToast(msg: "Enable camera & microphone permissions");
+  return;
+}
+
+// ✅ STEP 5: Join with UPDATED sessionId
+await handleJoinCall(uid, updatedSessionId);
+}
+
+  // Future<void> _handleLiveProgram(dynamic program) async {
+  //   final int uid = userId ?? 0;
+  //   final int bookingId = program.bookingId;
+  //   final int? sessionId = program.sessionId ?? _sessionId;
+
+  //   debugPrint("🟢 LIVE PROGRAM FLOW");
+  //   debugPrint("👤 User ID: $uid");
+  //   debugPrint("📘 Booking ID: $bookingId");
+  //   debugPrint("🎥 Session ID: $sessionId");
+
+  //   // ---------------- HOST ----------------
+  //   // ✅ STEP 3: HOST FLOW FIX
+
+  //     if (sessionId != null) {
+  //       debugPrint("♻️ HOST REJOIN → restartCall");
+
+  //       final restartResult = await ApiService.restartCall(uid, sessionId);
+
+  //       print("🔁 Restart API Result: $restartResult");
+
+  //       if (restartResult != null) {
+  //         final response = restartResult['response'] ?? restartResult;
+
+  //         Navigator.of(context, rootNavigator: true).push(
+  //           MaterialPageRoute(
+  //             fullscreenDialog: true,
+  //             builder: (_) => VideoCallPage(
+  //               userId: uid,
+  //               channelName: response['channel_name'],
+  //               token: response['token'],
+  //               uid: response['agora_uid'],
+  //               appId: "daed82b7feea4990bf7fb43d9addd091",
+  //               programType: program.programType,
+  //               isCaller: true,
+  //               sessionId: response['new_session_id'] ?? sessionId,
+  //             ),
+  //           ),
+  //         );
+  //       } else {
+  //         Fluttertoast.showToast(msg: "Failed to rejoin session");
+  //       }
+
+  //       return;
+  //     }
+
+  //     // 🔥 ONLY START IF NO SESSION
+  //     await handleProgramStart(
+  //       uid,
+  //       bookingId,
+  //       program.slotTime,
+  //       program.date,
+  //       program.programType,
+  //     );
+
+  //   // ---------------- LISTENER ----------------
+  //   if (sessionId == null) {
+  //     Fluttertoast.showToast(
+  //       msg: "Host has not started the session yet".tr,
+  //     );
+  //     return;
+  //   }
+
+  //   debugPrint("🎧 LISTENER JOINING SESSION");
+
+  //   // ✅ CHECK PERMISSION FOR LISTENER ALSO
+  //   if (await Permission.camera.isPermanentlyDenied ||
+  //       await Permission.microphone.isPermanentlyDenied) {
+  //     await openAppSettings();
+  //     return;
+  //   }
+
+  //   final status = await [
+  //     Permission.camera,
+  //     Permission.microphone,
+  //   ].request();
+
+  //   if (!status[Permission.camera]!.isGranted ||
+  //       !status[Permission.microphone]!.isGranted) {
+  //     Fluttertoast.showToast(msg: "Enable camera & microphone permissions");
+  //     return;
+  //   }
+
+  //   await handleJoinCall(uid, sessionId);
+  // }
 }

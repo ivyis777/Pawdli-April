@@ -7,6 +7,7 @@ import 'package:get_storage/get_storage.dart' as storage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/controller/getuserprofilecontroller.dart';
@@ -158,10 +159,28 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           _countryController.text = userData.country ?? '';
           _pincodeController.text = userData.pincode?.toString() ?? '';
 
-          if (userData.profilePicture?.isNotEmpty == true) {
-            _networkImageUrl = userData.profilePicture;
+          print("PROFILE IMAGE FROM API: ${userData.profilePicture}");
+
+          String? rawImage = userData.profilePicture;
+
+          if (rawImage != null && rawImage.isNotEmpty) {
+            /// ✅ REMOVE FIRST "/"  →  "/https..." → "https..."
+            if (rawImage.startsWith('/')) {
+              rawImage = rawImage.substring(1);
+            }
+
+            /// ✅ DECODE URL → https%3A → https:
+            rawImage = Uri.decodeFull(rawImage);
+
+            print("FINAL IMAGE URL: $rawImage");
+
+            _networkImageUrl = rawImage;
+
+            /// ✅ SAVE CLEAN URL
+            LocalStorage.saveProfileImage(_networkImageUrl!);
           } else {
             _networkImageUrl = null;
+            LocalStorage.clearProfileImage();
           }
 
           switch (userData.gender?.toLowerCase()) {
@@ -342,10 +361,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                           errorWidget: (context, url, error) =>
                                               Icon(Icons.error),
                                         )
-                                      : SizedBox(
-                                          width: 160,
-                                          height: 160,
-                                        )),
+                                      : Image.asset(
+                                        "assets/images/profile_avatar1.png",
+                                        fit: BoxFit.cover,
+                                      )),
                             ),
                           ),
                         ),

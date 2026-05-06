@@ -950,6 +950,7 @@ static Future<TransactionsModel?> fetchtransaction({required int userId}) async 
     return null;
   }
 }
+
 static Future<ProgramListModel?> fetchProgramList(int userId,int radioid, String date) async {
   final box = storage.GetStorage();
   userId ??= box.read(LocalStorageConstants.userId); 
@@ -4625,6 +4626,119 @@ static Future<List<CompetitionModel>> fetchCompetitionButton() async {
     return [];
   }
 }
+
+ /// 🔹 GET USER PROFILE
+  static Future<Map<String, dynamic>?> getUserProfile(int userId) async {
+
+    String? accessToken = await getAccessToken();
+
+    if (accessToken == null) {
+      print("❌ No access token found");
+      return null;
+    }
+
+    final response = await http.get(
+      Uri.parse("${AppUrl.UserProfile}$userId/"),
+      headers: {"Authorization": "Bearer $accessToken"},
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+    return null;
+  }
+
+  /// 🔹 GET FOLLOWERS
+  static Future<List<Map<String, dynamic>>> getFollowers(int userId) async {
+
+    String? accessToken = await getAccessToken();
+
+    if (accessToken == null) {
+      print("❌ No access token found");
+      return [];
+    }
+
+    final response = await http.get(
+      Uri.parse("${AppUrl.FollowersList}$userId/"),
+      headers: {"Authorization": "Bearer $accessToken"},
+    );
+
+    if (response.statusCode == 200) {
+      return List<Map<String, dynamic>>.from(jsonDecode(response.body));
+    }
+    return [];
+  }
+
+  /// 🔹 GET FOLLOWING
+  static Future<List<Map<String, dynamic>>> getFollowing(int userId) async {
+
+    String? accessToken = await getAccessToken();
+
+    if (accessToken == null) {
+      print("❌ No access token found");
+      return [];
+    }
+
+    final response = await http.get(
+      Uri.parse("${AppUrl.FollowingList}$userId/"),
+      headers: {"Authorization": "Bearer $accessToken"},
+    );
+
+    if (response.statusCode == 200) {
+      return List<Map<String, dynamic>>.from(jsonDecode(response.body));
+    }
+    return [];
+  }
+
+  /// 🔹 TOGGLE FOLLOW
+  static Future<bool> toggleFollow(int userId, bool currentState) async {
+
+    String? accessToken = await getAccessToken();
+
+    if (accessToken == null) {
+      print("❌ No access token found");
+      return currentState;
+    }
+
+    final response = await http.post(
+      Uri.parse("${AppUrl.Follow}$userId/"),
+      headers: {
+        "Authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      /// API gives only message → so we toggle manually
+      if (data["message"] == "Followed") return true;
+      if (data["message"] == "Unfollowed") return false;
+    }
+
+    return currentState;
+  }
+
+  // Future<bool> toggleFollow(int userId) async {
+  //   final token = GetStorage().read("access") ?? "";
+
+  //   final url = "https://app.pawdli.com/user/follow/$userId/";
+
+  //   final response = await http.post(
+  //     Uri.parse(url),
+  //     headers: {
+  //       "Authorization": "Bearer $token",
+  //       "Content-Type": "application/json",
+  //     },
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     final data = jsonDecode(response.body);
+  //     return data["is_following"];
+  //   }
+
+  //   return false;
+  // }
 
 }
 

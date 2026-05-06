@@ -63,7 +63,14 @@ class _StreamVideoPageState extends State<StreamVideoPage> {
     });
 
     try {
-      _controller = VideoPlayerController.networkUrl(Uri.parse(currentUrl));
+      // ✅ FIX: Ensure full URL
+      String finalUrl = currentUrl.startsWith("http")
+          ? currentUrl
+          : "https://pawlli-podcasts.s3.ap-south-1.amazonaws.com$currentUrl";
+
+      debugPrint("🎬 FINAL PLAY URL: $finalUrl");
+
+      _controller = VideoPlayerController.networkUrl(Uri.parse(finalUrl));
 
       await _controller.initialize();
       await _controller.play();

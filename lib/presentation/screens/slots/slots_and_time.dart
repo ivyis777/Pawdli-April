@@ -108,7 +108,8 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
             height: screenHeight * 0.10,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(Assets.images.topimage.path),
+                image: NetworkImage(
+                  'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
                 fit: BoxFit.cover,
               ),
             ),

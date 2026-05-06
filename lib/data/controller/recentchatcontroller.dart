@@ -12,13 +12,36 @@ class RecentPetChatController extends GetxController {
     fetchRecentChatsForPet(petId);
   }
 
+  String fixImageUrl(String url) {
+  if (url.isEmpty) return url;
+
+  String decoded = Uri.decodeFull(url);
+
+  if (decoded.startsWith('/http')) {
+    decoded = decoded.substring(1);
+  }
+
+  decoded = decoded.replaceFirst('https:/', 'https://');
+
+  return decoded;
+}
+
   Future<void> fetchRecentChatsForPet(String petId) async {
     isLoading.value = true;
     errorMessage.value = '';
     try {
       final chats = await ApiService.fetchRecentPetChat(petId: petId);
       if (chats != null && chats.isNotEmpty) {
-        recentChats.value = chats;
+        final fixedChats = chats.map((chat) {
+        if (chat.withPet?.petProfileImage != null &&
+            chat.withPet!.petProfileImage!.isNotEmpty) {
+          chat.withPet!.petProfileImage =
+              fixImageUrl(chat.withPet!.petProfileImage!);
+        }
+        return chat;
+      }).toList();
+
+      recentChats.value = fixedChats;
       } else {
         recentChats.clear();
         errorMessage.value = "No chats found.";

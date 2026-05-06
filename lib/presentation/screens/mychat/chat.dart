@@ -342,10 +342,10 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                           // Pet image (only if exists)
                           if (fullPetImage != null)
                             Positioned(
-                              bottom: 10,
+                              bottom: 15,
                               left: 20,
                               child: CircleAvatar(
-                                radius: 40,
+                                radius: 35,
                                 backgroundColor:
                                     Colours.brownColour.withOpacity(0.2),
                                 backgroundImage:

@@ -416,12 +416,38 @@ https://pawlli.app/product/$productId
 
                 const SizedBox(height: 8),
 
-                _ImageCard(
-                  screenWidth: screenWidth,
-                  imageUrls:
-                      (selectedVariant?.productImages.isNotEmpty ?? false)
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+
+                    // 🔥 GRADIENT BACKGROUND
+                    gradient: const LinearGradient(
+                          colors: [
+                            Color.fromARGB(255, 247, 178, 2),
+                            Color.fromARGB(210, 253, 253, 253),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        offset: Offset(1, 2),
+                      ),
+                    ],
+                  ),
+
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: _ImageCard(
+                      screenWidth: screenWidth,
+                      imageUrls: (selectedVariant?.productImages.isNotEmpty ?? false)
                           ? selectedVariant!.productImages
                           : productImages,
+                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 12),
@@ -751,10 +777,10 @@ class _ImageCardState extends State<_ImageCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 15,
-      color: Colours.secondarycolour,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: widget.imageUrls.isNotEmpty
@@ -787,11 +813,6 @@ class _ImageCardState extends State<_ImageCard> {
                             widget.imageUrls[index],
                             width: widget.screenWidth * 0.80,
                             fit: BoxFit.contain,
-                            errorBuilder: (_, __, ___) => const Icon(
-                              Icons.image_not_supported,
-                              size: 60,
-                              color: Colors.grey,
-                            ),
                           ),
                         );
                       },
@@ -800,7 +821,6 @@ class _ImageCardState extends State<_ImageCard> {
 
                   const SizedBox(height: 10),
 
-                  // 🔵 DOT INDICATOR
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(

@@ -9,6 +9,7 @@ import 'package:pawlli/data/model/ordermodel.dart';
 import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/presentation/screens/pet_store/pet_storemain.dart';
 import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   final Order order;
@@ -28,6 +29,23 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   void initState() {
     super.initState();
     currentStatus = widget.order.orderStatus;
+  }
+
+  Future<void> _contactUs() async {
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'contact@pawdli.com',
+      // queryParameters: {
+      //   'subject': 'Order Support',
+      //   'body': 'Hi, I need help regarding my cancelled order.',
+      // },
+    );
+
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+    } else {
+      Get.snackbar("Error", "Could not open email app");
+    }
   }
 
   Future<void> _downloadInvoice() async {
@@ -94,7 +112,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   });
 
                   Get.snackbar("Success", "Order cancelled successfully".tr);
-                } else {
+                }else {
                   Get.snackbar("Error", "Failed to cancel order".tr);
                 }
               },
@@ -202,23 +220,31 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       _showCancelDialog();
                     } else if (value == "invoice") {
                       _downloadInvoice();
+                    } else if (value == "contact") {
+                      _contactUs();
                     }
                   },
                   itemBuilder: (context) => [
-                    // ⭐ ALWAYS SHOW INVOICE
-                     PopupMenuItem(
+                    // ✅ Invoice
+                    PopupMenuItem(
                       value: "invoice",
                       child: Text("Download Invoice".tr),
                     ),
 
-                    // ⭐ SHOW CANCEL ONLY WHEN ALLOWED
+                    // ✅ Cancel (only when allowed)
                     if (currentStatus.toLowerCase() != "order cancelled" &&
                         currentStatus.toLowerCase() != "cancelled" &&
                         currentStatus.toLowerCase() != "delivered")
-                       PopupMenuItem(
+                      PopupMenuItem(
                         value: "cancel",
                         child: Text("Cancel Order".tr),
                       ),
+
+                    // ✅ Contact Us (ALWAYS SHOW)
+                    PopupMenuItem(
+                      value: "contact",
+                      child: Text("Contact Us".tr),
+                    ),
                   ],
                 ),
               ],

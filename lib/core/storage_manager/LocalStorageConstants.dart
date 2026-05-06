@@ -45,6 +45,30 @@ class LocalStorage {
     _box.remove(LocalStorageConstants.mobile);
   }
 
+      /// ================= USERNAME =================
+
+    static void saveUserName(String name) {
+      _box.write(LocalStorageConstants.username, name);
+    }
+
+    static String? getUserName() {
+      return _box.read(LocalStorageConstants.username);
+    }
+
+  /// ================= PROFILE IMAGE =================
+
+    static void saveProfileImage(String imageUrl) {
+      _box.write(LocalStorageConstants.profileImage, imageUrl);
+    }
+
+    static String? getProfileImage() {
+      return _box.read(LocalStorageConstants.profileImage);
+    }
+
+    static void clearProfileImage() {
+      _box.remove(LocalStorageConstants.profileImage);
+    }
+
   // ================= FULL LOGOUT =================
 
   static void clearAll() {

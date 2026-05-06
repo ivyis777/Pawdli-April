@@ -41,6 +41,7 @@ class _ReelsPageState extends State<ReelsPage> {
   List<ReelItem> filteredReels = [];
 
   List<GlobalKey<_ReelPlayerState>> pageKeys = [];
+  
 
   @override
   void initState() {
@@ -86,6 +87,7 @@ class _ReelsPageState extends State<ReelsPage> {
       final token = GetStorage().read("access") ?? "";
       final url =
           "https://app.pawdli.com/user/short_video/search?username=$query";
+          
 
       final response = await http.get(
         Uri.parse(url),
@@ -95,12 +97,17 @@ class _ReelsPageState extends State<ReelsPage> {
         },
       );
 
+      print("REELS API RAW: ${response.body}");
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
         // API expects list of objects converted to ReelItem
-        List<ReelItem> results =
-            (data as List).map((json) => ReelItem.fromJson(json)).toList();
+        List<ReelItem> results = (data as List).map((json) {
+          final reel = ReelItem.fromJson(json);
+
+          return reel;
+        }).toList();
 
         setState(() {
           filteredReels = results;
@@ -234,12 +241,15 @@ class _ReelsPageState extends State<ReelsPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     final reelsToShow = showSearchBar ? filteredReels : widget.reels;
+
+    print("FIRST REEL IMAGE: ${reelsToShow.isNotEmpty ? reelsToShow[0].userProfilePic : ""}");
 
     if (pageKeys.length != reelsToShow.length) {
       regenerateKeysFor(reelsToShow);
     }
+    
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -302,6 +312,7 @@ class _ReelsPageState extends State<ReelsPage> {
                       MaterialPageRoute(
                         builder: (_) => UserReelsPage(
                           username: reelsToShow[index].username,
+                          userId: reelsToShow[index].userId,
                         ),
                       ),
                     );
@@ -455,6 +466,21 @@ class _ReelPlayerState extends State<ReelPlayer> {
 //   return text;
 // }
 
+// String _fixImageUrl(String url) {
+
+//    print("ORIGINAL URL: $url");
+//   String fixed = url;
+
+//   if (fixed.startsWith('/')) {
+//     fixed = fixed.substring(1);
+//   }
+
+// print("USER PROFILE PIC RAW: ${widget.reel.userProfilePic}");
+// print("USER PROFILE PIC LENGTH: ${widget.reel.userProfilePic.length}");
+
+//   return Uri.decodeFull(fixed);
+// }
+
   String timeAgo(DateTime date) {
     final diff = DateTime.now().difference(date);
 
@@ -591,8 +617,17 @@ class _ReelPlayerState extends State<ReelPlayer> {
     super.dispose();
   }
 
+//   bool hasValidImage(String? image) {
+//   return image != null &&
+//          image.isNotEmpty &&
+//          image != "null";
+// }
+
   @override
   Widget build(BuildContext context) {
+    print("FINAL UI IMAGE: ${widget.reel.userProfilePic}");
+    print("USER PROFILE PIC RAW: ${widget.reel.userProfilePic}");
+    print("USER PROFILE PIC LENGTH: ${widget.reel.userProfilePic.length}");
     return Stack(
       children: [
         if (_video.value.isInitialized)
@@ -755,13 +790,22 @@ class _ReelPlayerState extends State<ReelPlayer> {
                 Row(
                   children: [
                     CircleAvatar(
+                      radius: 35,
                       backgroundColor: Colors.transparent,
-                      radius: 30,
-                      backgroundImage: widget.reel.userProfilePic.isNotEmpty
-                          ? NetworkImage(widget.reel.userProfilePic)
-                          : const NetworkImage(
-                                  "https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/profile_avatar.png")
-                              as ImageProvider,
+                      child: ClipOval(
+                        child: widget.reel.userProfilePic.isNotEmpty
+                          ? Image.network(
+                              widget.reel.userProfilePic.trim(), // 🔥 IMPORTANT
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) {
+                                print("❌ IMAGE LOAD FAILED: ${widget.reel.userProfilePic}");
+                                return Image.asset("assets/images/profile_avatar1.png");
+                              },
+                            )
+                          : Image.asset("assets/images/profile_avatar1.png"),
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Expanded(

@@ -470,6 +470,10 @@ void _showPermissionDialog() {
   // ✅ Initialize Agora engine
   _engine = createAgoraRtcEngine();
   await _engine.initialize(RtcEngineContext(appId: widget.appId));
+  // ✅ iOS BLACK SCREEN FIX
+  await _engine.setParameters('{"rtc.video.decoder_type": 1}');
+  await _engine.setParameters('{"rtc.video.render_mode": 1}');
+  await _engine.setParameters('{"rtc.video.hardware_acceleration": 0}');
   await _engine.setParameters('''
 {
   "rtc.enable_turn": true,
@@ -511,7 +515,9 @@ _engine.registerEventHandler(
     // ✅ Remote join
     onUserJoined: (connection, remoteUid, elapsed) {
       print("👤 Remote user joined: $remoteUid");
-      setState(() => remoteUids.add(remoteUid));
+      if (!remoteUids.contains(remoteUid)) {
+        setState(() => remoteUids.add(remoteUid));
+      }
     },
 
     // ✅ Remote leave
@@ -542,18 +548,24 @@ _engine.registerEventHandler(
 
   // ✅ Enable and configure video
   await _engine.enableVideo();
-  await _engine.setVideoEncoderConfiguration(const VideoEncoderConfiguration(
-    dimensions: VideoDimensions(width: 640, height: 480),
-    frameRate: 15,
-    bitrate: 0,
-  ));
+  await _engine.setVideoEncoderConfiguration(
+    const VideoEncoderConfiguration(
+      dimensions: VideoDimensions(width: 360, height: 640),
+      frameRate: 15,
+      bitrate: 800,
+    ),
+  );
 
   // ✅ Setup local video view
-  await _engine.setupLocalVideo(const VideoCanvas(uid: 0));
-  await _engine.startPreview();
-debugPrint("🎫 Agora Token: ${widget.token}");
-debugPrint("📡 Channel Name: ${widget.channelName}");
-debugPrint("👤 UID: ${widget.uid}");
+  await _engine.setupLocalVideo(const VideoCanvas());
+  // await _engine.startPreview();
+  debugPrint("🎫 Agora Token: ${widget.token}");
+  debugPrint("📡 Channel Name: ${widget.channelName}");
+  debugPrint("👤 UID: ${widget.uid}");
+
+  await _engine.enableLocalVideo(true);
+  await _engine.muteLocalVideoStream(false);
+
   // ✅ Join channel
   await _engine.joinChannel(
     token: widget.token!,
@@ -686,7 +698,7 @@ Future<void> _sendCameraStateToParticipants() async {
        AgoraVideoView(
   controller: VideoViewController(
     rtcEngine: _engine,
-    canvas: const VideoCanvas(uid: 0),
+    canvas: VideoCanvas(uid: widget.uid!),
   ),
 )
 

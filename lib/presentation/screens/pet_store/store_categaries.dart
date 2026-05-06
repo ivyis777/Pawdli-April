@@ -432,65 +432,110 @@ class _ProductListScreenState extends State<ProductListScreen> {
         margin: const EdgeInsets.only(bottom: 20),
         child: Stack(clipBehavior: Clip.none, children: [
           /// BOTTOM CARD
-          Card(
-            color: Colours.primarycolour,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            elevation: 3,
-            margin: const EdgeInsets.only(top: 150),
-            child: Container(
-              constraints: const BoxConstraints(
-                minWidth: 400,
-                maxWidth: 400,
-                minHeight: 140,
-                maxHeight: 140,
-              ),
-              padding: EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 40),
-                  Text(title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: getResponsiveFont(context, 14),
-                          fontWeight: FontWeight.bold,
-                          color: Colours.black)),
-                  SizedBox(height: 5),
-                  Text(category,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: getResponsiveFont(context, 12),
-                          color: Colours.secondarycolour,
-                          fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
+          Container(
+  margin: const EdgeInsets.only(top: 150),
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(16),
+
+    // 🔥 TOP → BOTTOM GRADIENT
+    gradient: const LinearGradient(
+      colors: [
+        Color.fromARGB(210, 253, 253, 253),
+        Color.fromARGB(255, 247, 178, 2),
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    ),
+
+    boxShadow: const [
+      BoxShadow(
+        color: Colors.black26,
+        blurRadius: 4,
+        offset: Offset(1, 2),
+      ),
+    ],
+  ),
+
+  child: Container(
+    constraints: const BoxConstraints(
+      minWidth: 400,
+      maxWidth: 400,
+      minHeight: 140,
+      maxHeight: 140,
+    ),
+    padding: const EdgeInsets.all(12),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 40),
+
+        Text(
+          title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: getResponsiveFont(context, 14),
+            fontWeight: FontWeight.bold,
+            color: Colours.black,
           ),
+        ),
+
+        const SizedBox(height: 5),
+
+        Text(
+          category,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: getResponsiveFont(context, 12),
+            color: Colours.secondarycolour,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    ),
+  ),
+),
 
           /// IMAGE CARD
-          Card(
-            color: Colours.secondarycolour,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            elevation: 4,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: image.isNotEmpty
-                  ? Opacity(
-                      opacity: isOutOfStock ? 0.4 : 1.0,
-                      child: Image.network(
-                        image,
-                        height: 180,
-                        width: 360,
-                        fit: BoxFit.contain,
-                      ),
-                    )
-                  : const Icon(Icons.pets, size: 60, color: Colors.grey),
+          Container(
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(16),
+
+    // 🔥 TOP → BOTTOM GRADIENT
+    gradient: const LinearGradient(
+      colors: [
+        Color.fromARGB(255, 247, 178, 2),
+        Color.fromARGB(210, 253, 253, 253),
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    ),
+
+    boxShadow: const [
+      BoxShadow(
+        color: Colors.black26,
+        blurRadius: 4,
+        offset: Offset(1, 2),
+      ),
+    ],
+  ),
+
+  child: ClipRRect(
+    borderRadius: BorderRadius.circular(16),
+    child: image.isNotEmpty
+        ? Opacity(
+            opacity: isOutOfStock ? 0.4 : 1.0,
+            child: Image.network(
+              image,
+              height: 180,
+              width: 360,
+              fit: BoxFit.contain,
             ),
-          ),
+          )
+        : const Icon(Icons.pets, size: 60, color: Colors.grey),
+  ),
+),
 
           /// 🚫 OUT OF STOCK BADGE
           if (isOutOfStock)
@@ -657,7 +702,7 @@ class _AnimatedHeartState extends State<_AnimatedHeart>
           isLiked ? Icons.favorite : Icons.favorite_border,
           color: isLiked
               ? const Color.fromARGB(208, 244, 67, 54)
-              : const Color.fromARGB(190, 212, 207, 207),
+              : Colors.black,
           size: 20,
         ),
       ),

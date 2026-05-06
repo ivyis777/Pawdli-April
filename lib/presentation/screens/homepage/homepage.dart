@@ -465,12 +465,83 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.symmetric(
                   horizontal: horizontalPadding, vertical: 30),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+
+                  /// 🔥 PAWEELS TITLE
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TweenAnimationBuilder(
+                        tween: Tween<double>(begin: 0.8, end: 1),
+                        duration: const Duration(milliseconds: 800),
+                        curve: Curves.easeOut,
+                        builder: (context, value, child) {
+                          return Transform.scale(
+                            scale: value,
+                            child: Opacity(
+                              opacity: value,
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "Paw",
+                                      style: TextStyle(
+                                        color: Colours.primarycolour, // 🔥 first color
+                                        fontSize: getResponsiveFont(context, 20),
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.5,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: "EELS",
+                                      style: TextStyle(
+                                        color: Colours.brownColour, // 🔥 second color
+                                        fontSize: getResponsiveFont(context, 20),
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          final controller = Get.find<ReelsController>();
+
+                          if (controller.reels.isNotEmpty) {
+                            Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute(
+                                builder: (_) => ReelsPage(
+                                  reels: controller.reels,
+                                  startIndex: 0, // open from first reel
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: Text(
+                          "See All",
+                          style: TextStyle(
+                            fontSize: getResponsiveFont(context, 14),
+                            color: Colours.primarycolour,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
                   // Dynamic competition button
                   CompetitionCountdownButton(),
 
                   const SizedBox(height: 5),
+
+                  
 
                   // Grid scroller for uploaded videos
                   Obx(() {
@@ -897,7 +968,7 @@ class _HomePageState extends State<HomePage> {
                           imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png',
                           width: screenWidth * 0.1,
                           height: screenHeight * 0.12,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                           ),
                     ),
 
@@ -981,7 +1052,7 @@ class _HomePageState extends State<HomePage> {
                         imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png',
                         width: screenWidth * 0.1,
                         height: screenHeight * 0.12,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                     ),
 
@@ -1092,7 +1163,7 @@ class _HomePageState extends State<HomePage> {
                             imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png',
                             width: screenWidth * 0.05,
                             height: screenHeight * 0.12,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.contain,
                         ),
                       ),
 
@@ -1177,7 +1248,7 @@ class _HomePageState extends State<HomePage> {
                         imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png',
                         width: screenWidth * 0.1,
                         height: screenHeight * 0.12,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                     ),
 
@@ -1273,7 +1344,7 @@ class _HomePageState extends State<HomePage> {
                           imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png',
                           width: screenWidth * 0.1,
                           height: screenHeight * 0.12,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                         ),
                       ),
 
@@ -1361,7 +1432,7 @@ class _HomePageState extends State<HomePage> {
                         imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png',
                         width: screenWidth * 0.1,
                         height: screenHeight * 0.12,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                     ),
 

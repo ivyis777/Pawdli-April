@@ -38,7 +38,10 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>This app needs camera to take photos</string>
+	<string>This app requires camera access for live streaming</string>
+
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs microphone</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app needs location to fetch address</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -69,6 +72,17 @@
 				</dict>
 			</array>
 		</dict>
+	</dict>
+
+	<!-- ✅ ADD THIS AFTER ABOVE BLOCK -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<true/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
