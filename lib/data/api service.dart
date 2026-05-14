@@ -4272,6 +4272,45 @@ static Future<List<Order>> getOrders() async {
     }
 
 
+    static Future<bool> updateOrderStatus({
+      required int orderId,
+      required String status,
+      String? description, // ✅ OPTIONAL
+    }) async {
+      try {
+        final token = await getAccessToken();
+
+        final uri = Uri.parse(
+          "${AppUrl.mainURL}/user/admin/orders/$orderId/update/",
+        );
+
+        Map<String, dynamic> body = {
+          "order_status": status,
+        };
+
+        /// ✅ ONLY ADD DESCRIPTION IF EXISTS
+        if (description != null && description.isNotEmpty) {
+          body["admin_description"] = description;
+        }
+
+        final res = await http.patch(
+          uri,
+          headers: _headers(token),
+          body: jsonEncode(body),
+        );
+
+        print("UPDATE STATUS CODE: ${res.statusCode}");
+        print("UPDATE RESPONSE: ${res.body}");
+
+        return res.statusCode == 200;
+
+      } catch (e) {
+        print("UPDATE ERROR: $e");
+        return false;
+      }
+    }
+
+
 
   static Future<Order> getOrderDetails(int orderId) async {
     final token = await getAccessToken();

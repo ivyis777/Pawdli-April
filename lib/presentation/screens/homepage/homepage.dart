@@ -128,6 +128,10 @@ class _HomePageState extends State<HomePage> {
   final CompetitionController competitionController =
       Get.put(CompetitionController(), permanent: true);
 
+      bool hasUnreadNotification = true;
+      bool hasUnreadOrders = true;
+      bool hasUnreadGoodbyeBuddy = true;
+
   @override
   void initState() {
     super.initState();
@@ -266,7 +270,11 @@ class _HomePageState extends State<HomePage> {
                       Material(
                         color: Colors.transparent,
                         child: InkWell(
-                          onTap: () {
+                          onTap: () async {
+
+                            setState(() {
+                              hasUnreadNotification = false;
+                            });
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -275,10 +283,29 @@ class _HomePageState extends State<HomePage> {
                           },
                           child: Padding(
                             padding: EdgeInsets.all(10),
-                            child: Icon(
-                              Icons.notifications,
-                              size: screenWidth * 0.08,
-                              color: Colours.brownColour,
+                            child: Stack(
+                              children: [
+
+                                Icon(
+                                  Icons.notifications,
+                                  size: screenWidth * 0.08,
+                                  color: Colours.brownColour,
+                                ),
+
+                                if (hasUnreadNotification)
+                                  Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    child: Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
                         ),
@@ -289,15 +316,39 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
+
+                              setState(() {
+                                hasUnreadOrders = false;
+                              });
+
                               Get.to(() => AdminOrderListPage());
                               print("Super User Clicked");
                             },
                             child: Padding(
                               padding: EdgeInsets.all(10),
-                              child: Icon(
-                                Icons.store_rounded, // 👈 you can change icon
-                                size: screenWidth * 0.08,
-                                color: Colours.primarycolour, // highlight for admin
+                              child: Stack(
+                                children: [
+
+                                  Icon(
+                                    Icons.store_rounded,
+                                    size: screenWidth * 0.08,
+                                    color: Colours.primarycolour,
+                                  ),
+
+                                  if (hasUnreadOrders)
+                                    Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      child: Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
                           ),

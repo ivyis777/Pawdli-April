@@ -696,11 +696,11 @@ Future<void> _sendCameraStateToParticipants() async {
     final views = <Widget>[
       if (!cameraOff)
        AgoraVideoView(
-  controller: VideoViewController(
-    rtcEngine: _engine,
-    canvas: VideoCanvas(uid: widget.uid!),
-  ),
-)
+        controller: VideoViewController(
+          rtcEngine: _engine,
+          canvas: VideoCanvas(uid: widget.uid!),
+        ),
+      )
 
       else
         Container(

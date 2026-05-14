@@ -290,12 +290,13 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                 itemBuilder: (context, index) {
                   final chat = recentChatController.recentChats[index];
                   final petName = chat.withPet?.name ?? "Unknown";
-                  final petImagePath = chat.withPet?.petProfileImage;
+                  final petImagePath = chat.withPet?.petProfileImage ?? '';
 
-                  final String? fullPetImage =
-                      (petImagePath != null && petImagePath.isNotEmpty)
-                          ? '$petImagePath'
-                          : null;
+                    String fullPetImage = '';
+
+                    if (petImagePath.isNotEmpty) {
+                      fullPetImage = petImagePath.replaceAll('https:///', 'https://');
+                    }
 
                   final backgroundAsset = (index % 2 == 0)
                       ? 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/chatyellowcard.png'
@@ -339,18 +340,25 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                             ),
                           ),
 
-                          // Pet image (only if exists)
-                          if (fullPetImage != null)
+                          // Pet image
                             Positioned(
                               bottom: 15,
                               left: 20,
                               child: CircleAvatar(
                                 radius: 35,
-                                backgroundColor:
-                                    Colours.brownColour.withOpacity(0.2),
-                                backgroundImage:
-                                    CachedNetworkImageProvider(fullPetImage),
-                                onBackgroundImageError: (_, __) {},
+                                backgroundColor: Colours.brownColour.withOpacity(0.2),
+                                backgroundImage: (fullPetImage != null &&
+                                        fullPetImage.isNotEmpty)
+                                    ? CachedNetworkImageProvider(fullPetImage)
+                                    : null,
+                                child: (fullPetImage == null ||
+                                        fullPetImage.isEmpty)
+                                    ? Icon(
+                                        Icons.pets,
+                                        color: Colours.brownColour,
+                                        size: 28,
+                                      )
+                                    : null,
                               ),
                             ),
 

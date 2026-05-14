@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:video_compress/video_compress.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'package:pawlli/core/storage_manager/local_storage.dart';
@@ -101,10 +102,21 @@ class UploadReelController extends GetxController {
 
        debugPrint("🔐 Access Token Found");
 
+       // 🔥 COMPRESS & CONVERT IOS MOV → MP4
+      final MediaInfo? mediaInfo = await VideoCompress.compressVideo(
+        videoFile.path,
+        quality: VideoQuality.HighestQuality,
+      );
+
+      final File finalVideo =
+          mediaInfo?.file ?? videoFile;
+
+      debugPrint("🎥 FINAL VIDEO PATH: ${finalVideo.path}");
+
       // 🔥 Upload with progress (token refresh handled in API)
       final UploadReelResponse? result =
           await ApiService.uploadReelWithProgress(
-        videoFile: videoFile,
+        videoFile: finalVideo,
         title: title,
         caption: description,
         token: token,

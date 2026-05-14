@@ -119,35 +119,38 @@ class OrdersPage extends StatelessWidget {
   String getDisplayStatus(Order order) {
     final status = order.orderStatus.toLowerCase();
 
-    // 🔴 FIRST PRIORITY — Cancelled
-    if (status == "cancelled" || status == "order cancelled") {
+    /// ❌ CANCELLED
+    if (status == "cancelled" ||
+        status == "order cancelled") {
       return "Cancel";
     }
 
-    // 🟢 Delivered
+    /// ✅ PAID
+    if (status == "paid") {
+      return "Paid";
+    }
+
+    /// ✅ CONFIRMED (ADMIN ACCEPTED)
+    if (status == "confirmed") {
+      return "Confirmed";
+    }
+
+    /// 🚚 SHIPPED
+    if (status == "shipped") {
+      return "Shipped";
+    }
+
+    /// 📦 DELIVERED
     if (status == "delivered") {
       return "Delivered";
     }
 
-    // 🟢 Razorpay payment completed
-    if (order.razorpayPaymentId != null &&
-        order.razorpayPaymentId!.isNotEmpty) {
-      return "Confirmed";
-    }
-
-    // 🟢 Wallet-paid orders
-    if (order.finalAmount > 0 &&
-        order.razorpayOrderId == null &&
-        order.razorpayPaymentId == null) {
-      return "Confirmed";
-    }
-
-    // 🟡 COD orders
+    /// ⏳ PENDING
     if (status == "pending") {
-      return "Confirmed";
+      return "Pending";
     }
 
-    return order.orderStatus.capitalize ?? "Pending".tr;
+    return order.orderStatus.capitalize ?? "Pending";
   }
 
   Widget _orderCard(Order order, BuildContext context) {
@@ -277,17 +280,25 @@ class OrdersPage extends StatelessWidget {
 // Status color helper
   Color _statusColor(String status) {
     switch (status.toLowerCase()) {
+
       case "paid":
-      case "ordered":
+        return Colors.orange;
+
       case "confirmed":
         return Colors.blue;
-      case "processing":
+
       case "shipped":
-        return Colors.orange;
+        return Colors.purple;
+
       case "delivered":
         return Colors.green;
+
       case "cancel":
         return Colors.red;
+
+      case "pending":
+        return Colors.grey;
+
       default:
         return Colors.grey;
     }

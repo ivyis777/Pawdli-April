@@ -131,13 +131,16 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
           ],
         ),
       ),
-      body: SingleChildScrollView(
+      body: GestureDetector(
+  onTap: () {
+    FocusScope.of(context).unfocus();
+  },
+  child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             // ---------------- VIDEO PREVIEW ----------------
-// ---------------- VIDEO PREVIEW WITH CENTER PLAY ICON ----------------
-// ---------------- FIXED SIZE VIDEO PREVIEW ----------------
+
             if (_videoController.value.isInitialized)
               GestureDetector(
                 onTap: () {
@@ -228,7 +231,9 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
 
                         bool ok = await controller.uploadReel(
                           videoFile: widget.videoFile,
-                          title: titleController.text,
+                          title: titleController.text.isEmpty
+                          ? "Reel"
+                          : titleController.text,
                           description: descController.text,
                         );
 
@@ -316,6 +321,7 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
             }),
           ],
         ),
+      ),
       ),
     );
   }

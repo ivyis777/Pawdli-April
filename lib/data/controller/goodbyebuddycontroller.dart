@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pawlli/data/api%20service.dart';
-import 'package:pawlli/presentation/screens/homepage/homepage.dart';
+import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 
 class GoodByeBuddyController extends GetxController {
   RxBool isLoading = false.obs;
@@ -71,7 +71,7 @@ class GoodByeBuddyController extends GetxController {
               Get.back();
 
               // 🔹 Navigate to Home page
-              Get.offAll(() => const HomePage());
+              Get.offAll(() => MainLayout());
             },
             child: const Text("OK"),
           ),

@@ -36,19 +36,33 @@ String formatToIndianTime(String dateTime) {
   }
 }
 
-Color getStatusColor(String status) {
-  switch (status.toLowerCase()) {
-    case "paid":
-    case "confirmed":
-      return Colors.blue;
-    case "pending":
-      return Colors.orange;
-    case "cancelled":
-      return Colors.red;
-    default:
-      return Colors.grey;
+  Color getStatusColor(String status) {
+
+    switch (status.toLowerCase()) {
+
+      case "paid":
+        return Colors.orange;
+
+      case "confirmed":
+        return Colors.blue;
+
+      case "shipped":
+        return Colors.purple;
+
+      case "delivered":
+        return Colors.green;
+
+      case "cancelled":
+        return Colors.red;
+
+      case "pending":
+        return Colors.grey;
+
+      default:
+        return Colors.grey;
+    }
   }
-}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,6 +191,9 @@ Color getStatusColor(String status) {
 
                   onTap: () {
                     Get.to(() => AdminOrderDetailspage(order: order));
+
+                    controller.fetchOrders();
+
                   },
                 ),
               );

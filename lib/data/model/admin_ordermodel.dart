@@ -8,7 +8,8 @@ class AdminOrdermodel {
   final String status;
   final String? shippingAddress;
   final String createdAt;
-  final List<OrderItemModel> items; // ✅ NEW
+  final String? adminDescription; 
+  final List<OrderItemModel> items; 
 
   AdminOrdermodel({
     required this.orderId,
@@ -18,7 +19,8 @@ class AdminOrdermodel {
     required this.status,
     this.shippingAddress,
     required this.createdAt,
-    required this.items, // ✅ NEW
+    this.adminDescription, 
+    required this.items, 
   });
 
   factory AdminOrdermodel.fromJson(Map<String, dynamic> json) {
@@ -30,6 +32,7 @@ class AdminOrdermodel {
       status: json['order_status'],
       shippingAddress: json['shipping_address'],
       createdAt: json['created_at'],
+      adminDescription: json['admin_description'], 
       items: (json['items'] as List<dynamic>?)
               ?.map((e) => OrderItemModel.fromJson(e))
               .toList() ??

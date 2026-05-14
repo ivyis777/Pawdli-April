@@ -442,6 +442,57 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
 
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks.first;
+
+        // ✅ GET PINCODE
+        String postalCode = place.postalCode ?? "";
+
+        print("📮 Selected Pincode: $postalCode");
+
+        // ✅ Allowed pincode series
+          List<String> allowedSeries = ["50", "56"];
+
+          // ✅ Check service availability
+          bool isServiceAvailable = allowedSeries.any(
+            (code) => postalCode.startsWith(code),
+          );
+
+        // ❌ NOT SERVICE AREA
+        if (!isServiceAvailable) {
+          setState(() {
+            _isLoadingLocation = false;
+            _showMap = false;
+          });
+
+          Get.dialog(
+            AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              title: const Text(
+                "Service Not Available",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: const Text(
+                "We are not servicing in this location.\nWe will start soon as possible.",
+                textAlign: TextAlign.center,
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
+          );
+
+          return;
+        }
+
+        // ✅ ADDRESS BUILD
         String address = [
           place.street,
           place.locality,
@@ -451,6 +502,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
 
         setState(() {
           _locationString = address;
+
           _selectedLocation = latLng.LatLng(
             _selectedMapLocation!.latitude,
             _selectedMapLocation!.longitude,

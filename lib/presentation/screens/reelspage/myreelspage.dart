@@ -125,7 +125,17 @@ class _MyReelsPageState extends State<MyReelsPage> {
           );
         }
 
-        return Column(
+        return RefreshIndicator(
+          onRefresh: () async {
+
+            /// REFRESH REELS
+            await controller.fetchMyReels();
+
+            /// REFRESH PROFILE
+            await fetchProfileData();
+          },
+
+          child: Column(
           children: [
 
             /// 🔥 PROFILE HEADER
@@ -290,6 +300,81 @@ class _MyReelsPageState extends State<MyReelsPage> {
                             ),
                           ),
 
+                          /// 🔴 DELETE MENU
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: PopupMenuButton<String>(
+                              icon: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.4),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.more_vert,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+
+                              onSelected: (value) async {
+                                if (value == "delete") {
+
+                                  /// CONFIRM DIALOG
+                                  final confirm = await showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: const Text("Delete Reel"),
+                                      content: const Text(
+                                        "Are you sure you want to delete this reel?",
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context, false);
+                                          },
+                                          child: const Text("Cancel"),
+                                        ),
+
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context, true);
+                                          },
+                                          child: const Text(
+                                            "Delete",
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+
+                                  if (confirm == true) {
+                                    controller.deleteReel(reel.id.toString());
+                                  }
+                                }
+                              },
+
+                              itemBuilder: (_) => [
+                                const PopupMenuItem(
+                                  value: "delete",
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                        size: 18,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text("Delete"),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
                           Positioned(
                             bottom: 8,
                             right: 8,
@@ -333,6 +418,7 @@ class _MyReelsPageState extends State<MyReelsPage> {
               ),
             ),
           ],
+          ),
         );
       }),
     );
