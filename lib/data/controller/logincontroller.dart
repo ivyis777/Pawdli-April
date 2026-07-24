@@ -4,6 +4,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/api%20service.dart';
+import 'package:pawlli/data/controller/DoctorconsultationController.dart';
 import 'package:pawlli/data/controller/reelitemcontroller.dart';
 
 class LoginController extends GetxController {
@@ -11,7 +12,6 @@ class LoginController extends GetxController {
   var isLoading = false.obs;
   var isNavigating = false.obs;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-
 
   Future<({bool success, String message})> loginWithOtp({
     required String email,
@@ -46,13 +46,16 @@ class LoginController extends GetxController {
         print("EMAIL: ${user.email}");
         print("IS SUPER USER: ${user.isSuperuser}");
         print("IS STAFF: ${user.isStaff}");
+        print("IS DOCTOR: ${user.isDoctor}");
 
         print("API isSuperuser: ${user.isSuperuser}");
 
         bool isSuper = user.isSuperuser == true;
+        bool isDoctor = user.isDoctor == true;
 
         // ✅ DEBUG
         print("SAVED isSuperUser: $isSuper");
+        print("SAVED isDoctor: $isDoctor");
         
 
         // ✅ SAVE SESSION
@@ -66,6 +69,11 @@ class LoginController extends GetxController {
         box.write(LocalStorageConstants.name, user.name ?? '');
         // box.write(LocalStorageConstants.isSuperUser, user.isSuperuser);
         box.write(LocalStorageConstants.isSuperUser, isSuper);
+        box.write(LocalStorageConstants.isDoctor, isDoctor);
+
+        if (isDoctor) {
+          Get.find<DoctorConsultationController>().startPolling();
+        }
 
         // 🔔 ✅ SUBSCRIBE TO ALL USERS TOPIC
         try {
@@ -151,76 +159,81 @@ class LoginController extends GetxController {
   }
 
     Future<({bool success, String message})> loginWithGoogle() async {
-    try {
-      isLoading.value = true;
 
-      await _googleSignIn.signOut(); 
-      // await _googleSignIn.disconnect();
+      try {
 
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+        isLoading.value = true;
 
-      if (googleUser == null) {
-        return (success: false, message: "Google sign-in cancelled".tr);
+        await _googleSignIn.signOut();
+
+        final GoogleSignInAccount? googleUser =
+            await _googleSignIn.signIn();
+
+        if (googleUser == null) {
+          return (
+            success: false,
+            message: "Google sign in cancelled",
+          );
+        }
+
+        final response = await ApiService.googleLoginAPI(
+          email: googleUser.email,
+        );
+
+        if (response.status == true && response.data != null) {
+
+          final user = response.data!;
+
+          bool isSuper = user.isSuperuser == true;
+          bool isDoctor = user.isDoctor == true;
+
+          box.write(LocalStorageConstants.sessionManager, true);
+          box.write(LocalStorageConstants.userId, user.userId);
+          box.write(LocalStorageConstants.userEmail, user.email);
+          box.write(LocalStorageConstants.username, user.username ?? "");
+          box.write(LocalStorageConstants.name, user.name ?? "");
+          box.write(LocalStorageConstants.access,user.tokens?.access ?? "");
+          box.write(LocalStorageConstants.refresh,user.tokens?.refresh ?? "");
+          box.write(LocalStorageConstants.isSuperUser,isSuper);
+          box.write(LocalStorageConstants.isDoctor,isDoctor);
+
+          if (isDoctor) {
+            Get.find<DoctorConsultationController>()
+                .startPolling();
+          }
+
+          try {
+            await FirebaseMessaging.instance.subscribeToTopic("all_users");
+          } catch (_) {}
+
+          if (Get.isRegistered<ReelsController>()) {
+            Get.find<ReelsController>().fetchReels();
+          }
+
+          return (
+            success: true,
+            message:
+                response.message ?? "Login Successful",
+          );
+        }
+
+        return (
+          success: false,
+          message:
+              response.message ?? "Google Login Failed",
+        );
+
+      } catch (e) {
+
+        return (
+          success: false,
+          message: e.toString(),
+        );
+
+      } finally {
+        isLoading.value = false;
       }
-
-      final email = googleUser.email;
-
-      final fcmToken = box.read('fcm_token') ?? "";
-      final apnsToken = box.read('apns_token') ?? "";
-
-      final response = await ApiService.loginAPI(
-        email: email,
-        otp: "", 
-        through_google: true,
-        fcm_token: fcmToken,
-        apns_token: apnsToken,
-      );
-
-      if (response.status == true && response.data != null) {
-
-        final user = response.data!;
-
-        print("API isSuperuser: ${user.isSuperuser}");
-        bool isSuper = user.isSuperuser == true;
-        print("SAVED isSuperUser: $isSuper");
-        
-
-        // ✅ Save session
-        box.remove(LocalStorageConstants.isSuperUser);
-        box.write(LocalStorageConstants.sessionManager, true);
-        box.write(LocalStorageConstants.userId, user.userId);
-        box.write(LocalStorageConstants.userEmail, user.email);
-        box.write(LocalStorageConstants.username, user.username ?? '');
-        box.write(LocalStorageConstants.access, user.tokens?.access ?? '');
-        box.write(LocalStorageConstants.refresh, user.tokens?.refresh ?? '');
-        box.write(LocalStorageConstants.name, user.name ?? '');
-
-        box.write(LocalStorageConstants.isSuperUser, isSuper);
-
-
-        // try {
-        //   await FirebaseMessaging.instance.subscribeToTopic("all_users");
-        //   print("✅ Subscribed to topic: all_users");
-        // } catch (e) {
-        //   print("⚠️ FCM subscribe skipped: $e");
-        // }
-        print("✅ GOOGLE LOGIN SUCCESS RETURNING TRUE");
-        return (success: true, message: "Login successful".tr);
-      }
-
-      print("❌ GOOGLE LOGIN FAILED CONDITION");
-      print("status: ${response.status}");
-      print("data: ${response.data}");
-      print("tokens: ${response.data?.tokens}");
-
-      return (success: false, message: response.message ?? "Login failed".tr);
-    } catch (e) {
-      print("❌ GOOGLE LOGIN ERROR: $e");
-      return (success: false, message: "Google login failed".tr);
-    } finally {
-      isLoading.value = false;
     }
-  }
 
     // Future<({bool success, String message})> loginWithApple() async {
     //   print("🍎 Apple login started");

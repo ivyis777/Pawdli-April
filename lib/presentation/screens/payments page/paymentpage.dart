@@ -87,7 +87,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                      'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                      'https://app.pawdli.com/media/static/topimage.png'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -266,8 +266,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                                       color: Colors.black,
                                                     ),
                                                   ),
-                                                  if (payment.programName !=
-                                                      null)
+                                                  if (payment.programName.isNotEmpty)
                                                     TextSpan(
                                                       text:
                                                           ' - ${payment.programName}',
@@ -306,12 +305,21 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                             width: screenSize.width * 0.02),
                                         GestureDetector(
                                           onTap: () async {
-                                            String transactionId =
-                                                payment.razorpayTransactionId;
+                                            if (payment.razorpayTransactionId.isEmpty) {
+                                              Get.snackbar(
+                                                "Info",
+                                                "Receipt not available for this payment",
+                                              );
+                                              return;
+                                            }
 
-                                            File? pdfFile = await ApiService
-                                                .downloadPdfWithToken(
-                                                    transactionId);
+                                            File? pdfFile = await ApiService.downloadPdfWithToken(
+                                              payment.razorpayTransactionId,
+                                            );
+
+                                            if (pdfFile != null) {
+                                              await OpenFilex.open(pdfFile.path);
+                                            }
 
                                             if (pdfFile != null) {
                                               await OpenFilex.open(
@@ -322,9 +330,9 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                             }
                                           },
 
-                                          child: payment.purpose != 'Wallet'
+                                          child: payment.razorpayTransactionId.isNotEmpty
                                               ? Image.network(
-                                                  'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/pdf.png',
+                                                  'https://app.pawdli.com/media/static/pdf.png',
                                                   width: 30,
                                                   height: 30,
                                                   fit: BoxFit.cover,

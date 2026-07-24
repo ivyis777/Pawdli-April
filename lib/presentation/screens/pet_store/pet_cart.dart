@@ -37,7 +37,12 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      cartController.loadCart();
+      cartController.loadCart().then((_) {
+        if (cartController.cartItems.length == 1) {
+          selectedCartIds.clear();
+          selectedCartIds.add(cartController.cartItems.first.cartId!);
+        }
+      });
     });
   }
 
@@ -53,6 +58,12 @@ class _CartPageState extends State<CartPage> {
     );
 
     await cartController.loadCart();
+
+    if (cartController.cartItems.length == 1) {
+      selectedCartIds
+        ..clear()
+        ..add(cartController.cartItems.first.cartId!);
+    }
   }
 
   void _decrementQuantity(int index) async {
@@ -66,6 +77,12 @@ class _CartPageState extends State<CartPage> {
       selectedCartIds.remove(item.cartId);
 
       await cartController.loadCart();
+
+      if (cartController.cartItems.length == 1) {
+        selectedCartIds
+          ..clear()
+          ..add(cartController.cartItems.first.cartId!);
+      }
       return;
     }
 
@@ -78,6 +95,12 @@ class _CartPageState extends State<CartPage> {
     );
 
     await cartController.loadCart();
+
+    if (cartController.cartItems.length == 1) {
+      selectedCartIds
+        ..clear()
+        ..add(cartController.cartItems.first.cartId!);
+    }
   }
 
   // ------------------- TOTAL OF SELECTED ITEMS -------------------
@@ -111,7 +134,7 @@ class _CartPageState extends State<CartPage> {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                        'https://app.pawdli.com/media/static/topimage.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -216,9 +239,14 @@ class _CartPageState extends State<CartPage> {
                             return;
                           }
 
-                          Get.to(() => PlaceOrderPage(
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PlaceOrderPage(
                                 selectedCartIds: selectedCartIds.toList(),
-                              ));
+                              ),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colours.primarycolour,
@@ -275,29 +303,30 @@ class _CartPageState extends State<CartPage> {
                     ),
                   ),
                 ),
-                Positioned(
-                  top: -9,
-                  left: -9,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Obx(
-                      () => Checkbox(
-                        value: selectedCartIds.contains(item.cartId),
-                        activeColor: Colours.primarycolour,
-                        onChanged: (value) {
-                          if (value == true) {
-                            selectedCartIds.add(item.cartId!);
-                          } else {
-                            selectedCartIds.remove(item.cartId);
-                          }
-                        },
+                if (cartController.cartItems.length > 1)
+                  Positioned(
+                    top: -9,
+                    left: -9,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.transparent,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Obx(
+                        () => Checkbox(
+                          value: selectedCartIds.contains(item.cartId),
+                          activeColor: Colours.primarycolour,
+                          onChanged: (value) {
+                            if (value == true) {
+                              selectedCartIds.add(item.cartId!);
+                            } else {
+                              selectedCartIds.remove(item.cartId);
+                            }
+                          },
+                        ),
                       ),
                     ),
                   ),
-                )
               ],
             ),
 

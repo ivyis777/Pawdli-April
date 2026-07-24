@@ -46,7 +46,11 @@ class _OTPPageState extends State<OTPPage> {
   @override
   void initState() {
     super.initState();
-    focusNodes[0].requestFocus();
+
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //   focusNodes[0].requestFocus();
+  // });
+
     startTimer();
 
       Future.delayed(Duration(milliseconds: 300), () {
@@ -103,7 +107,7 @@ class _OTPPageState extends State<OTPPage> {
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false, 
+      resizeToAvoidBottomInset: true, 
       backgroundColor: Colours.secondarycolour,
       body: Commonui(
         child: Center(
@@ -325,7 +329,7 @@ class _OTPPageState extends State<OTPPage> {
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
-            maxLength: 4,
+            maxLength: 1,
 
             onChanged: (value) {
               // 🔥 HANDLE FULL OTP PASTE (MAIN FIX)
@@ -348,6 +352,7 @@ class _OTPPageState extends State<OTPPage> {
                   } else {
                     // ✅ LAST BOX → HIDE KEYBOARD
                     FocusScope.of(context).unfocus();
+
                   }
                 } else if (value.isEmpty && index > 0) {
                   FocusScope.of(context).requestFocus(focusNodes[index - 1]);

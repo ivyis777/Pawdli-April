@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
+import 'package:pawlli/data/controller/DoctorconsultationController.dart';
 import 'package:pawlli/data/controller/getuserprofilecontroller.dart';
 import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
@@ -53,9 +54,15 @@ class _ProfilePageState extends State<ProfilePage> {
   final Uri termsUrl =
       Uri.parse('https://www.pawlli.com/terms-and-conditions/');
   final Uri privacyUrl = Uri.parse('https://www.pawlli.com/privacy-policy/');
+  
   Future<void> logout() async {
-    LocalStorage.clearTokens(); // access + refresh
-    // Get.deleteAll(force: true);
+
+    if (Get.isRegistered<DoctorConsultationController>()) {
+      Get.find<DoctorConsultationController>().stopPolling();
+    }
+
+    LocalStorage.clearTokens();
+
     Get.offAll(() => LoginPage());
   }
 
@@ -103,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                        'https://app.pawdli.com/media/static/topimage.png'),
                     fit: BoxFit.cover,
                   ),
                 ),

@@ -7,24 +7,20 @@ class RecentPetChatController extends GetxController {
   var isLoading = false.obs;
   var errorMessage = ''.obs;
 
-  void setSelectedPet(String petId) {
+  Future<void> setSelectedPet(String petId) async {
     selectedPetId.value = petId;
-    fetchRecentChatsForPet(petId);
+    await fetchRecentChatsForPet(petId);
   }
 
   String fixImageUrl(String url) {
-  if (url.isEmpty) return url;
+    if (url.isEmpty) return "";
 
-  String decoded = Uri.decodeFull(url);
+    if (url.startsWith("http")) {
+      return url;
+    }
 
-  if (decoded.startsWith('/http')) {
-    decoded = decoded.substring(1);
+    return "https://app.pawdli.com$url";
   }
-
-  decoded = decoded.replaceFirst('https:/', 'https://');
-
-  return decoded;
-}
 
   Future<void> fetchRecentChatsForPet(String petId) async {
     isLoading.value = true;
@@ -33,11 +29,8 @@ class RecentPetChatController extends GetxController {
       final chats = await ApiService.fetchRecentPetChat(petId: petId);
       if (chats != null && chats.isNotEmpty) {
         final fixedChats = chats.map((chat) {
-        if (chat.withPet?.petProfileImage != null &&
-            chat.withPet!.petProfileImage!.isNotEmpty) {
-          chat.withPet!.petProfileImage =
-              fixImageUrl(chat.withPet!.petProfileImage!);
-        }
+        chat.withPet?.petProfileImage =
+            fixImageUrl(chat.withPet?.petProfileImage ?? "");
         return chat;
       }).toList();
 

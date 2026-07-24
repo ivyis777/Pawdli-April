@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
+import 'package:pawlli/data/controller/TherapyBookingController.dart';
 import 'package:pawlli/data/controller/paymentverificationcontroller.dart';
 import 'package:pawlli/data/model/paymentverificationmodel.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
-import 'package:pawlli/presentation/screens/homepage/homepage.dart';
+import 'package:pawlli/presentation/screens/pet%20therapy/pet_therapy.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
   double screenWidth = MediaQuery.of(context).size.width;
@@ -72,7 +72,7 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
           decoration: BoxDecoration(
             image: DecorationImage(
               image: NetworkImage(
-                  'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                  'https://app.pawdli.com/media/static/topimage.png'),
               fit: BoxFit.cover,
             ),
           ),
@@ -262,11 +262,18 @@ class _TherapyPaymentsuccessState extends State<TherapyPaymentsuccess> {
                             ),
                             SizedBox(height: screenHeight * 0.015),
                             ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
+                              onPressed: () async {
+
+                                if (Get.isRegistered<TherapyBookingController>()) {
+                                  await Get.find<TherapyBookingController>().fetchBookings();
+                                }
+
+                                Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => HomePage()),
+                                    builder: (context) => PetTherapy(),
+                                  ),
+                                  (route) => false,
                                 );
                               },
                               style: ElevatedButton.styleFrom(

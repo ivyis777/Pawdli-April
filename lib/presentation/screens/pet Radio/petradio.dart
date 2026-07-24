@@ -59,7 +59,7 @@ class _PetradioState extends State<Petradio> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                      'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                      'https://app.pawdli.com/media/static/topimage.png'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -114,12 +114,12 @@ class _PetradioState extends State<Petradio> {
                             final radioData =
                                 _petRadioController.petRadioList[index];
                             String backgroundImage = isBrownBackground
-                                ? 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png'
-                                : 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png';
+                                ? 'https://app.pawdli.com/media/static/yellowcard.png'
+                                : 'https://app.pawdli.com/media/static/browncard.png';
 
                             String radioImage = isBrownRadio
-                                ? 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/brownradio.png'
-                                : 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/radio.png';
+                                ? 'https://app.pawdli.com/media/static/brownradio.png'
+                                : 'https://app.pawdli.com/media/static/radio.png';
 
                             isBrownBackground = !isBrownBackground;
                             isBrownRadio = !isBrownRadio;

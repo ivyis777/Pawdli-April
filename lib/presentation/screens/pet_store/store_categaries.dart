@@ -5,7 +5,6 @@ import 'package:pawlli/core/storage_manager/store_like.dart';
 import 'package:pawlli/data/controller/cartviewcontroller.dart';
 import 'package:pawlli/data/controller/storeproductcontroller.dart';
 import 'package:pawlli/data/controller/storesearchcontroller.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/presentation/screens/pet_store/pet_storeproduct.dart';
 import 'package:pawlli/presentation/screens/pet_store/pet_cart.dart';
 
@@ -121,6 +120,19 @@ class _ProductListScreenState extends State<ProductListScreen> {
           return const Center(child: CircularProgressIndicator());
         }
 
+        final products = widget.searchQuery != null
+            ? List.of(searchController.products)
+            : List.of(controller.filteredList);
+
+        // Available products first, Out of Stock last
+        products.sort((a, b) {
+          final aOut = a.isOutOfStock ?? false;
+          final bOut = b.isOutOfStock ?? false;
+
+          if (aOut == bOut) return 0;
+          return aOut ? 1 : -1;
+        });
+
         return Stack(children: [
           Positioned(
             top: 0,
@@ -131,7 +143,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                      'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                      'https://app.pawdli.com/media/static/topimage.png'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -263,13 +275,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   padding: const EdgeInsets.all(16),
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: widget.searchQuery != null
-                      ? searchController.products.length
-                      : controller.filteredList.length,
+                  itemCount: products.length,
                   itemBuilder: (context, index) {
-                    final p = widget.searchQuery != null
-                        ? searchController.products[index]
-                        : controller.filteredList[index];
+                    final p = products[index];
 
                     final bool isOutOfStock = p.isOutOfStock ?? false;
 
@@ -423,9 +431,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
     String? regularPrice,
     bool hasDiscount = false,
     int discountPercent = 0,
-    bool isOutOfStock = false, // 🔥 ADD
+    bool isOutOfStock = false, 
     VoidCallback? onTap,
   }) {
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -433,109 +445,105 @@ class _ProductListScreenState extends State<ProductListScreen> {
         child: Stack(clipBehavior: Clip.none, children: [
           /// BOTTOM CARD
           Container(
-  margin: const EdgeInsets.only(top: 150),
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(16),
+            margin: EdgeInsets.only(top: screenHeight * 0.18),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
 
-    // 🔥 TOP → BOTTOM GRADIENT
-    gradient: const LinearGradient(
-      colors: [
-        Color.fromARGB(210, 253, 253, 253),
-        Color.fromARGB(255, 247, 178, 2),
-      ],
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-    ),
+              // 🔥 TOP → BOTTOM GRADIENT
+              gradient: const LinearGradient(
+                colors: [
+                  Color.fromARGB(210, 253, 253, 253),
+                  Color.fromARGB(255, 247, 178, 2),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
 
-    boxShadow: const [
-      BoxShadow(
-        color: Colors.black26,
-        blurRadius: 4,
-        offset: Offset(1, 2),
-      ),
-    ],
-  ),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 4,
+                  offset: Offset(1, 2),
+                ),
+              ],
+            ),
 
-  child: Container(
-    constraints: const BoxConstraints(
-      minWidth: 400,
-      maxWidth: 400,
-      minHeight: 140,
-      maxHeight: 140,
-    ),
-    padding: const EdgeInsets.all(12),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 40),
+            child: Container(
+              width: screenWidth * 0.94,
+              height: screenHeight * 0.17,
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 40),
 
-        Text(
-          title,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: getResponsiveFont(context, 14),
-            fontWeight: FontWeight.bold,
-            color: Colours.black,
+                  Text(
+                    title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: getResponsiveFont(context, 14),
+                      fontWeight: FontWeight.bold,
+                      color: Colours.black,
+                    ),
+                  ),
+
+                  const SizedBox(height: 5),
+
+                  Text(
+                    category,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: getResponsiveFont(context, 12),
+                      color: Colours.secondarycolour,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-
-        const SizedBox(height: 5),
-
-        Text(
-          category,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: getResponsiveFont(context, 12),
-            color: Colours.secondarycolour,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    ),
-  ),
-),
 
           /// IMAGE CARD
           Container(
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
 
-    // 🔥 TOP → BOTTOM GRADIENT
-    gradient: const LinearGradient(
-      colors: [
-        Color.fromARGB(255, 247, 178, 2),
-        Color.fromARGB(210, 253, 253, 253),
-      ],
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-    ),
+              // 🔥 TOP → BOTTOM GRADIENT
+              gradient: const LinearGradient(
+                colors: [
+                  Color.fromARGB(255, 247, 178, 2),
+                  Color.fromARGB(210, 253, 253, 253),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
 
-    boxShadow: const [
-      BoxShadow(
-        color: Colors.black26,
-        blurRadius: 4,
-        offset: Offset(1, 2),
-      ),
-    ],
-  ),
-
-  child: ClipRRect(
-    borderRadius: BorderRadius.circular(16),
-    child: image.isNotEmpty
-        ? Opacity(
-            opacity: isOutOfStock ? 0.4 : 1.0,
-            child: Image.network(
-              image,
-              height: 180,
-              width: 360,
-              fit: BoxFit.contain,
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 4,
+                  offset: Offset(1, 2),
+                ),
+              ],
             ),
-          )
-        : const Icon(Icons.pets, size: 60, color: Colors.grey),
-  ),
-),
+
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: image.isNotEmpty
+                  ? Opacity(
+                      opacity: isOutOfStock ? 0.4 : 1.0,
+                      child: Image.network(
+                        image,
+                        height: screenHeight * 0.22,
+                        width: screenWidth * 0.93,
+                        fit: BoxFit.contain,
+                      ),
+                    )
+                  : const Icon(Icons.pets, size: 60, color: Colors.grey),
+            ),
+          ),
 
           /// 🚫 OUT OF STOCK BADGE
           if (isOutOfStock)
@@ -616,7 +624,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
           /// ⭐ Floating price tag
           Positioned(
-            top: 165,
+            top: screenHeight * 0.195,
             right: 0,
             child: Card(
               color: Colors.brown,

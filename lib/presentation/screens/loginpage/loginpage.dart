@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -481,11 +482,14 @@ class _LoginPageState extends State<LoginPage> {
                                                   );
 
                                                   if (result.success) {
-                                                    await Future.delayed(
-                                                        const Duration(
-                                                            milliseconds: 300));
-                                                    Get.offAll(
-                                                        () => MainLayout());
+
+                                                    await CachedNetworkImage.evictFromCache(
+                                                      GetStorage().read("profile_picture") ?? "",
+                                                    );
+
+                                                    await Future.delayed(const Duration(milliseconds: 300));
+
+                                                    Get.offAll(() => MainLayout());
                                                   }
                                                 } finally {
                                                   setState(() {
@@ -542,14 +546,18 @@ class _LoginPageState extends State<LoginPage> {
 
                                 ElevatedButton.icon(
                                   onPressed: () async {
+
+                                    print("🔥 GOOGLE BUTTON PRESSED");
+
                                     final result =
                                         await logincontroller.loginWithGoogle();
 
-                                    print("GOOGLE RESULT: ${result.success}");
+                                    print("🔥 GOOGLE RESULT SUCCESS => ${result.success}");
+                                    print("🔥 GOOGLE RESULT MESSAGE => ${result.message}");
 
                                     if (result.success) {
-                                      Get.offAll(
-                                          () => MainLayout()); // 👈 move FIRST
+                                      print("✅ NAVIGATING TO MAINLAYOUT");
+                                      Get.offAll(() => MainLayout());
                                     }
 
                                     Get.snackbar(
@@ -559,7 +567,7 @@ class _LoginPageState extends State<LoginPage> {
                                     );
                                   },
                                   icon: Image.network(
-                                    'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/google.png',
+                                    'https://app.pawdli.com/media/static/google.png',
                                     height: 24,
                                   ),
                                   label: Text(

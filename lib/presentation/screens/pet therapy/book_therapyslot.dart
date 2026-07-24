@@ -5,14 +5,15 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/api%20service.dart';
 import 'package:pawlli/data/app%20url.dart';
+import 'package:pawlli/data/controller/TherapyBookingController.dart';
 import 'package:pawlli/data/controller/paythroughwalletcontroller.dart';
 import 'package:pawlli/data/controller/walletbalancecontroller.dart';
 import 'package:pawlli/data/model/ordercraetionmodel.dart';
 import 'package:pawlli/data/model/paymentverificationmodel.dart';
 import 'package:pawlli/data/model/paythroughwallet.dart';
 import 'package:pawlli/data/model/therapyslot.dart';
-import 'package:pawlli/gen/assests.gen.dart';
-import 'package:pawlli/presentation/screens/homepage/homepage.dart';
+import 'package:pawlli/presentation/screens/pet%20therapy/TherapyBookingListPage.dart';
+import 'package:pawlli/presentation/screens/pet%20therapy/pet_therapy.dart';
 import 'package:pawlli/presentation/screens/therapypaymentverification/therapysuccess.dart';
 import 'package:pawlli/presentation/screens/therapypaymentverification/therapyfailure.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -23,6 +24,7 @@ import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:flutter/services.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
   double screenWidth = MediaQuery.of(context).size.width;
@@ -69,6 +71,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
   int _groupTherapyIndex = 1;
   int _studentsIndex = 1;
   int _employeesIndex = 1;
+  int _memberCount = 1;
 
   final TextEditingController _therapyDetailsController =
       TextEditingController();
@@ -100,19 +103,27 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
   String? _orderId;
   String? user_id;
   bool _isChecked = false;
+
+  double get finalAmount {
+    if (_isOnsite == 'Onsite') {
+      return widget.totalAmount * _memberCount;
+    } else {
+      return widget.totalAmount;
+    }
+  }
   FocusNode _programNameFocus = FocusNode();
   FocusNode _programDescriptionFocus = FocusNode();
   FocusNode _addressFocus = FocusNode();
   final box = GetStorage();
   String selectedProgramType = 'Video';
-  String sanitizePhoneNumber(String input) {
-    String cleaned = input.replaceAll(RegExp(r'[^+\d]'), '');
-    cleaned = cleaned.replaceAll('+', '');
-    if (cleaned.startsWith('91') && cleaned.length == 12) {
-      cleaned = cleaned.replaceFirst('93', '91');
-    }
-    return '+$cleaned';
-  }
+  // String sanitizePhoneNumber(String input) {
+  //   String cleaned = input.replaceAll(RegExp(r'[^+\d]'), '');
+  //   cleaned = cleaned.replaceAll('+', '');
+  //   if (cleaned.startsWith('91') && cleaned.length == 12) {
+  //     cleaned = cleaned.replaceFirst('93', '91');
+  //   }
+  //   return '+$cleaned';
+  // }
 
   @override
   void initState() {
@@ -182,7 +193,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
     Map<String, dynamic> orderData = {
       "user_id": userId,
       "slots": flattenedSlots,
-      "amount": widget.totalAmount.toStringAsFixed(2),
+      "amount": finalAmount.toStringAsFixed(2),
       "currency": "INR",
       "purpose": "PetTherapy",
       "first_name": _FirstNameController.text,
@@ -219,7 +230,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
     String requestUrl = AppUrl.therapyCreateOrderURL;
 
-    if (widget.totalAmount == 0.00) {
+    if (_isOnsite == 'Offsite') {
       try {
         var response = await http.post(
           Uri.parse(requestUrl),
@@ -242,6 +253,21 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
             "📩 Free slot booking response: ${response.statusCode} - ${response.body}");
 
         if (response.statusCode == 200 || response.statusCode == 201) {
+
+          await Future.delayed(const Duration(seconds: 1));
+
+          if (Get.isRegistered<TherapyBookingController>()) {
+            await Get.find<TherapyBookingController>().fetchBookings();
+          }
+
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PetTherapy(),
+            ),
+            (route) => false,
+          );
+
           Get.snackbar(
             "Success".tr,
             "🎉 Slot booked successfully!".tr,
@@ -311,7 +337,8 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
     String generatedReceipt =
         "receipt_${DateTime.now().millisecondsSinceEpoch}";
-    var amountInPaise = (widget.totalAmount * 100).toInt();
+    var amountInPaise =
+        (finalAmount * 100).toInt();
 
     var options = {
       'key': 'rzp_live_hUYYZly69YfdVs',
@@ -371,7 +398,13 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
         currentOrderId = ""; // Clear stored order ID after successful payment
 
-        Navigator.push(
+        await Future.delayed(const Duration(seconds: 1));
+
+        if (Get.isRegistered<TherapyBookingController>()) {
+          await Get.find<TherapyBookingController>().fetchBookings();
+        }
+
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => TherapyPaymentsuccess(
@@ -495,7 +528,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
     Map<String, dynamic> orderData = {
       "user_id": userId,
       "slots": flattenedSlots,
-      "amount": widget.totalAmount.toStringAsFixed(2),
+      "amount": finalAmount.toStringAsFixed(2),
       "currency": "INR",
       "purpose": "PetTherapy",
       "first_name": _FirstNameController.text.trim(),
@@ -569,12 +602,19 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
         margin: const EdgeInsets.all(12),
         borderRadius: 12,
       );
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(),
-        ),
-      );
+      await Future.delayed(const Duration(seconds: 1));
+
+        if (Get.isRegistered<TherapyBookingController>()) {
+          await Get.find<TherapyBookingController>().fetchBookings();
+        }
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PetTherapy(),
+          ),
+          (route) => false,
+        );
     } else {
       Get.snackbar(
         "Error".tr,
@@ -785,7 +825,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-                'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                'https://app.pawdli.com/media/static/topimage.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -816,6 +856,8 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                     SingleChildScrollView(
                       child: Padding(
                         padding: EdgeInsets.all(16),
+                      child: Form(
+                        key: _formKey,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -905,55 +947,91 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                             ),
                             SizedBox(height: 5),
                             InternationalPhoneNumberInput(
-                              onInputChanged: (PhoneNumber number) {
-                                setState(() {
-                                  _phoneNumber = number;
-                                });
-                              },
-                              onInputValidated: (bool isValid) {
-                                setState(() {
-                                  _isPhoneNumberValid = isValid;
-                                });
-                                print(isValid
-                                    ? '✅ Valid phone number'.tr
-                                    : '❌ Invalid phone number'.tr);
-                              },
+
+                              ignoreBlank: true,
+
+                              autoValidateMode:
+                                  AutovalidateMode.disabled,
+
                               selectorConfig: SelectorConfig(
-                                selectorType: PhoneInputSelectorType.DIALOG,
+                                selectorType:
+                                    PhoneInputSelectorType.DIALOG,
                               ),
-                              textFieldController: _phoneController,
+
+                              initialValue: PhoneNumber(
+                                isoCode: 'IN',
+                              ),
+
                               formatInput: false,
-                              initialValue: _phoneNumber,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your phone number'.tr;
-                                }
-                                return null;
+
+                              keyboardType: TextInputType.phone,
+
+                              maxLength: 10,
+
+                              onInputChanged: (PhoneNumber number) {
+
+                                _phoneController.text =
+                                    number.parseNumber();
+
                               },
+
+                              onInputValidated: (bool value) {
+
+                                setState(() {
+
+                                  _isPhoneNumberValid = value;
+
+                                });
+
+                              },
+
                               inputDecoration: InputDecoration(
+
                                 labelText: 'Phone Number'.tr,
+
+                                counterText: "",
+
                                 labelStyle: TextStyle(
-                                  fontSize: getResponsiveFont(context, 13),
-                                  color: Colors.brown[600]),
+                                  fontSize:
+                                      getResponsiveFont(context, 13),
+                                  color: Colors.brown[600],
+                                ),
+
                                 border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.brown),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(12),
+
                                   borderSide: BorderSide(
-                                      color: Colours.primarycolour, width: 2.0),
-                                  borderRadius: BorderRadius.circular(10),
+                                    color: Colours.textColour,
+                                  ),
                                 ),
+
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(12),
+
+                                  borderSide: BorderSide(
+                                    color: Colours.primarycolour,
+                                  ),
+                                ),
+
                                 filled: true,
+
                                 fillColor: Colors.white,
                               ),
                             ),
                             SizedBox(height: 8),
                             Material(
-                              child: TextField(
-                                focusNode: _addressFocus,
-                                maxLines: 3,
+                              child: TextFormField(
                                 controller: Addresscontroller,
+                                focusNode: _addressFocus, 
+                                maxLines: 3,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return "Please enter address";
+                                  }
+                                  return null;
+                                },
                                 style: TextStyle(
                                   fontSize: getResponsiveFont(context, 14),
                                 ),
@@ -981,7 +1059,9 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                             SizedBox(height: 5),
 
                             _buildTextField(
-                                "Enter Pincode".tr, _pincodeController),
+                                "Enter Pincode",
+                                _pincodeController,
+                              ),
 
                             if (_pincodeError != null)
                               Padding(
@@ -1000,6 +1080,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                             _buildModeToggle(),
                             SizedBox(height: 16),
 
+                              if (_isOnsite == 'Offsite') ...[
                             /// Q1: Previous Pet Therapy
                             Text('Have you taken any pet therapy previously?'.tr,
                                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: getResponsiveFont(context, 14))),
@@ -1027,11 +1108,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                 onToggle: (i) {
                                   setState(() => _groupTherapyIndex = i ?? 1);
                                 }),
-                            if (_groupTherapyIndex == 0) ...[
-                              SizedBox(height: 8),
-                              _buildTextField(
-                                  "If Yes, how many?".tr, _groupCountController),
-                            ],
+                            
                             SizedBox(height: 16),
 
                             /// Q3: Is it for Students?
@@ -1070,6 +1147,62 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
                             SizedBox(height: 8),
 
+                              ],
+
+                              if (_isOnsite == 'Onsite') ...[
+                              SizedBox(height: 8),
+
+                              Text(
+                                "How many members?".tr,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: getResponsiveFont(context, 14),
+                                ),
+                              ),
+
+                              SizedBox(height: 8),
+
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colours.primarycolour),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                ),
+                                child: DropdownButton<int>(
+                                  value: _memberCount,
+                                  isExpanded: true,
+                                  underline: const SizedBox(),
+                                  items: [1, 2]
+                                      .map(
+                                        (count) => DropdownMenuItem(
+                                          value: count,
+                                          child: Text("$count Members"),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _memberCount = value ?? 1;
+                                      _groupCountController.text =
+                                          _memberCount.toString();
+                                    });
+                                  },
+                                ),
+                              ),
+
+                              SizedBox(height: 12),
+
+                              // Text(
+                              //   "Pay Amount : ₹ ${finalAmount.toStringAsFixed(0)}".tr,
+                              //   style: TextStyle(
+                              //     fontSize: getResponsiveFont(context, 15),
+                              //     fontWeight: FontWeight.bold,
+                              //     color: Colours.primarycolour,
+                              //   ),
+                              // ),
+                            ],
+
                             Material(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1081,11 +1214,17 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: 8),
-                                  TextField(
+                                  TextFormField(
+                                    controller: programDescriptionController,
                                     focusNode: _programDescriptionFocus,
                                     maxLines: 3,
-                                    controller: programDescriptionController,
-                                    decoration: InputDecoration(
+                                    validator: (value) {
+                                      if (value == null || value.trim().isEmpty) {
+                                        return "Please enter description";
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration( 
                                       labelText: 'Description'.tr,
                                       labelStyle:
                                           TextStyle(color: Colors.brown[600]),
@@ -1107,6 +1246,8 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                               ),
                             ),
                             SizedBox(height: 16),
+
+                            if (_isOnsite == 'Onsite')
 
                             Row(
                               children: [
@@ -1137,6 +1278,71 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                             Center(
                               child: ElevatedButton(
                                 onPressed: () {
+                                  if (!_formKey.currentState!.validate()) {
+                                    return;
+                                  }
+
+                                  if (!_isPhoneNumberValid || _phoneController.text.trim().isEmpty) {
+                                    Get.snackbar(
+                                      "Validation",
+                                      "Please enter a valid phone number",
+                                      snackPosition: SnackPosition.TOP,
+                                      backgroundColor: Colors.transparent,
+                                      colorText: Colors.black,
+                                    );
+                                    return;
+                                  }
+                                  // Previous Therapy Details
+                                  if (_therapyTakenIndex == 0 &&
+                                      _therapyDetailsController.text.trim().isEmpty) {
+                                    Get.snackbar(
+                                      "Validation",
+                                      "Please enter previous therapy details",
+                                      snackPosition: SnackPosition.TOP,
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white,
+                                    );
+                                    return;
+                                  }
+
+                                  // Student Count
+                                  if (_studentsIndex == 0 &&
+                                      _studentCountController.text.trim().isEmpty) {
+                                    Get.snackbar(
+                                      "Validation",
+                                      "Please enter student count",
+                                      snackPosition: SnackPosition.TOP,
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white,
+                                    );
+                                    return;
+                                  }
+
+                                  // Employee Details
+                                  if (_employeesIndex == 0) {
+
+                                    if (_orgNameController.text.trim().isEmpty) {
+                                      Get.snackbar(
+                                        "Validation",
+                                        "Please enter organization name",
+                                        snackPosition: SnackPosition.TOP,
+                                        backgroundColor: Colors.red,
+                                        colorText: Colors.white,
+                                      );
+                                      return;
+                                    }
+
+                                    if (_employeeCountController.text.trim().isEmpty) {
+                                      Get.snackbar(
+                                        "Validation",
+                                        "Please enter employee count",
+                                        snackPosition: SnackPosition.TOP,
+                                        backgroundColor: Colors.red,
+                                        colorText: Colors.white,
+                                      );
+                                      return;
+                                    }
+                                  }
                                   String pin = _pincodeController.text.trim();
 
                                   // Check if pincode is valid
@@ -1176,11 +1382,19 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                   }
 
                                   // If using wallet
-                                  if (_isChecked) {
-                                    createOrderThroughWallet();
-                                  } else {
-                                    createOrder();
-                                  }
+                                  if (_isOnsite == 'Offsite') {
+
+                                      createOrder();
+
+                                    } else {
+
+                                      if (_isChecked) {
+                                        createOrderThroughWallet();
+                                      } else {
+                                        createOrder();
+                                      }
+
+                                    }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   fixedSize: Size(screenWidth * 0.8, 50),
@@ -1190,7 +1404,9 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                   ),
                                 ),
                                 child: Text(
-                                  "Pay ₹${widget.totalAmount}".tr,
+                                  _isOnsite == 'Onsite'
+                                      ? "Pay ₹${finalAmount.toStringAsFixed(0)}"
+                                      : "Submit".tr,
                                   style: TextStyle(
                                     fontSize: getResponsiveFont(context, 16),
                                     fontWeight: FontWeight.w600,
@@ -1201,6 +1417,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                             ),
                           ],
                         ),
+                      ),
                       ),
                     ),
                   ])))

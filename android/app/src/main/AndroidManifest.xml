@@ -6,6 +6,11 @@
     <!-- Force-remove the screen recording permission -->
     <!-- <uses-permission -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
+
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <!-- android:name="android.permission.FOREGROUND_SERVICE"
     tools:node="remove" /> -->
 <uses-permission
@@ -23,29 +28,53 @@
     <!-- ✅ CAMERA & AUDIO --> 
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
 
     <!-- ✅ STORAGE (for gallery / image picker) -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> -->
 
     <!-- ✅ For Android 13+ -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <!-- <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/> -->
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
    
 
     <application
+
         android:label="Pawdli"
         android:name="${applicationName}"
         android:hardwareAccelerated="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher">
+
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false"/>
         
-        <meta-data
+        <!-- <meta-data
             android:name="com.google.android.gms.client_id"
-            android:value="527884979919-dj63o96211l4h1j9lj5cmu5hl3k8cgkl.apps.googleusercontent.com" />
+            android:value="527884979919-dj63o96211l4h1j9lj5cmu5hl3k8cgkl.apps.googleusercontent.com" /> -->
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:taskAffinity=""

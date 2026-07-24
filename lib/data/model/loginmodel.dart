@@ -45,6 +45,8 @@ class Data {
   String? profilePicture;
   bool? isSuperuser;
   bool? isStaff;
+  bool? isDoctor;
+  bool? isNewUser;
 
   Data({
     this.tokens,
@@ -55,7 +57,9 @@ class Data {
     this.mobile,
     this.profilePicture,
     this.isSuperuser,
-    this.isStaff
+    this.isStaff,
+    this.isDoctor,
+    this.isNewUser,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -68,6 +72,8 @@ class Data {
     profilePicture = json['profile_picture'];
     isSuperuser = json['is_superuser'];
     isStaff = json['is_staff'];
+    isDoctor = json['is_doctor'];
+    isNewUser = json['is_new_user'];
   }
 
   Map<String, dynamic> toJson() {
@@ -83,6 +89,8 @@ class Data {
     dataMap['profile_picture'] = profilePicture;
     dataMap['is_superuser'] = isSuperuser;
     dataMap['is_staff'] = isStaff;
+    dataMap['is_doctor'] = isDoctor;
+    dataMap['is_new_user'] = isNewUser;
     return dataMap;
   }
 }

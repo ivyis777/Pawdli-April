@@ -8,14 +8,14 @@ import 'package:permission_handler/permission_handler.dart';
 class ReelSaveHelper {
   static Future<void> save(BuildContext context, String videoUrl) async {
     try {
-      final permission = await Permission.storage.request();
+      // final permission = await Permission.storage.request();
 
-      if (!permission.isGranted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text("Storage permission required".tr)),
-        );
-        return;
-      }
+      // if (!permission.isGranted) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //      SnackBar(content: Text("Storage permission required".tr)),
+      //   );
+      //   return;
+      // }
 
       Directory directory;
 

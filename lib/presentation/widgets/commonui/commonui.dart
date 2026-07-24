@@ -22,7 +22,7 @@ class Commonui extends StatelessWidget {
             top: 0,
             left: -24,
             child: Image.network(
-              'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/commonimagefirst.png',
+              'https://app.pawdli.com/media/static/commonimagefirst.png',
               width: screenWidth * 0.42,
               height: screenHeight * 0.09,
               errorBuilder: (context, error, stackTrace) {
@@ -35,7 +35,7 @@ class Commonui extends StatelessWidget {
               bottom: 0,
               left: 0,
               child: Image.network(
-                'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/commonimagesecond.png',
+                'https://app.pawdli.com/media/static/commonimagesecond.png',
                 width: screenWidth,
                 height: screenHeight * 0.11,
                 fit: BoxFit.cover,

@@ -303,7 +303,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                    'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                    'https://app.pawdli.com/media/static/topimage.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -362,8 +362,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                               Icon(Icons.error),
                                         )
                                       : Image.asset(
-                                        "assets/images/profile_avatar1.png",
-                                        fit: BoxFit.cover,
+                                        "assets/images/Profile_Avathar.png",
+                                        fit: BoxFit.fill,
                                       )),
                             ),
                           ),

@@ -523,7 +523,7 @@ class _AddPetPageState extends State<AddPetPage> {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-                'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'), // Ensure the correct path
+                'https://app.pawdli.com/media/static/topimage.png'), // Ensure the correct path
             fit: BoxFit.cover,
           ),
         ),

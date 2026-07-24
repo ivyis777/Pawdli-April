@@ -50,7 +50,7 @@ class OrdersPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                        'https://app.pawdli.com/media/static/topimage.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -154,10 +154,44 @@ class OrdersPage extends StatelessWidget {
   }
 
   Widget _orderCard(Order order, BuildContext context) {
+    print("--------------------------------");
+    print("Order ID: ${order.orderId}");
+    print("Items Count: ${order.items.length}");
+
+    if (order.items.isEmpty) {
+      print("❌ Empty items for Order ${order.orderId}");
+
+      return Card(
+        margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: ListTile(
+          title: Text("Order: ${order.orderId}"),
+          subtitle: const Text("No items found"),
+        ),
+      );
+    }
     final item = order.items.first;
+    print("Order ID: ${order.orderId}");
+    print("Items Count: ${order.items.length}");
+
+    print("variantImages: ${item.variantImages}");
+    print("variantImages length: ${item.variantImages.length}");
+
+    print("productImage: ${item.productImage}");
+
+    print("productImages: ${item.productImages}");
+    print("productImages length: ${item.productImages.length}");
 
     return GestureDetector(
-      onTap: () => Get.to(() => OrderDetailsPage(order: order)),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderDetailsPage(
+              order: order,
+            ),
+          ),
+        );
+      },
       child: Card(
         color: const Color.fromARGB(255, 251, 236, 210),
         margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -279,6 +313,7 @@ class OrdersPage extends StatelessWidget {
 
 // Status color helper
   Color _statusColor(String status) {
+
     switch (status.toLowerCase()) {
 
       case "paid":
@@ -294,7 +329,11 @@ class OrdersPage extends StatelessWidget {
         return Colors.green;
 
       case "cancel":
+      case "cancelled":
         return Colors.red;
+
+      case "refunded":
+        return Colors.teal;
 
       case "pending":
         return Colors.grey;

@@ -68,6 +68,7 @@ class LocalStorage {
     static void clearProfileImage() {
       _box.remove(LocalStorageConstants.profileImage);
     }
+    
 
   // ================= FULL LOGOUT =================
 

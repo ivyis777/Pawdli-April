@@ -31,7 +31,7 @@ class AddressListPage extends StatelessWidget {
   // ---------------------------------------------------------
   // ⭐ USE CURRENT LOCATION
   // ---------------------------------------------------------
-  Future<void> _selectCurrentLocation() async {
+  Future<void> _selectCurrentLocation(BuildContext context) async {
   try {
     // ✅ 1. Check if location service is enabled
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -84,14 +84,19 @@ class AddressListPage extends StatelessWidget {
     print("City: ${p.locality}");
 
     // ✅ 5. Navigate to address page
-    final result = await Get.to(() => AddAddressPage(
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddAddressPage(
           fromLocation: true,
           street: p.street ?? "",
           area: p.subLocality ?? "",
           city: p.locality ?? "",
           state: p.administrativeArea ?? "",
           pincode: p.postalCode ?? "",
-        ));
+        ),
+      ),
+    );
 
     if (result != null && result is AddressModel) {
       addressController.saveAddress(result);
@@ -131,7 +136,7 @@ class AddressListPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                        'https://app.pawdli.com/media/static/topimage.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -145,7 +150,12 @@ class AddressListPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colours.brownColour,
         onPressed: () async {
-          final newAddress = await Get.to(() => AddAddressPage());
+          final newAddress = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddAddressPage(),
+              ),
+            );
           if (newAddress != null && newAddress is AddressModel) {
             addressController.saveAddress(newAddress);
           }
@@ -169,7 +179,7 @@ class AddressListPage extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: Colors.white),
             ),
-            onPressed: _selectCurrentLocation,
+            onPressed: () => _selectCurrentLocation(context),
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 52),
               backgroundColor: Colours.primarycolour,
@@ -221,7 +231,7 @@ class AddressListPage extends StatelessWidget {
                       isThreeLine: true,
                       onTap: () {
                         addressController.selectAddress(addr);
-                        Get.back(result: true);
+                        Navigator.pop(context, true);
                       },
                       trailing: Row(
                         // mainAxisAlignment: MainAxisAlignment.center,
@@ -230,8 +240,13 @@ class AddressListPage extends StatelessWidget {
                           IconButton(
                             icon: const Icon(Icons.edit, size: 20),
                             onPressed: () async {
-                              final updated = await Get.to(
-                                () => AddAddressPage(editAddress: addr),
+                              final updated = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddAddressPage(
+                                    editAddress: addr,
+                                  ),
+                                ),
                               );
                               if (updated != null && updated is AddressModel) {
                                 addressController.updateAddress(addr, updated);

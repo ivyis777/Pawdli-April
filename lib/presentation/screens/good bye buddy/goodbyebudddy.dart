@@ -20,7 +20,7 @@ import 'package:get/get.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/good%20bye%20buddy/superuserdetailspage.dart';
 import 'package:pawlli/presentation/screens/good%20bye%20buddy/userdetailspage.dart';
-import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
+// import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
   double screenWidth = MediaQuery.of(context).size.width;
@@ -756,7 +756,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
               height: 100,
               width: 250,
               child: Image.network(
-                'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png',
+                'https://app.pawdli.com/media/static/topimage.png',
                 fit: BoxFit.cover,
               ),
             ),
@@ -765,7 +765,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colours.brownColour),
           onPressed: () {
-            Get.offAll(() => MainLayout());
+            Navigator.pop(context);
           },
         ),
         title: Text(
@@ -986,7 +986,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                   safeSnackbar(
                                     "Location required".tr,
                                     "Please select and confirm a location from the map".tr,
-                                    bg: Colors.red,
+                                    bg: Colors.transparent,
                                   );
                                   return;
                                 }
@@ -1158,13 +1158,23 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                       true;
 
                                   if (isSuperUser) {
-                                    Get.to(() => SuperUserRequestDetailsPage(
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SuperUserRequestDetailsPage(
                                           requestId: item["id"],
-                                        ));
+                                        ),
+                                      ),
+                                    );
                                   } else {
-                                    Get.to(() => UserRequestDetailsPage(
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => UserRequestDetailsPage(
                                           requestId: item["id"],
-                                        ));
+                                        ),
+                                      ),
+                                    );
                                   }
                                 },
                                 child: Card(

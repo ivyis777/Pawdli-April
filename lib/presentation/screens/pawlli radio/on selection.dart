@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
                 child: Container(
                   color: Colors.amber,
                   child: Image.network(
-                    'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/heartimage.png',
+                    'https://app.pawdli.com/media/static/heartimage.png',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -152,7 +152,7 @@ class _MyAppState extends State<MyApp> {
                                     children: [
                                       CircleAvatar(
                                         backgroundImage: NetworkImage(
-                                            'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/heartimage.png'),
+                                            'https://app.pawdli.com/media/static/heartimage.png'),
                                         radius: 15,
                                       ),
                                       SizedBox(width: 10),
@@ -229,7 +229,7 @@ class _MyAppState extends State<MyApp> {
                                     children: [
                                       CircleAvatar(
                                         backgroundImage: NetworkImage(
-                                            'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/heartimage.png'),
+                                            'https://app.pawdli.com/media/static/heartimage.png'),
                                         radius: 15,
                                       ),
                                       SizedBox(width: 10),
@@ -308,7 +308,7 @@ class _MyAppState extends State<MyApp> {
                                     children: [
                                       CircleAvatar(
                                         backgroundImage: NetworkImage(
-                                            'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/heartimage.png'),
+                                            'https://app.pawdli.com/media/static/heartimage.png'),
                                         radius: 15,
                                       ),
                                       SizedBox(width: 10),
@@ -379,7 +379,7 @@ class _MyAppState extends State<MyApp> {
                                     children: [
                                       CircleAvatar(
                                         backgroundImage: NetworkImage(
-                                            'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/heartimage.png'),
+                                            'https://app.pawdli.com/media/static/heartimage.png'),
                                         radius: 15,
                                       ),
                                       SizedBox(width: 10),

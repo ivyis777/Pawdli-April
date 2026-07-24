@@ -46,11 +46,10 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
       // Use the date selected on the previous page
       final formattedDate =
           DateFormat('yyyy-MM-dd').format(widget.selectedDate);
-      final formattedDay = DateFormat('EEEE').format(widget.selectedDate);
+      // final formattedDay = DateFormat('EEEE').format(widget.selectedDate);
 
       slotController.loadTherapySlots(
         therapyId: widget.petid!,
-        day: formattedDay,
         date: formattedDate,
       );
     }
@@ -92,7 +91,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                    'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                    'https://app.pawdli.com/media/static/topimage.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -246,7 +245,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                                     final slot = slots[index];
                                     final isSelected = _isSlotSelected(slot);
                                     final isAvailable =
-                                        slot.isAvailable ?? false;
+                                      !(slot.bookedSlot ?? false);
 
                                     return IgnorePointer(
                                       ignoring: !isAvailable,
@@ -291,7 +290,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                                                 '${slot.startTime} - ${slot.endTime ?? 'N/A'}',
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
-                                                  fontSize: getResponsiveFont(context, 11),
+                                                  fontSize: getResponsiveFont(context, 8),
                                                   fontWeight: FontWeight.bold,
                                                   color: isSelected
                                                       ? Colors.white

@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
+import 'package:pawlli/data/controller/TherapyBookingController.dart';
 import 'package:pawlli/data/controller/pettheraphycontroller.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
+import 'package:pawlli/presentation/screens/pet%20therapy/TherapyBookingListPage.dart';
+import 'package:pawlli/presentation/screens/pet%20therapy/TherapyPetDetails.dart';
 import 'package:pawlli/presentation/screens/pet%20therapy/pet_therapy_slot.dart';
 import 'package:intl/intl.dart';
 
@@ -31,18 +33,57 @@ class PetTherapy extends StatefulWidget {
   State<PetTherapy> createState() => _PetTherapyState();
 }
 
-class _PetTherapyState extends State<PetTherapy> {
+class _PetTherapyState extends State<PetTherapy>
+    with SingleTickerProviderStateMixin {
+
   DateTime _selectedDate = DateTime.now();
   late final PetTherapyController controller;
+  late TabController _tabController;
+  final bookingController =
+      Get.put(TherapyBookingController());
+
+  String pageTitle = "Pet Therapy";
 
   bool _showCalendar = false;
+
   @override
   void initState() {
     super.initState();
+
     controller = Get.put(PetTherapyController());
+
     controller.fetchPetTherapies(
-      date: DateFormat('dd-MM-yyyy').format(_selectedDate),
+      date: DateFormat('yyyy-MM-dd').format(_selectedDate),
     );
+
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+    );
+
+    _tabController.addListener(() {
+
+      if (_tabController.index == 0) {
+
+        setState(() {
+          pageTitle = "Pet Therapy";
+        });
+
+      } else {
+
+        setState(() {
+          pageTitle = "Booking List";
+        });
+
+        bookingController.fetchBookings();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -52,50 +93,122 @@ class _PetTherapyState extends State<PetTherapy> {
     // final controller = Get.put(PetTherapyController());
 
     return Scaffold(
+
       backgroundColor: Colours.secondarycolour,
-      body: Stack(
-        children: [
-          Container(
-            width: screenWidth * 0.55,
-            height: screenHeight * 0.10,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                    'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Column(
+
+      appBar: PreferredSize(
+
+        preferredSize: const Size.fromHeight(110),
+
+        child: AppBar(
+
+          toolbarHeight: 60,
+
+          backgroundColor: Colors.transparent,
+
+          elevation: 0,
+
+          centerTitle: true,
+
+          foregroundColor: Colours.brownColour,
+
+          flexibleSpace: Stack(
             children: [
-              AppBar(
-                title: Text(
-                  'Pet Therapy'.tr,
-                  style: TextStyle(
-                    fontSize: getResponsiveFont(context, 18),
-                    fontWeight: FontWeight.w600,
-                    fontFamily: FontFamily.Cairo,
-                    color: Colours.brownColour,
-                  ),
+
+              SizedBox(
+                width: 250,
+                height: 100,
+                child: Image.network(
+                  "https://app.pawdli.com/media/static/topimage.png",
+                  fit: BoxFit.cover,
                 ),
-                foregroundColor: Colours.brownColour,
-                centerTitle: true,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.calendar_today),
-                    color: Colours.brownColour,
-                    onPressed: () {
-                      setState(() {
-                        _showCalendar = !_showCalendar;
-                      });
-                    },
-                  ),
-                ],
               ),
 
-// 👇 Show selected date
+            ],
+          ),
+
+          title: Text(
+            pageTitle.tr,
+            style: TextStyle(
+              fontSize: getResponsiveFont(context, 18),
+              fontWeight: FontWeight.w600,
+              fontFamily: FontFamily.Cairo,
+              color: Colours.brownColour,
+            ),
+          ),
+
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.calendar_today),
+              color: Colours.brownColour,
+              onPressed: () {
+
+                if (_tabController.index != 0) {
+
+                  _tabController.animateTo(0);
+
+                }
+
+                setState(() {
+                  pageTitle = "Pet Therapy";
+                  _showCalendar = true;
+                });
+
+              },
+            ),
+          ],
+
+          bottom: TabBar(
+
+            controller: _tabController,
+
+            indicatorColor: Colours.primarycolour,
+
+            labelColor: Colours.primarycolour,
+
+            unselectedLabelColor: Colors.black,
+
+            tabs: const [
+
+              Tab(text: "Pet Therapy"),
+
+              Tab(text: "Booking List"),
+
+            ],
+
+          ),
+
+        ),
+
+      ),
+
+      body: TabBarView(
+
+        controller: _tabController,
+
+        children: [
+
+          _petTherapyTab(),
+
+          TherapyBookingListPage(),
+
+        ],
+
+      ),
+
+    );
+    }
+
+    Widget _petTherapyTab() {
+
+      final screenWidth = MediaQuery.of(context).size.width;
+      final screenHeight = MediaQuery.of(context).size.height;
+
+      return SafeArea(
+        top: false,
+        child: Column(
+        children: [
+          // 👇 Show selected date
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
@@ -109,7 +222,7 @@ class _PetTherapyState extends State<PetTherapy> {
                 ),
               ),
 
-// 👇 Show calendar only when icon is tapped
+          // 👇 Show calendar only when icon is tapped
               if (_showCalendar)
                 TableCalendar(
                   firstDay: DateTime.utc(2020, 1, 1),
@@ -124,7 +237,7 @@ class _PetTherapyState extends State<PetTherapy> {
 
                     // 🔑 Reload pets for this date
                     final formattedDate =
-                        DateFormat('dd-MM-yyyy').format(selectedDay);
+                        DateFormat('yyyy-MM-dd').format(selectedDay);
                     controller.fetchPetTherapies(date: formattedDate);
                   },
                   calendarStyle: CalendarStyle(
@@ -165,8 +278,8 @@ class _PetTherapyState extends State<PetTherapy> {
                       itemBuilder: (context, index) {
                         final pet = controller.pets[index];
                         final backgroundImage = index.isEven
-                            ? Assets.images.yellowcard.path
-                            : Assets.images.browncard.path;
+                            ? 'https://app.pawdli.com/media/static/yellowcard.png'
+                            : 'https://app.pawdli.com/media/static/browncard.png';
 
                         return buildPetCard(
                           context,
@@ -179,12 +292,10 @@ class _PetTherapyState extends State<PetTherapy> {
                     );
                   }),
                 ),
-            ],
-          ),
         ],
-      ),
-    );
-  }
+        ),
+      );
+    }
 
   Widget buildPetCard(
     BuildContext context,
@@ -212,7 +323,35 @@ class _PetTherapyState extends State<PetTherapy> {
             Container(
               width: screenWidth,
               height: screenHeight * 0.20,
-              child: Image.asset(backgroundImage, fit: BoxFit.fill),
+              child: Image.network(
+                backgroundImage,
+                fit: BoxFit.fill,
+                loadingBuilder: (
+                  context,
+                  child,
+                  loadingProgress,
+                ) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+                errorBuilder: (
+                  context,
+                  error,
+                  stackTrace,
+                ) {
+                  return const Center(
+                    child: Icon(
+                      Icons.broken_image,
+                      color: Colors.red,
+                    ),
+                  );
+                },
+              ),
             ),
             Positioned(
               left: screenWidth * 0.07,
@@ -221,120 +360,164 @@ class _PetTherapyState extends State<PetTherapy> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    pet.name ?? "Unknown".tr,
-                    style: TextStyle(
-                      color: Colours.secondarycolour,
-                      fontFamily: FontFamily.Cairo,
-                      fontSize: getResponsiveFont(context, 16),
-                      fontWeight: FontWeight.w600,
+
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontFamily: FontFamily.Cairo,
+                        fontSize: getResponsiveFont(context, 14),
+                        color: Colours.secondarycolour,
+                      ),
+                      children: [
+                        const TextSpan(
+                          text: "Pet Name : ",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(
+                          text: pet.name ?? "-",
+                          style: const TextStyle(fontWeight: FontWeight.normal),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 1),
-                  Text(
-                    pet.description ?? "No description".tr,
+
+                  const SizedBox(height: 2),
+
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontFamily: FontFamily.Cairo,
+                        fontSize: getResponsiveFont(context, 13),
+                        color: Colours.secondarycolour,
+                      ),
+                      children: [
+                        const TextSpan(
+                          text: "Vaccination : ",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(
+                          text: pet.vaccinationStatus ?? "-",
+                          style: const TextStyle(fontWeight: FontWeight.normal),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 2),
+
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontFamily: FontFamily.Cairo,
+                        fontSize: getResponsiveFont(context, 13),
+                        color: Colours.secondarycolour,
+                      ),
+                      children: [
+                        const TextSpan(
+                          text: "Available : ",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(
+                          text: "${pet.availableStartDate ?? "-"} to ${pet.availableEndDate ?? "-"}",
+                          style: const TextStyle(fontWeight: FontWeight.normal),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 2),
+
+                  RichText(
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colours.secondarycolour,
-                      fontFamily: FontFamily.Cairo,
-                      fontSize: getResponsiveFont(context, 13),
-                    ),
-                  ),
-                  const SizedBox(height: 1),
-                  Row(
-                    children: [
-                      Icon(Icons.location_on,
-                          size: screenWidth * 0.06,
-                          color: Colours.secondarycolour),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          pet.location ?? "Pawlli Office".tr,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colours.secondarycolour,
-                            fontFamily: FontFamily.Cairo,
-                            fontSize: getResponsiveFont(context, 12),
-                          ),
-                        ),
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontFamily: FontFamily.Cairo,
+                        fontSize: getResponsiveFont(context, 13),
+                        color: Colours.secondarycolour,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 1),
-                  Text(
-                    "Tap to book a session with this pet!".tr,
-                    style: TextStyle(
-                      color: Colours.secondarycolour,
-                      fontFamily: FontFamily.Cairo,
-                      fontSize: getResponsiveFont(context, 12),
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (pet.image != null)
-              Positioned(
-                right: screenWidth * 0.08,
-                bottom: screenHeight * 0.010,
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: screenWidth * 0.13,
-                      backgroundColor: Colors.transparent,
-                      child: CachedNetworkImage(
-                        imageUrl: pet.image!,
-                        imageBuilder: (context, imageProvider) => CircleAvatar(
-                          radius: screenWidth * 0.13,
-                          backgroundImage: imageProvider,
+                      children: [
+                        const TextSpan(
+                          text: "Location : ",
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error, color: Colors.red),
-                      ),
+                        TextSpan(
+                          text: pet.location ?? "-",
+                          style: const TextStyle(fontWeight: FontWeight.normal),
+                        ),
+                      ],
                     ),
-                    ElevatedButton(
+                  ),
+                  const SizedBox(height: 2),
+                  TextButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ImageGalleryScreen(
-                              images: pet.galleryImageUrls,
+                            builder: (_) => TherapyPetDetailsPage(
+                              pet: pet,
                             ),
                           ),
                         );
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey,
-                        shadowColor: Colors.black,
-                        elevation: 0,
+                      style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text(
-                        'Images'.tr,
+                        "More Details",
                         style: TextStyle(
-                          color: Colours.secondarycolour,
-                          fontSize: getResponsiveFont(context, 12),
-                          fontFamily: FontFamily.Cairo,
-                          fontWeight: FontWeight.w600,
+                          color: Colours.brownColour,
+                          fontWeight: FontWeight.bold,
+                          fontSize: getResponsiveFont(context, 15),
                         ),
                       ),
                     ),
-                  ],
+                ],
+              ),
+            ),
+            if (pet.coverImage != null)
+              Positioned(
+                right: screenWidth * 0.08,
+                bottom: screenHeight * 0.050,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => TherapyPetDetailsPage(
+                          pet: pet,
+                        ),
+                      ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    radius: screenWidth * 0.12,
+                    backgroundColor: Colors.transparent,
+                    child: CachedNetworkImage(
+                      imageUrl: pet.coverImage!,
+                      imageBuilder: (context, imageProvider) => CircleAvatar(
+                        radius: screenWidth * 0.13,
+                        backgroundImage: imageProvider,
+                      ),
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          ),
+                    ),
+                  ),
                 ),
               ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
-}
 
 class ImageGalleryScreen extends StatefulWidget {
   final List<String> images;

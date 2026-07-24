@@ -36,10 +36,20 @@ class ReelsController extends GetxController {
     for (var reel in newReels) {
       final profileData = await ApiService.getUserProfile(reel.userId);
 
-      reel.userProfilePic =
-          profileData?["user"]["profile_picture"] ?? "";
+      if (profileData != null) {
+        final user = profileData["user"];
 
-      print("INJECTED IMAGE: ${reel.userProfilePic}");
+        reel.username = user["username"] ?? reel.username;
+
+        final pic = user["profile_picture"] ?? "";
+
+        reel.userProfilePic = pic.startsWith("http")
+            ? pic
+            : "https://app.pawdli.com$pic";
+
+        print("USERNAME: ${reel.username}");
+        print("PROFILE PIC: ${reel.userProfilePic}");
+      }
     }
 
     if (newReels.isEmpty) {

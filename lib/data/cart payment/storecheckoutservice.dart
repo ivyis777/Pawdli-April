@@ -38,6 +38,7 @@ class StoreCheckoutService {
       print("📥 CHECKOUT RESPONSE STATUS: ${response.statusCode}");
   print("📥 CHECKOUT RESPONSE BODY:");
   print(response.body);
+  
 
 
     // ✅ Success
@@ -46,6 +47,7 @@ class StoreCheckoutService {
         jsonDecode(response.body),
       );
     }
+    
 
     // 🔁 Token expired → try refresh ONCE
     if (response.statusCode == 401) {

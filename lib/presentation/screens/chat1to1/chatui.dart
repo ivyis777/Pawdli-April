@@ -30,12 +30,16 @@ class Chat1to1 extends StatefulWidget {
   final String receiverName;
   final String petProfileImage;
   final int petId;
+  final String lastMessage;
+  final bool showLastMessage;
   const Chat1to1({
     super.key,
     required this.receiverId,
     required this.receiverName,
     required this.petProfileImage,
-    required this.petId
+    required this.petId,
+    required this.lastMessage,
+    required this.showLastMessage,
   });
 
   @override
@@ -46,11 +50,67 @@ class _Chat1to1State extends State<Chat1to1> {
   final TextEditingController _messageController = TextEditingController();
   final List<Message> _messages = [];
   late WebSocketChannel _channel;
+  bool isUserOnline = false;
+  bool isTyping = false;
+  String lastSeen = "";
+  String? roomUuid;
 
   @override
   void initState() {
     super.initState();
+
+    if (widget.showLastMessage && widget.lastMessage.isNotEmpty) {
+      _messages.add(
+        Message(
+          id: "last_message",
+          text: widget.lastMessage,
+          sender: widget.receiverName,
+          time: DateTime.now(),
+          isMe: false,
+        ),
+      );
+    }
+
     _initializeChat();
+  }
+
+  Future<String?> _createRoom() async {
+    try {
+      debugPrint("=================================");
+      debugPrint("CREATE ROOM API");
+      debugPrint("FROM PET : ${widget.petId}");
+      debugPrint("TO PET   : ${widget.receiverId}");
+      debugPrint("=================================");
+
+      final response = await http.post(
+        Uri.parse("https://websocket.pawdli.com/pet-chat/create-room"),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "from_pet": widget.petId,
+          "to_pet": int.parse(widget.receiverId),
+        }),
+      );
+
+      debugPrint("ROOM STATUS : ${response.statusCode}");
+      debugPrint("ROOM BODY   : ${response.body}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        roomUuid = data["room_uuid"];
+
+        debugPrint("ROOM UUID : $roomUuid");
+
+        return roomUuid;
+      }
+
+      return null;
+    } catch (e) {
+      debugPrint("CREATE ROOM ERROR : $e");
+      return null;
+    }
   }
 
  Future<void> _initializeChat() async {
@@ -60,32 +120,74 @@ class _Chat1to1State extends State<Chat1to1> {
     handleTokenExpiration();
     return;
   }
-  final token = Uri.encodeComponent(accessToken.trim());
-  final petId = Uri.encodeComponent(widget.petId.toString());
-  final url = 'wss://app.pawdli.com/ws/pet-chat/$petId/?token=$token';
-  debugPrint('Connecting to WebSocket: $url');
+  roomUuid = await _createRoom();
+
+  if (roomUuid == null) {
+    debugPrint("ROOM UUID NOT FOUND");
+    return;
+  }
+
+  final url =
+      "wss://websocket.pawdli.com/ws/pet-chat/$roomUuid/";
+
+  debugPrint("=================================");
+  debugPrint("CONNECTING SOCKET");
+  debugPrint("ROOM UUID : $roomUuid");
+  debugPrint("URL : $url");
+  debugPrint("=================================");
 
   try {
     try {
       _channel.sink.close();
     } catch (_) {}
+    debugPrint("=================================");
+    debugPrint("🚀 CONNECTING TO CHAT SOCKET");
+    debugPrint("Pet ID      : ${widget.petId}");
+    debugPrint("Receiver ID : ${widget.receiverId}");
+    debugPrint("Token       : $accessToken");
+    debugPrint("Socket URL  : $url");
+    debugPrint("=================================");
 
     _channel = IOWebSocketChannel.connect(
-      Uri.parse(url),
-      headers: {
-        'Authorization': 'Bearer $accessToken',
-      },
+        Uri.parse(url),
+        headers: {
+            "Authorization":"Bearer $accessToken"
+        },
     );
 
-  
+    debugPrint("Socket hashCode : ${_channel.hashCode}");
+
+    _channel.stream.handleError((e) {
+      debugPrint("STREAM ERROR : $e");
+    });
+    debugPrint("✅ Socket object created");
+
+
+    debugPrint("STARTING SOCKET LISTENER");
     _channel.stream.listen(
-      (message) => _handleIncomingMessage(message),
+      (message) {
+      debugPrint("🔥 SOCKET EVENT RECEIVED 🔥");
+      debugPrint("################################");
+      debugPrint("SERVER SENT");
+      debugPrint(message.runtimeType.toString());
+      debugPrint(message.toString());
+      debugPrint("################################");
+
+      _handleIncomingMessage(message);
+    },
       onDone: () {
-        debugPrint('WebSocket closed. Reconnecting...');
+        debugPrint("SOCKET CLOSED BY SERVER");
+        debugPrint("=================================");
+        debugPrint("❌ SOCKET CLOSED");
+        debugPrint("=================================");
         _reconnectWebSocket();
       },
       onError: (error) {
-        debugPrint('WebSocket error: $error. Reconnecting...');
+        debugPrint("SOCKET ERROR CALLBACK");
+        debugPrint("=================================");
+        debugPrint("🔥 SOCKET ERROR");
+        debugPrint(error.toString());
+        debugPrint("=================================");
         _reconnectWebSocket();
       },
       cancelOnError: true,
@@ -97,21 +199,127 @@ class _Chat1to1State extends State<Chat1to1> {
 }
 
 void _handleIncomingMessage(dynamic message) {
-  debugPrint('Received message: $message');
+  debugPrint("=================================");
+  debugPrint("📥 RAW MESSAGE");
+  debugPrint(message.toString());
+  debugPrint("=================================");
 
   try {
     final decoded = jsonDecode(message);
 
+    debugPrint("=================================");
+    debugPrint("DECODED SOCKET DATA");
+    debugPrint(decoded.toString());
+    debugPrint("Current Room : $roomUuid");
+    debugPrint("Message      : ${decoded["message"]}");
+    debugPrint("Timestamp    : ${decoded["timestamp"]}");
+    debugPrint("Delivered    : ${decoded["delivered"]}");
+    debugPrint("Seen         : ${decoded["seen"]}");
+    debugPrint("Room UUID    : ${decoded["room_uuid"]}");
+    debugPrint("=================================");
+
+    // Message Delivered
+    if (decoded["type"] == "delivered") {
+      final index = _messages.indexWhere(
+        (m) => m.id == decoded["id"],
+      );
+      if (index != -1) {
+        _messages[index].delivered = true;
+        setState(() {});
+      }
+      return;
+    }
+
+    // Message Seen
+    if (decoded["type"] == "seen") {
+      final index = _messages.indexWhere(
+        (m) => m.id == decoded["id"],
+      );
+      if (index != -1) {
+        _messages[index].seen = true;
+        setState(() {});
+      }
+      return;
+    }
+
+    debugPrint("Decoded JSON:");
+    debugPrint(decoded.toString());
+
+    if (decoded["type"] == "presence") {
+      setState(() {
+        isUserOnline = decoded["online"];
+        if (!isUserOnline) {
+          lastSeen = DateFormat(
+            'dd MMM hh:mm a',
+          ).format(
+            DateTime.parse(decoded["last_seen"]),
+          );
+        }
+      });
+      return;
+    }
+    if (decoded["type"] == "typing") {
+      setState(() {
+        isTyping = decoded["typing"];
+      });
+      return;
+    }
+    
+    debugPrint("=================================");
+    debugPrint("ADDING MESSAGE TO CHAT UI");
+    debugPrint("Receiver : ${widget.receiverName}");
+    debugPrint("Room UUID : $roomUuid");
+    debugPrint("Incoming Room : ${decoded["room_uuid"]}");
+    debugPrint("=================================");
+
+
+    if (decoded["room_uuid"] != null &&
+        roomUuid != null &&
+        decoded["room_uuid"] != roomUuid) {
+
+      debugPrint("#################################");
+      debugPrint("ROOM UUID MISMATCH");
+      debugPrint("Current Room : $roomUuid");
+      debugPrint("Incoming Room: ${decoded["room_uuid"]}");
+      debugPrint("Ignoring this message");
+      debugPrint("#################################");
+
+      return;
+    }
+
     setState(() {
-      _messages.add(Message(
-        text: decoded['message'] ?? '',
-        sender: widget.receiverName,
-        time: DateTime.tryParse(decoded['timestamp'] ?? '') ?? DateTime.now(),
-        isMe: false,
-        delivered: decoded['delivered'.tr] ?? true,
-        seen: decoded['seen'.tr] ?? false,
-      ));
+      final bool isMyMessage = decoded["from_pet"] == widget.petId;
+      if (isMyMessage) {
+        debugPrint("Ignoring echoed message from myself");
+        return;
+      }
+
+      debugPrint("=================================");
+      debugPrint("FROM PET : ${decoded["from_pet"]}");
+      debugPrint("TO PET   : ${decoded["to_pet"]}");
+      debugPrint("MY PET   : ${widget.petId}");
+      debugPrint("IS ME    : $isMyMessage");
+      debugPrint("=================================");
+
+      if (_messages.length == 1 &&
+          _messages.first.id == "last_message") {
+        _messages.clear();
+      }
+
+      _messages.add(
+        Message(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          text: decoded["message"] ?? "",
+          sender: isMyMessage ? "You" : widget.receiverName,
+          time: DateTime.parse(decoded["timestamp"]),
+          isMe: isMyMessage,
+          delivered: decoded["delivered"] ?? false,
+          seen: decoded["seen"] ?? false,
+        ),
+      );
     });
+    debugPrint("✅ Message added successfully");
+    debugPrint("Total messages : ${_messages.length}");
   } catch (e) {
     debugPrint('Error decoding message: $e');
   }
@@ -119,6 +327,7 @@ void _handleIncomingMessage(dynamic message) {
 
 // Reconnect logic with delay
 void _reconnectWebSocket() {
+  debugPrint("Reconnecting after 3 seconds...");
   Future.delayed(const Duration(seconds: 3), () {
     if (mounted) _initializeChat();
   });
@@ -135,26 +344,49 @@ void _reconnectWebSocket() {
 
   @override
   void dispose() {
+    debugPrint("Closing Chat Socket");
     _channel.sink.close();
     super.dispose();
   }
 
- void _sendMessage() {
+ Future<void> _sendMessage() async {
   if (_messageController.text.trim().isEmpty) return;
 
   final message = _messageController.text;
-  final messageJson = jsonEncode({
-    'to': widget.receiverId,  // the receiver's ID
-    'message': message,   
-    'delivered': true, // optional
-  'seen': false,    // the message text
-  });
+  final messageId =
+      DateTime.now().millisecondsSinceEpoch.toString();
 
-  _channel.sink.add(messageJson);
+  final payload = {
+    "from_pet": widget.petId,
+    "to_pet": int.parse(widget.receiverId),
+    "message": message,
+    "token": await _getAccessToken(),
+  };
+
+  final messageJson = jsonEncode(payload);
+
+  debugPrint("=================================");
+  debugPrint("📤 SENDING MESSAGE");
+  debugPrint("ROOM UUID : $roomUuid");
+  debugPrint("FROM PET  : ${widget.petId}");
+  debugPrint("TO PET    : ${widget.receiverId}");
+  debugPrint("PAYLOAD   : $messageJson");
+  debugPrint("=================================");
+  
+  try {
+    debugPrint("➡️ Writing message to socket...");
+    _channel.sink.add(messageJson);
+    debugPrint("✅ Message written successfully");
+  } catch (e) {
+    debugPrint("Socket write failed : $e");
+  }
+  debugPrint("✅ Message sent to socket");
 
   setState(() {
+    debugPrint("Adding MY message to UI");
     _messages.add(
       Message(
+        id:messageId,
         text: message,
         sender: 'You',
         time: DateTime.now(),
@@ -163,11 +395,13 @@ void _reconnectWebSocket() {
     );
     _messageController.clear();
   });
+  debugPrint("Total messages : ${_messages.length}");
 }
 
   Future<String?> _getAccessToken() async {
     final box = GetStorage();
     var accessToken = box.read(LocalStorageConstants.access);
+    debugPrint("Access Token : $accessToken");
 
     if (accessToken == null) {
       print("Access token missing, attempting refresh...");
@@ -192,6 +426,7 @@ void _reconnectWebSocket() {
     }
 
     try {
+      debugPrint("Refreshing Access Token...");
       var response = await http.post(
         Uri.parse(AppUrl.RefershTokenURL),
         headers: {'Content-Type': 'application/json'},
@@ -261,7 +496,11 @@ void _reconnectWebSocket() {
                   ),
                 ),
                 Text(
-                  'Online'.tr,
+                  isTyping
+                      ? "Typing..."
+                      : isUserOnline
+                          ? "Online"
+                          : "Last seen $lastSeen",
                   style: TextStyle(
                     fontSize: getResponsiveFont(context, 11),
                     color: Colors.grey[300],
@@ -320,11 +559,18 @@ void _reconnectWebSocket() {
           Expanded(
             child: TextField(
               controller: _messageController,
+              onChanged: (value) {
+                  _channel.sink.add(jsonEncode({
+                    "type":"typing",
+                    "to":widget.receiverId,
+                    "typing":value.isNotEmpty
+                  }));
+                },
               style: TextStyle(
                 fontSize: getResponsiveFont(context, 14),
               ),
               decoration: InputDecoration(
-                hintText: 'Type a message...'.tr,
+                hintText: 'Type a message...',
                 hintStyle: TextStyle(
                   fontSize: getResponsiveFont(context, 13),
                 ),
@@ -352,13 +598,15 @@ void _reconnectWebSocket() {
 }
 
 class Message {
+  final String id;
   final String text;
   final String sender;
   final DateTime time;
   final bool isMe;
-  final bool delivered;
-  final bool seen;
+  bool delivered;
+  bool seen;
   Message({
+    required this.id,
     required this.text,
     required this.sender,
     required this.time,
@@ -374,15 +622,29 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String statusText = '';
-    if (message.isMe) {
-      if (message.seen) {
-        statusText = '👀 Seen';
-      } else if (message.delivered) {
-        statusText = '✅ Delivered';
-      } else {
-        statusText = '⏳ Sent';
+    Widget statusWidget() {
+      if (!message.isMe) {
+        return const SizedBox();
       }
+      if (message.seen) {
+        return const Icon(
+          Icons.done_all,
+          color: Colors.blue,
+          size: 16,
+        );
+      }
+      if (message.delivered) {
+        return const Icon(
+          Icons.done_all,
+          color: Colors.grey,
+          size: 16,
+        );
+      }
+      return const Icon(
+        Icons.done,
+        color: Colors.grey,
+        size: 16,
+      );
     }
 
     return Padding(
@@ -447,13 +709,7 @@ class MessageBubble extends StatelessWidget {
                       ),
                       if (message.isMe) ...[
                         const SizedBox(width: 8),
-                        Text(
-                          statusText,
-                          style: TextStyle(
-                            fontSize: getResponsiveFont(context, 10),
-                            color: Colors.grey,
-                          ),
-                        ),
+                        statusWidget()
                       ],
                     ],
                   ),

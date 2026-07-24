@@ -57,9 +57,16 @@ class CompetitionCountdownButton extends StatelessWidget {
 
               if (pickedFile == null) return;
 
-              Get.to(() => AddDetailsPage(
-                    videoFile: File(pickedFile.path),
-                  ));
+            
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddDetailsPage(
+                      videoFile: File(pickedFile.path),
+                    ),
+                  ),
+                );
+              
             },
 
             /// Button UI

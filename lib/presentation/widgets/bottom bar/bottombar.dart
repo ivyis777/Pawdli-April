@@ -187,7 +187,7 @@ class _MainLayoutState extends State<MainLayout> {
             const Icon(FontAwesomeIcons.home, color: Colors.white, size: 24),
             const Icon(FontAwesomeIcons.radio, color: Colors.white, size: 24),
             Image.network(
-              'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/goodbyebuddy.png',
+              'https://app.pawdli.com/media/static/goodbyebuddy.png',
               width: 50,
               height: 50,
             ),

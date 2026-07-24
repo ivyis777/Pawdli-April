@@ -40,12 +40,20 @@ class _MyReelsPageState extends State<MyReelsPage> {
 
     if (data != null) {
       setState(() {
-        profileImage = data["user"]["profile_picture"] ?? "";
+        final image = data["user"]["profile_picture"] ?? "";
+
+        profileImage = image.startsWith("http")
+            ? image
+            : "https://app.pawdli.com$image";
+
+        print("PROFILE IMAGE URL: $profileImage");
         followersCount = data["stats"]["followers_count"];
         followingCount = data["stats"]["following_count"];
       });
 
       print("PROFILE IMAGE: $profileImage"); // debug
+      print("USER PROFILE RESPONSE: $data");
+      print("PROFILE IMAGE: ${data["user"]["profile_picture"]}");
     }
 
     /// also fetch full lists
@@ -103,7 +111,7 @@ class _MyReelsPageState extends State<MyReelsPage> {
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                      'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png',
+                      'https://app.pawdli.com/media/static/topimage.png',
                     ),
                     fit: BoxFit.cover,
                   ),

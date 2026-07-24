@@ -228,7 +228,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                      'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                      'https://app.pawdli.com/media/static/topimage.png'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -623,20 +623,22 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     fullscreenDialog: true,
                     builder: (_) => VideoCallPage(
                       userId: userId,
-                      channelName: data['channel_name'],
-                      token: data['token'],
-                      uid: data['agora_uid'],
-                      appId: "daed82b7feea4990bf7fb43d9addd091",
+                      // channelName: data['channel_name'],
+                      // token: data['token'],
+                      // uid: data['agora_uid'],
+                      // appId: "daed82b7feea4990bf7fb43d9addd091",
                       programType: programType,
                       isCaller: true,
-                      sessionId: data['new_session_id'] ?? _sessionId!,
-                      isRestart: _isRestart,
+                      sessionId: data['session_id'] ?? 0,
+                      // isRestart: _isRestart,
+                      websocketUrl: data['websocket_url'],
+                      bookingId: bookingId,
                     ),
                   ),
                 );
-                debugPrint("🎫 Agora token from server: ${data['token']}");
-                debugPrint("📺 Channel: ${data['channel_name']}");
-                debugPrint("👤 Agora UID: ${data['agora_uid']}");
+                // debugPrint("🎫 Agora token from server: ${data['token']}");
+                // debugPrint("📺 Channel: ${data['channel_name']}");
+                // debugPrint("👤 Agora UID: ${data['agora_uid']}");
               },
             ),
           ],
@@ -692,7 +694,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         print('Attempting to rejoin session $_sessionId');
         setState(() => _isRestart = true); // Set restart flag
 
-        final restartResult = await ApiService.restartCall(userId, _sessionId!);
+        final restartResult = await ApiService.websocketStartRoom(bookingId: bookingId,
+        callType: programType,);
         print('Rejoin API Result: $restartResult');
 
         if (restartResult != null) {
@@ -706,14 +709,16 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               fullscreenDialog: true,
               builder: (_) => VideoCallPage(
                 userId: userId,
-                channelName: responseData['channel_name'],
-                token: responseData['token'],
-                uid: responseData['agora_uid'],
-                appId: "daed82b7feea4990bf7fb43d9addd091",
+                // channelName: responseData['channel_name'],
+                // token: responseData['token'],
+                // uid: responseData['agora_uid'],
+                // appId: "daed82b7feea4990bf7fb43d9addd091",
                 programType: programType,
                 isCaller: true,
-                sessionId: responseData['new_session_id'] ?? _sessionId!,
-                isRestart: _isRestart, // Pass restart flag to call page
+                sessionId: responseData['session_id'] ?? 0,
+                // isRestart: _isRestart, // Pass restart flag to call page
+                websocketUrl: responseData['websocket_url'], // Pass WebSocket URL if available
+                bookingId: bookingId, 
               ),
             ));
             return;
@@ -725,8 +730,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       print('Starting new call...');
 // If no existing session or rejoin failed, start new session
       print('Starting new call...');
-      final result = await ApiService.startCall(
-        userId: userId,
+      final result = await ApiService.websocketStartRoom(
+        // userId: userId,
         bookingId: bookingId,
         callType: programType,
       );
@@ -769,14 +774,16 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         fullscreenDialog: true,
         builder: (_) => VideoCallPage(
           userId: userId,
-          channelName: responseData['channel_name'],
-          token: responseData['token'],
-          uid: responseData['agora_uid'],
-          appId: "daed82b7feea4990bf7fb43d9addd091",
+          // channelName: responseData['channel_name'],
+          // token: responseData['token'],
+          // uid: responseData['agora_uid'],
+          // appId: "daed82b7feea4990bf7fb43d9addd091",
           programType: programType,
           isCaller: true,
           sessionId: _sessionId!,
-          isRestart: _isRestart, // Pass restart flag to call page
+          // isRestart: _isRestart, // Pass restart flag to call page
+          websocketUrl: responseData['websocket_url'], // Pass WebSocket URL if available
+          bookingId: bookingId,
         ),
       ));
     } catch (e) {
@@ -803,9 +810,10 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     setState(() => _isLoading = true);
 
     try {
-      final data = await ApiService.joinCall(
-        userId: userId,
-        sessionId: sessionId,
+      final data = await ApiService.websocketJoinRoom(
+        // userId: userId,
+        // sessionId: sessionId,
+        bookingId: sessionId,
       );
 
       if (!mounted) return;
@@ -846,14 +854,16 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
           fullscreenDialog: true,
           builder: (_) => VideoCallPage(
             userId: userId,
-            channelName: channelName,
-            token: token,
-            uid: uid,
-            appId: "daed82b7feea4990bf7fb43d9addd091",
-            programType: callType,
+            // channelName: channelName,
+            // token: token,
+            // uid: uid,
+            // appId: "daed82b7feea4990bf7fb43d9addd091",
+            programType: callType ?? ' ',
             isCaller: false,
             sessionId: sessionId,
-            isRestart: _isRestart,
+            // isRestart: _isRestart,
+            websocketUrl: response['websocket_url'],
+            bookingId: sessionId,
           ),
         ),
       );

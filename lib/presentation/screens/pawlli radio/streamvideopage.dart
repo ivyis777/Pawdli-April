@@ -7,8 +7,9 @@ import 'package:pawlli/data/api service.dart';
 
 class StreamVideoPage extends StatefulWidget {
   final String streamUrl;
+  final bool isRecorded; 
 
-  const StreamVideoPage({Key? key, required this.streamUrl}) : super(key: key);
+  const StreamVideoPage({Key? key, required this.streamUrl, this.isRecorded = false}) : super(key: key);
 
   @override
   State<StreamVideoPage> createState() => _StreamVideoPageState();
@@ -23,12 +24,18 @@ class _StreamVideoPageState extends State<StreamVideoPage> {
   String currentUrl = "";
 
   @override
-  void initState() {
-    super.initState();
-    currentUrl = widget.streamUrl;
-    _startPlayer();
-    _startPolling();
-  }
+    void initState() {
+      super.initState();
+
+      currentUrl = widget.streamUrl;
+
+      _startPlayer();
+
+      // Start polling ONLY for live streams
+      if (!widget.isRecorded) {
+        _startPolling();
+      }
+    }
 
   // ----------------------- POLLING BACKEND -----------------------
   void _startPolling() {
@@ -73,6 +80,10 @@ class _StreamVideoPageState extends State<StreamVideoPage> {
       _controller = VideoPlayerController.networkUrl(Uri.parse(finalUrl));
 
       await _controller.initialize();
+      debugPrint("Initialized: ${_controller.value.isInitialized}");
+      debugPrint("Size: ${_controller.value.size}");
+      debugPrint("Aspect Ratio: ${_controller.value.aspectRatio}");
+      debugPrint("Error: ${_controller.value.errorDescription}");
       await _controller.play();
 
       _controller.addListener(() {
@@ -120,7 +131,7 @@ class _StreamVideoPageState extends State<StreamVideoPage> {
 
             : _error
                 ?  Text(
-                    "Stream Offline".tr,
+                    "Stream Offline",
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   )
 
@@ -133,7 +144,7 @@ class _StreamVideoPageState extends State<StreamVideoPage> {
                           )
 
                     :  Text(
-                        "Stream not available".tr,
+                        "Stream not available",
                         style: TextStyle(color: Colors.white),
                       ),
       ),

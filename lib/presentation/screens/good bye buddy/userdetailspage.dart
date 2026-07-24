@@ -105,7 +105,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
               height: 100,
               width: 250,
               child: Image.network(
-                "https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png", // 🔴 change if your path different
+                "https://app.pawdli.com/media/static/topimage.png", // 🔴 change if your path different
                 fit: BoxFit.cover,
               ),
             ),
@@ -116,7 +116,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colours.brownColour),
           onPressed: () {
-            Get.back();
+            Navigator.pop(context);
           },
         ),
 

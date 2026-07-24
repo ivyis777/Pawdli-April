@@ -113,16 +113,16 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
         recentChatController.setSelectedPet(firstPetId);
 
         // Manually trigger fetch once for initial pet
-        await recentChatController.fetchRecentChatsForPet(firstPetId);
+        // await recentChatController.fetchRecentChatsForPet(firstPetId);
       }
     });
 
     // Listen for pet changes and update recent chat automatically
-    ever<String>(recentChatController.selectedPetId, (petId) {
-      if (petId.isNotEmpty) {
-        recentChatController.fetchRecentChatsForPet(petId);
-      }
-    });
+    // ever<String>(recentChatController.selectedPetId, (petId) {
+    //   if (petId.isNotEmpty) {
+    //     recentChatController.fetchRecentChatsForPet(petId);
+    //   }
+    // });
   }
 
   @override
@@ -184,10 +184,8 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
 
                 return GestureDetector(
                     onTap: () {
-                      final selectedPetId = pet.petId.toString();
-                      recentChatController.setSelectedPet(selectedPetId);
-                      recentChatController
-                          .fetchRecentChatsForPet(selectedPetId);
+                      recentChatController.setSelectedPet(
+                          pet.petId.toString());
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width / 3,
@@ -292,15 +290,11 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                   final petName = chat.withPet?.name ?? "Unknown";
                   final petImagePath = chat.withPet?.petProfileImage ?? '';
 
-                    String fullPetImage = '';
-
-                    if (petImagePath.isNotEmpty) {
-                      fullPetImage = petImagePath.replaceAll('https:///', 'https://');
-                    }
+                    final fullPetImage = petImagePath;
 
                   final backgroundAsset = (index % 2 == 0)
-                      ? 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/chatyellowcard.png'
-                      : 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/chatbrowncard.png';
+                      ? 'https://app.pawdli.com/media/static/chatyellowcard.png'
+                      : 'https://app.pawdli.com/media/static/chatbrowncard.png';
 
                   return GestureDetector(
                     onTap: () {
@@ -319,10 +313,12 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                           builder: (context) => Chat1to1(
                             receiverId: chat.withPet?.petId.toString() ?? "",
                             receiverName: chat.withPet?.name ?? "Unknown",
-                            petProfileImage:
-                                chat.withPet?.petProfileImage ?? "",
+                            petProfileImage: chat.withPet?.petProfileImage ?? "",
                             petId: int.parse(
-                                recentChatController.selectedPetId.value),
+                              recentChatController.selectedPetId.value,
+                            ),
+                            lastMessage: chat.lastMessage ?? "",
+                            showLastMessage: true,
                           ),
                         ),
                       );
@@ -347,8 +343,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                               child: CircleAvatar(
                                 radius: 35,
                                 backgroundColor: Colours.brownColour.withOpacity(0.2),
-                                backgroundImage: (fullPetImage != null &&
-                                        fullPetImage.isNotEmpty)
+                                backgroundImage: fullPetImage.isNotEmpty
                                     ? CachedNetworkImageProvider(fullPetImage)
                                     : null,
                                 child: (fullPetImage == null ||

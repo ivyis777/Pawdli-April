@@ -3,6 +3,7 @@ class AppUrl {
   static String OtpURL = '$mainURL/user/send_otp/';
   static String SignUpURL = "$mainURL/user/register_user/";
   static String LoginURL = "$mainURL/user/login_user/";
+  static String GoogleLoginURL = "$mainURL/user/google_login/";
   static String allCatagoryURL = "$mainURL/user/AllCategoriesList/";
   static String allSubCatagoryURL = "$mainURL/user/all_subcategories/";
   static String SingleCategaryURL = "$mainURL/user/pets/subcategories/";
@@ -46,8 +47,8 @@ class AppUrl {
   static String ViewAdoptionCreationUrl = "$mainURL/user/ListPetAdoptionRequests/";
   static String UpdateAdoptionUrl = "$mainURL/user/UpdatePetAdoptionRequest";
   static String UserAdoptionUrl = "$mainURL/user/user_adoptedpetlist";
-  static String allPetTherapyURL = "$mainURL/user/get_all_pet_therapies/?date";
-  static String therapySlotURL= "$mainURL/user/pettherapy/get_slots";
+  static String allPetTherapyURL = "$mainURL/user/pettherapy/available-pets/?date=";
+  static String therapySlotURL= "$mainURL/user/pettherapy";
   static String therapyCreateOrderURL= "$mainURL/user/create_order/";
   static String podcastepisodeURL= "$mainURL/user/podcast/episodes/";
   static String podcastlistURL= "$mainURL/user/podcasts/";
@@ -83,6 +84,7 @@ class AppUrl {
   static String FollowingList = "$mainURL/user/following/";
   static String UserProfile = "$mainURL/user/userprofile/";
   static String Follow = "$mainURL/user/follow/";
+  static String RatingandReview = "$mainURL/user/store/product-reviews/add/";
 
 
 }

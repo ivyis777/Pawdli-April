@@ -758,7 +758,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                       borderRadius: BorderRadius.circular(15),
                       image: const DecorationImage(
                         image: NetworkImage(
-                            "https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/heartimage.png"),
+                            "https://app.pawdli.com/media/static/heartimage.png"),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -912,7 +912,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
                         print("Program Data: ${program.toJson()}");
 
                         return songTile(
-                          "https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/heartimage.png",
+                          "https://app.pawdli.com/media/static/heartimage.png",
                           program.slotTime ?? "N/A",
                           program.amount ?? "null",
                           program.username ?? "Unknown",
@@ -1238,13 +1238,16 @@ class _PawlliRadioState extends State<PawlliRadio> {
                     fullscreenDialog: true,
                     builder: (_) => VideoCallPage(
                       userId: userId,
-                      channelName: data['channel_name'],
-                      token: data['token'],
-                      uid: data['agora_uid'],
-                      appId: "daed82b7feea4990bf7fb43d9addd091",
+                        // channelName: data['channel_name'],
+                        // token: data['token'],
+                        // uid: data['agora_uid'],
+                        // appId: "daed82b7feea4990bf7fb43d9addd091",
+                      
                       programType: programType,
                       isCaller: true,
-                      sessionId: data['new_session_id'] ?? _sessionId!,
+                      sessionId: data['session_id'] ?? 0,
+                      websocketUrl: data['websocket_url'],
+                      bookingId: bookingId,
                     ),
                   ),
                 );
@@ -1302,7 +1305,11 @@ class _PawlliRadioState extends State<PawlliRadio> {
       // Try to rejoin existing session first
       if (_sessionId != null) {
         print('Attempting to rejoin session $_sessionId');
-        final restartResult = await ApiService.restartCall(userId, _sessionId!);
+        final restartResult =
+          await ApiService.websocketRestartRoom(
+            bookingId: bookingId,
+          );
+
         print('Rejoin API Result: $restartResult');
 
         if (restartResult != null) {
@@ -1311,20 +1318,26 @@ class _PawlliRadioState extends State<PawlliRadio> {
 
           if (restartResult['status_code'] == 200 ||
               (restartResult['status_code'] == null &&
-                  responseData['channel_name'] != null)) {
+                  responseData['websocket_url'] != null)) {
             // Successful rejoin - navigate directly to call
 
             Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
               fullscreenDialog: true,
               builder: (_) => VideoCallPage(
                 userId: userId,
-                channelName: responseData['channel_name'],
-                token: responseData['token'],
-                uid: responseData['agora_uid'],
-                appId: "daed82b7feea4990bf7fb43d9addd091",
+                // channelName: responseData['channel_name'],
+                // token: responseData['token'],
+                // uid: responseData['agora_uid'],
+                // appId: "daed82b7feea4990bf7fb43d9addd091",
                 programType: programType,
                 isCaller: true,
-                sessionId: responseData['new_session_id'] ?? _sessionId!,
+                sessionId: int.tryParse(
+                    responseData['session_id']
+                        .toString(),
+                  ) ??
+                  _sessionId!,
+                websocketUrl: responseData['websocket_url'],
+                bookingId: bookingId,
               ),
             ));
             return;
@@ -1334,8 +1347,8 @@ class _PawlliRadioState extends State<PawlliRadio> {
 
       // Start new call if rejoin failed or no sessionId exists
       print('Starting new call...');
-      final result = await ApiService.startCall(
-        userId: userId,
+      final result = await ApiService.websocketStartRoom(
+        // userId: userId,
         bookingId: bookingId,
         callType: programType,
       );
@@ -1356,7 +1369,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
       final responseData = result['response'] ?? result;
       final statusCode = result['status_code'] ?? 200;
 
-      if (statusCode != 200 || responseData['channel_name'] == null) {
+      if (statusCode != 200 || responseData['websocket_url'] == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(responseData['message'] ??
@@ -1366,7 +1379,9 @@ class _PawlliRadioState extends State<PawlliRadio> {
         return;
       }
 
-      _sessionId = responseData['session_id'] ?? responseData['new_session_id'];
+      _sessionId = responseData['session_id'] ?? responseData['session_id'];
+
+      print("🔥 HOST SESSION CREATED: $_sessionId");
 
         // ✅ ADD THIS LINE (VERY IMPORTANT)
         await programController.loadProgramList(
@@ -1383,13 +1398,15 @@ class _PawlliRadioState extends State<PawlliRadio> {
         fullscreenDialog: true,
         builder: (_) => VideoCallPage(
           userId: userId,
-          channelName: responseData['channel_name'],
-          token: responseData['token'],
-          uid: responseData['agora_uid'],
-          appId: "daed82b7feea4990bf7fb43d9addd091",
+          // channelName: responseData['channel_name'],
+          // token: responseData['token'],
+          // uid: responseData['agora_uid'],
+          // appId: "daed82b7feea4990bf7fb43d9addd091",
           programType: programType,
           isCaller: true,
           sessionId: _sessionId!,
+          websocketUrl: responseData['websocket_url'],
+          bookingId: bookingId,
         ),
       ));
     } catch (e) {
@@ -1405,80 +1422,69 @@ class _PawlliRadioState extends State<PawlliRadio> {
     }
   }
 
-  Future<void> handleJoinCall(int userId, int? sessionId) async {
-    if (sessionId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(content: Text('Session ID not available. Please wait.'.tr)),
-      );
-      return;
-    }
+  Future<void> handleJoinCall(
+    int userId,
+    int bookingId,
+  ) async {
 
     setState(() => _isLoading = true);
 
     try {
-      final data = await ApiService.joinCall(
-        userId: userId,
-        sessionId: sessionId,
+
+      print("🔥 JOIN BOOKING ID: $bookingId");
+
+      final data = await ApiService.websocketJoinRoom(
+        bookingId: bookingId,
       );
 
+      // ✅ NULL CHECK FIRST
+      if (data == null) {
+
+        Fluttertoast.showToast(
+          msg: "Failed to join room",
+        );
+
+        return;
+      }
+
+      // ✅ HOST NOT STARTED
+      if (data['websocket_url'] == null) {
+
+        Fluttertoast.showToast(
+          msg: "Host not available",
+        );
+
+        return;
+      }
+
+      print("🔥 JOIN RESPONSE: $data");
+
       if (!mounted) return;
-
-      print('Join Call Response: $data');
-
-      if (data == null ||
-          data['status_code'] != 200 ||
-          data['response'] == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content:
-                Text(data?['error'] ?? 'Host have not joined yet.Please wait.'.tr),
-          ),
-        );
-        return;
-      }
-
-      // Extract the nested response object
-      final response = data['response'];
-      final channelName = response?['channel_name'] as String?;
-      final token = response?['token'] as String?;
-      final agoraUidStr = response?['agora_uid']?.toString();
-      final uid = int.tryParse(agoraUidStr ?? '') ??
-          0; // Agora allows 0 as a valid uid (SDK assigns)
-      final callType = response?['call_type'] as String?;
-
-      print('Debug => Channel: $channelName, Token: $token, UID: $uid');
-
-      if (channelName == null || token == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Missing call details from server.'.tr)),
-        );
-        return;
-      }
 
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           fullscreenDialog: true,
           builder: (_) => VideoCallPage(
             userId: userId,
-            channelName: channelName,
-            token: token,
-            uid: uid,
-            appId: "daed82b7feea4990bf7fb43d9addd091",
-            programType: callType,
+            bookingId: bookingId,
+            sessionId: data['session_id'] ?? 0,
+            websocketUrl: data['websocket_url'] ?? '',
             isCaller: false,
-            sessionId: sessionId,
-            hostUid: response['host_uid'], 
+            programType: data['call_type'] ?? "Audio",
           ),
         ),
       );
+
     } catch (e) {
-      debugPrint('Error joining call: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error joining: ${e.toString()}'.tr)),
-        );
-      }
+
+      print("❌ JOIN ERROR: $e");
+
+      Fluttertoast.showToast(
+        msg: "Failed to join call",
+      );
+
     } finally {
+
       if (mounted) {
         setState(() => _isLoading = false);
       }
@@ -1497,10 +1503,10 @@ class _PawlliRadioState extends State<PawlliRadio> {
 
     debugPrint("🎬 Opening recorded stream: $url");
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => StreamVideoPage(streamUrl: url),
+    Get.to(
+      () => StreamVideoPage(
+        streamUrl: url,
+        isRecorded: true,
       ),
     );
   }
@@ -1522,7 +1528,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
     if (sessionId != null) {
       debugPrint("♻️ HOST REJOIN → restartCall");
 
-      final restartResult = await ApiService.restartCall(uid, sessionId);
+      final restartResult = await ApiService.websocketStartRoom(bookingId: bookingId, callType: program.programType);
 
       print("🔁 Restart API Result: $restartResult");
 
@@ -1534,13 +1540,15 @@ class _PawlliRadioState extends State<PawlliRadio> {
             fullscreenDialog: true,
             builder: (_) => VideoCallPage(
               userId: uid,
-              channelName: response['channel_name'],
-              token: response['token'],
-              uid: response['agora_uid'],
-              appId: "daed82b7feea4990bf7fb43d9addd091",
+              // channelName: response['channel_name'],
+              // token: response['token'],
+              // uid: response['agora_uid'],
+              // appId: "daed82b7feea4990bf7fb43d9addd091",
               programType: program.programType,
               isCaller: true,
-              sessionId: response['new_session_id'] ?? sessionId,
+              sessionId: response['session_id'] ?? sessionId,
+              websocketUrl: response['websocket_url'],
+              bookingId: bookingId,
             ),
           ),
         );
@@ -1564,7 +1572,6 @@ class _PawlliRadioState extends State<PawlliRadio> {
   }
 
   // ---------------- LISTENER ----------------
-  // ---------------- LISTENER ----------------
 debugPrint("🎧 LISTENER FLOW");
 
 // ✅ STEP 1: Refresh program list to get latest sessionId
@@ -1587,18 +1594,18 @@ try {
   updatedProgram = null;
 }
 
-// ✅ STEP 3: Get latest sessionId
-final int? updatedSessionId = updatedProgram?.sessionId;
+// // ✅ STEP 3: Get latest sessionId
+// final int? updatedSessionId = updatedProgram?.sessionId;
 
-print("🔥 UPDATED SESSION ID: $updatedSessionId");
+// print("🔥 UPDATED SESSION ID: $updatedSessionId");
 
-// ✅ STEP 4: Check again
-if (updatedSessionId == null) {
-  Fluttertoast.showToast(
-    msg: "Host has not started the session yet",
-  );
-  return;
-}
+// // ✅ STEP 4: Check again
+// if (updatedSessionId == null) {
+//   Fluttertoast.showToast(
+//     msg: "Host has not started the session yet",
+//   );
+//   return;
+// }
 
 // ---------------- PERMISSIONS ----------------
 if (await Permission.camera.isPermanentlyDenied ||
@@ -1619,7 +1626,7 @@ if (!status[Permission.camera]!.isGranted ||
 }
 
 // ✅ STEP 5: Join with UPDATED sessionId
-await handleJoinCall(uid, updatedSessionId);
+await handleJoinCall(uid, bookingId);
 }
 
   // Future<void> _handleLiveProgram(dynamic program) async {

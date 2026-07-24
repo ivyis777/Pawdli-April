@@ -17,7 +17,8 @@ void fetchPetTherapies({String? date}) async {
     isLoading(true);
 
     // ✅ If no date passed, use today's date in DD-MM-YYYY
-    final selectedDate = date ?? DateFormat('dd-MM-yyyy').format(DateTime.now());
+    final selectedDate =
+      date ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     final model = await ApiService.fetchAllPetTherapies(date: selectedDate);
 

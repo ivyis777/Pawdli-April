@@ -42,7 +42,7 @@ class _SplashPageState extends State<SplashPage> {
             }
 
             return Image.network(
-              'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Pawllilogo.png',
+              'https://app.pawdli.com/media/static/Pawllilogo.png',
               height: imageHeight,
               width: imageWidth,
               fit: BoxFit.contain,

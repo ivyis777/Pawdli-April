@@ -52,8 +52,12 @@ String formatToIndianTime(String dateTime) {
       case "delivered":
         return Colors.green;
 
+      case "cancel":
       case "cancelled":
         return Colors.red;
+
+      case "refunded":
+        return Colors.teal;
 
       case "pending":
         return Colors.grey;
@@ -80,7 +84,7 @@ String formatToIndianTime(String dateTime) {
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                      'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png',
+                      'https://app.pawdli.com/media/static/topimage.png',
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -190,10 +194,16 @@ String formatToIndianTime(String dateTime) {
                   ),
 
                   onTap: () {
-                    Get.to(() => AdminOrderDetailspage(order: order));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AdminOrderDetailspage(
+                          order: order,
+                        ),
+                      ),
+                    );
 
                     controller.fetchOrders();
-
                   },
                 ),
               );

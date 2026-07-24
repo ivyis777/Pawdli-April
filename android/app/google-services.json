@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "527884979919-905h64nvammadcipk5marvvc6q88b0nh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ivyis.pawlli",
+            "certificate_hash": "0d971543538d1b86710f0dbbf1fd9874ec894236"
+          }
+        },
+        {
           "client_id": "527884979919-588usk26levpqn61r1j86hiknv8aq1n5.apps.googleusercontent.com",
           "client_type": 3
         }

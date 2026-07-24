@@ -78,7 +78,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                      'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                      'https://app.pawdli.com/media/static/topimage.png'),
                   fit: BoxFit.cover,
                 ),
               ),

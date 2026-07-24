@@ -47,11 +47,10 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
     if (widget.petid != null) {
       final formattedDate =
           DateFormat('yyyy-MM-dd').format(widget.selectedDate);
-      final formattedDay = DateFormat('EEEE').format(widget.selectedDate);
+      // final formattedDay = DateFormat('EEEE').format(widget.selectedDate);
 
       slotController.loadTherapySlots(
         therapyId: widget.petid!,
-        day: formattedDay,
         date: formattedDate,
       );
     }
@@ -93,7 +92,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                    'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                    'https://app.pawdli.com/media/static/topimage.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -141,7 +140,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                     CircleAvatar(
                       radius: screenHeight * 0.04,
                       backgroundImage: NetworkImage(
-                          'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/dogcat.png'),
+                          'https://app.pawdli.com/media/static/dogcat.png'),
                     ),
                     SizedBox(width: screenWidth * 0.04),
 
@@ -360,7 +359,8 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                                 itemBuilder: (context, index) {
                                   final slot = slots[index];
                                   final isSelected = _isSlotSelected(slot);
-                                  final isAvailable = slot.isAvailable ?? false;
+                                  final isAvailable =
+                                    !(slot.bookedSlot ?? false);
 
                                   return IgnorePointer(
                                     ignoring: !isAvailable,

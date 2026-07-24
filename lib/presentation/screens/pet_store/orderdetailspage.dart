@@ -1,14 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
+import 'package:pawlli/data/api%20service.dart';
 import 'package:pawlli/data/cart%20payment/storecheckoutservice.dart';
 import 'package:pawlli/data/model/ordermodel.dart';
-import 'package:pawlli/gen/assests.gen.dart';
-import 'package:pawlli/presentation/screens/pet_store/pet_storemain.dart';
-import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
+import 'package:pawlli/data/model/rating_review_model.dart';
+import 'package:pawlli/presentation/screens/homepage/homepage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrderDetailsPage extends StatefulWidget {
@@ -25,11 +27,93 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   bool isLoading = false;
   late String currentStatus;
 
+  Map<int, double> ratings = {};
+  Map<int, TextEditingController> reviewControllers = {};
+  Map<int, bool> submittedReviews = {};
+
   @override
-  void initState() {
-    super.initState();
-    currentStatus = widget.order.orderStatus;
-  }
+    void initState() {
+      super.initState();
+
+      currentStatus = widget.order.orderStatus;
+
+      for (var item in widget.order.items) {
+
+        ratings[item.productId] = 0;
+
+        reviewControllers[item.productId] =
+            TextEditingController();
+
+        submittedReviews[item.productId] = false;
+      }
+    }
+
+    Future<void> submitReview(item) async {
+
+      final comment =
+          reviewControllers[item.productId]?.text.trim() ?? "";
+
+      if ((ratings[item.productId] ?? 0) == 0) {
+
+        Get.snackbar(
+          "Error",
+          "Please select rating",
+        );
+
+        return;
+      }
+
+      if (comment.isEmpty) {
+        Get.snackbar("Error", "Please enter review");
+        return;
+      }
+
+      final review = RatingReviewModel(
+        productId: item.productId,
+        orderId: widget.order.orderId,
+        rating: ratings[item.productId]!.toInt(),
+        comment: comment,
+      );
+
+      String token = LocalStorage.getAccessToken() ?? "";
+
+      bool success =
+          await ApiService.submitReview(
+        review,
+        token,
+      );
+
+      if (success) {
+
+        setState(() {
+          submittedReviews[item.productId] = true;
+        });
+
+        Get.snackbar(
+          "Success",
+          "Review submitted successfully",
+        );
+
+      } else {
+
+        Get.snackbar(
+          "Error",
+          "Failed to submit review",
+        );
+      }
+    }
+
+    @override
+      void dispose() {
+
+        for (var controller in reviewControllers.values) {
+          controller.dispose();
+        }
+
+        _reasonController.dispose();
+
+        super.dispose();
+      }
 
   Future<void> _contactUs() async {
     final Uri emailUri = Uri(
@@ -137,6 +221,37 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     }
   }
 
+    Color getStatusColor(String status) {
+
+      switch (status.toLowerCase()) {
+
+        case "paid":
+          return Colors.orange;
+
+        case "confirmed":
+          return Colors.blue;
+
+        case "shipped":
+          return Colors.purple;
+
+        case "delivered":
+          return Colors.green;
+
+        case "cancelled":
+        case "order cancelled":
+          return Colors.red;
+
+        case "refunded":
+          return Colors.teal;
+
+        case "pending":
+          return Colors.grey;
+
+        default:
+          return Colors.grey;
+      }
+    }
+
   Widget _addressCard(String title, String? addressString) {
     final address = _parseAddress(addressString);
 
@@ -197,7 +312,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                        'https://app.pawdli.com/media/static/topimage.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -225,22 +340,19 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     }
                   },
                   itemBuilder: (context) => [
-                    // ✅ Invoice
-                    PopupMenuItem(
-                      value: "invoice",
-                      child: Text("Download Invoice".tr),
-                    ),
 
-                    // ✅ Cancel (only when allowed)
-                    if (currentStatus.toLowerCase() != "order cancelled" &&
-                        currentStatus.toLowerCase() != "cancelled" &&
-                        currentStatus.toLowerCase() != "delivered")
+                    if (currentStatus.toLowerCase() == "delivered")
+                      PopupMenuItem(
+                        value: "invoice",
+                        child: Text("Download Invoice".tr),
+                      ),
+
+                    if (currentStatus.toLowerCase() == "paid")
                       PopupMenuItem(
                         value: "cancel",
                         child: Text("Cancel Order".tr),
                       ),
 
-                    // ✅ Contact Us (ALWAYS SHOW)
                     PopupMenuItem(
                       value: "contact",
                       child: Text("Contact Us".tr),
@@ -268,103 +380,265 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Row(
-                    children: [
-                      // ⭐ Product Image
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Builder(
-                          builder: (_) {
-                            String imageUrl = "";
+                  child: Column(
+                  children: [
 
-                            // ✅ 1. Variant images
-                            if (item.variantImages.isNotEmpty) {
-                              imageUrl = item.variantImages.first;
-                            }
+                    Row(
+                      children: [
 
-                            // ✅ 2. Single product image
-                            else if (item.productImage != null &&
-                                item.productImage!.isNotEmpty) {
-                              imageUrl = item.productImage!;
-                            }
+                        // ⭐ Product Image
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Builder(
+                            builder: (_) {
 
-                            // ✅ 3. Product images list
-                            else if (item.productImages.isNotEmpty) {
-                              imageUrl = item.productImages.first;
-                            }
+                              String imageUrl = "";
 
-                            // ✅ 4. fallback
-                            else {
-                              imageUrl = "https://picsum.photos/80";
-                            }
+                              if (item.variantImages.isNotEmpty) {
+                                imageUrl = item.variantImages.first;
+                              }
 
-                            return Image.network(
-                              imageUrl,
-                              height: 70,
-                              width: 70,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) =>
-                                  const Icon(Icons.broken_image, size: 40),
-                            );
-                          },
+                              else if (item.productImage != null &&
+                                  item.productImage!.isNotEmpty) {
+                                imageUrl = item.productImage!;
+                              }
+
+                              else if (item.productImages.isNotEmpty) {
+                                imageUrl = item.productImages.first;
+                              }
+
+                              else {
+                                imageUrl = "https://picsum.photos/80";
+                              }
+
+                              return Image.network(
+                                imageUrl,
+                                height: 70,
+                                width: 70,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) =>
+                                    const Icon(Icons.broken_image, size: 40),
+                              );
+                            },
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(width: 12),
+                        const SizedBox(width: 12),
 
-                      // ⭐ Product Details
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Product Name
-                            Text(
-                              item.productName,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                        // ⭐ Product Details
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+
+                              Text(
+                                item.productName,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
 
-                            const SizedBox(height: 4),
+                              const SizedBox(height: 4),
 
-                            // Variant + Quantity in same row
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    "${item.variantName}",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                              Row(
+                                children: [
+
+                                  Expanded(
+                                    child: Text(
+                                      "${item.variantName}",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[700],
+                                      ),
+                                    ),
+                                  ),
+
+                                  Text(
+                                    "Qty: ${item.quantity}",
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: Colors.grey[700],
                                     ),
                                   ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // REVIEW SECTION
+                    if (currentStatus.toLowerCase() == "delivered") ...[
+
+                      const SizedBox(height: 15),
+
+                      if (submittedReviews[item.productId] == true)
+
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade50,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Text(
+                            "Review Submitted",
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        )
+
+                      else
+
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                            const Divider(),
+
+                            const Text(
+                              "Rate this product",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            RatingBar.builder(
+
+                              initialRating:
+                                  ratings[item.productId] ?? 0,
+
+                              minRating: 1,
+
+                              itemCount: 5,
+
+                              allowHalfRating: false,
+
+                              itemBuilder: (context, _) =>
+                                  const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+
+                              onRatingUpdate: (rating) {
+
+                                setState(() {
+                                  ratings[item.productId] = rating;
+                                });
+                              },
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            TextField(
+
+                              controller:
+                                  reviewControllers[item.productId],
+
+                              maxLines: 3,
+
+                              decoration: InputDecoration(
+                                hintText: "Write your review",
+
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(10),
                                 ),
-                                Text(
-                                  "Qty: ${item.quantity}",
+                              ),
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            SizedBox(
+                              width: double.infinity,
+                              height: 45,
+
+                              child: ElevatedButton(
+
+                                onPressed: () {
+                                  submitReview(item);
+                                },
+
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Colours.primarycolour,
+                                ),
+
+                                child: const Text(
+                                  "Submit Review",
                                   style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey[700],
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
                     ],
-                  ),
+                  ],
+                ),
                 );
               }).toList(),
             ),
             Divider(),
 
             // Payment and Order Info
-            _infoRow("Order Status", currentStatus),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+
+              child: Row(
+                mainAxisAlignment:
+                    MainAxisAlignment.spaceBetween,
+
+                children: [
+
+                  Text(
+                    "Order Status",
+
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+
+                    decoration: BoxDecoration(
+                      color: getStatusColor(currentStatus),
+
+                      borderRadius:
+                          BorderRadius.circular(20),
+                    ),
+
+                    child: Text(
+                      currentStatus.capitalizeFirst ?? "",
+
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             _infoRow("Amount Paid", "₹${widget.order.finalAmount}"),
             _infoRow(
               "Order Date",
@@ -397,7 +671,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => MainLayout()),
+                  MaterialPageRoute(builder: (_) => HomePage()),
                 );
               },
               style: ElevatedButton.styleFrom(

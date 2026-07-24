@@ -1,3 +1,5 @@
+import 'package:pawlli/data/model/therapyslot.dart';
+
 class PetTherapyModel {
   final String? message;
   final List<PetTherapy>? data;
@@ -17,17 +19,31 @@ class PetTherapy {
   final int? id;
   final String? name;
   final String? description;
-  final String? image;
+  final String? coverImage;
   final String? location;
-  final List<GalleryImage>? galleryImages;
+  final List<String>? images;
+  final String? age;
+  final String? gender;
+  final String? availableStartDate;
+  final String? availableEndDate;
+  final String? vaccinationStatus;
+  final String? petSpecialization;
+  final int? therapySessionsCompleted;
 
   PetTherapy({
     this.id,
     this.name,
     this.description,
-    this.image,
+    this.coverImage,
     this.location,
-    this.galleryImages,
+    this.images,
+    this.age,
+    this.gender,
+    this.availableStartDate,
+    this.availableEndDate,
+    this.vaccinationStatus,
+    this.petSpecialization,
+    this.therapySessionsCompleted,
   });
 
   factory PetTherapy.fromJson(Map<String, dynamic> json) {
@@ -35,30 +51,42 @@ class PetTherapy {
       id: json['pettherapy_id'],
       name: json['name'],
       description: json['description'],
-      image: json['image'],
+      coverImage: json['cover_image'],
       location: json['location'],
-      galleryImages: (json['gallery_images'] as List<dynamic>?)
-          ?.map((e) => GalleryImage.fromJson(e))
+      images: (json['images'] as List<dynamic>?)
+          ?.map((e) => e as String)
           .toList(),
+
+      age: json["age"],
+      gender: json["gender"],
+      availableStartDate: json["available_start_date"],
+      availableEndDate: json["available_end_date"],
+      vaccinationStatus: json["vaccination_status"],
+      petSpecialization: json["pet_specialization"],
+      therapySessionsCompleted: json["therapy_sessions_completed"],
+
+      // slotDetails: (json['slot_details'] as List<dynamic>?)
+          // ?.map((e) => TherapySlot.fromJson(e))
+          // .toList(),
     );
   }
 
   // 🔑 Helper getter → returns only URL strings
   List<String> get galleryImageUrls =>
-      galleryImages?.map((g) => g.image ?? "").toList() ?? [];
+      images?.map((g) => g ?? "").toList() ?? [];
 }
 
-class GalleryImage {
-  final int? id;
-  final String? image;
+// class GalleryImage {
+//   final int? id;
+//   final String? image;
 
-  GalleryImage({this.id, this.image});
+//   GalleryImage({this.id, this.image});
 
-  factory GalleryImage.fromJson(Map<String, dynamic> json) {
-    return GalleryImage(
-      id: json['gallery_id'],
-      image: json['image'],
-    );
-  }
-}
+//   factory GalleryImage.fromJson(Map<String, dynamic> json) {
+//     return GalleryImage(
+//       id: json['gallery_id'],
+//       image: json['image'],
+//     );
+//   }
+// }
 

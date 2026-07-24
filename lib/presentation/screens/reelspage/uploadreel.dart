@@ -47,7 +47,7 @@ class UploadReelPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                        'https://app.pawdli.com/media/static/topimage.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -122,7 +122,7 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                        'https://app.pawdli.com/media/static/topimage.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -243,12 +243,14 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
                           showDialog(
                             context: context,
                             barrierDismissible: false,
-                            builder: (_) {
-                              // ⏱ Auto close after 2 seconds
+                            builder: (dialogContext) {
                               Future.delayed(const Duration(seconds: 2), () {
-                                if (Navigator.canPop(context)) {
-                                  Navigator.pop(context); // close dialog
-                                  Navigator.pop(context); // go back page
+                                if (dialogContext.mounted) {
+                                  Navigator.of(dialogContext).pop(); // Close dialog
+                                }
+
+                                if (context.mounted) {
+                                  Navigator.of(context).pop(); // Back to previous page
                                 }
                               });
 
@@ -265,8 +267,8 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
                                       size: 60,
                                     ),
                                     const SizedBox(height: 12),
-                                     Text(
-                                      "Uploaded Successfully".tr,
+                                    Text(
+                                      "Uploaded Successfully",
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w600,

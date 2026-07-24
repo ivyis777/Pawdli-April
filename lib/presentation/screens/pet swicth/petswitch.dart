@@ -70,7 +70,7 @@ class _PetswitchState extends State<Petswitch> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                    'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                    'https://app.pawdli.com/media/static/topimage.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -123,8 +123,8 @@ class _PetswitchState extends State<Petswitch> {
 
                       // Alternating background images
                       String backgroundImage = index.isEven
-                          ? 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png'
-                          : 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png';
+                          ? 'https://app.pawdli.com/media/static/yellowcard.png'
+                          : 'https://app.pawdli.com/media/static/browncard.png';
 
                       return Column(
                         children: [
@@ -136,10 +136,11 @@ class _PetswitchState extends State<Petswitch> {
                                 MaterialPageRoute(
                                   builder: (context) => Chat1to1(
                                     receiverId: widget.receiverId.toString(),
-                                    receiverName:
-                                        widget.receiverName ?? "Unknown Pet".tr,
+                                    receiverName: widget.receiverName ?? "Unknown Pet".tr,
                                     petProfileImage: widget.receiverImage ?? "",
                                     petId: pet.petId!,
+                                    lastMessage: "",
+                                    showLastMessage: false,
                                   ),
                                 ),
                               );

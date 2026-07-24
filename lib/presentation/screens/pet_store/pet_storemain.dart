@@ -71,15 +71,15 @@ class _PetstorePageState extends State<PetstorePage> {
   // Map category names to images
   final Map<String, String> categoryImages = {
     'Cloths':
-        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/cloths.png',
+        'https://app.pawdli.com/media/static/cloths.png',
     'Accessories':
-        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/accessories.png',
+        'https://app.pawdli.com/media/static/accessories.png',
     'Food':
-        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/food.png',
+        'https://app.pawdli.com/media/static/food.png',
     'Grooming':
-        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Grooming.png',
+        'https://app.pawdli.com/media/static/Grooming.png',
     'Toys':
-        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Toys.png',
+        'https://app.pawdli.com/media/static/Toys.png',
     'Unknown': 'assets/icons/default.png',
   };
 
@@ -315,7 +315,7 @@ class _PetstorePageState extends State<PetstorePage> {
           //     decoration: BoxDecoration(
           //       image: DecorationImage(
           //         image: NetworkImage(
-          //             'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+          //             'https://app.pawdli.com/media/static/topimage.png'),
           //         fit: BoxFit.cover,
           //       ),
           //     ),
@@ -338,7 +338,7 @@ class _PetstorePageState extends State<PetstorePage> {
                     Align(
                       alignment: Alignment.topLeft,
                       child: Image.network(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png',
+                        'https://app.pawdli.com/media/static/topimage.png',
                         width: MediaQuery.of(context).size.width * 0.55,
                         height: 80,
                         fit: BoxFit.cover,

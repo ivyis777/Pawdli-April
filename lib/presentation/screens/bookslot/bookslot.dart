@@ -15,8 +15,7 @@ import 'package:pawlli/data/model/ordercraetionmodel.dart';
 import 'package:pawlli/data/model/paymentverificationmodel.dart';
 import 'package:pawlli/data/model/paythroughwallet.dart';
 import 'package:pawlli/data/model/slotcreationmodel.dart' as slot_model;
-import 'package:pawlli/gen/assests.gen.dart';
-import 'package:pawlli/presentation/screens/homepage/homepage.dart';
+// import 'package:pawlli/presentation/screens/homepage/homepage.dart';
 import 'package:pawlli/presentation/screens/pawlli%20radio/pawlli_radio.dart';
 import 'package:pawlli/presentation/screens/slots/slots_and_time.dart';
 import 'package:pawlli/presentation/slotpaymentverificationpage/paymentfailure.dart';
@@ -70,6 +69,7 @@ class RadioProgramPage extends StatefulWidget {
 }
 
 class _RadioProgramPageState extends State<RadioProgramPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int selectedIndex = 1;
   int? userId;
   String currentOrderId = "";
@@ -617,6 +617,21 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
   /// Upload the currently selected file to backend.
   /// Uses AppUrl.FileUploadURL (please ensure it's defined in your AppUrl).
   Future<void> uploadSelectedFile() async {
+
+    print("========================================");
+    print("📤 uploadSelectedFile() CALLED");
+    print("Program Name : ${programNameController.text}");
+    print("Description : ${programDescriptionController.text}");
+    print("Language : $selectedLanguage");
+    print("Program Type : ${selectedFileType ?? selectedProgramType}");
+    print("Program Mode : $programMode");
+    print("User ID : $userId");
+    print("Selected File : ${selectedFile?.name}");
+    print("Selected Slots : ${widget.selectedSlots}");
+    print("Selected Dates : ${widget.selectedDate}");
+    print("========================================");
+
+    print("✅ Starting validation...");
     if (programNameController.text.isEmpty) {
       Fluttertoast.showToast(msg: "Please enter program name".tr);
       return;
@@ -647,6 +662,8 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
       return;
     }
 
+    print("✅ All validations passed");
+
     setState(() {
       isUploading = true;
       uploadStatus = "Uploading ...".tr;
@@ -654,9 +671,14 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
     });
 
     try {
+      print("📁 Creating File object...");
+      print("Path : ${selectedFile!.path}");
+      print("File Name : ${selectedFile!.name}");
+
       final file = File(selectedFile!.path!);
       final uri = Uri.parse(AppUrl.FileuploadUrl);
       final request = http.MultipartRequest('POST', uri);
+      print("🌐 Upload URL : $uri");
 
       // Existing Fields (NOT Removed)
       request.fields['user_id'] = userId.toString();
@@ -683,6 +705,13 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
         }
       }).toList());
 
+      print("================================");
+      print("REQUEST FIELDS");
+      request.fields.forEach((key, value) {
+        print("$key : $value");
+      });
+      print("================================");
+
       // 🔥 Streaming Upload (Progress Enabled)
       final totalBytes = await file.length(); // ⬅️ ADDED
       int sentBytes = 0; // ⬅️ ADDED
@@ -706,31 +735,52 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
         filename: selectedFile!.name,
       ); // ⬅️ ADDED
 
+      print("📎 Adding file into MultipartRequest");
+      print("File Name : ${selectedFile!.name}");
+      print("File Size : ${selectedFile!.size}");
+
       request.files.add(multipartFile); // ✔️ Your original logic
 
       // Sending request
+      print("🚀 Sending Upload Request...");
       final streamedResponse = await request.send();
       final resp = await http.Response.fromStream(streamedResponse);
+      print("================================");
+      print("UPLOAD RESPONSE");
+      print("Status Code : ${streamedResponse.statusCode}");
+      print("Response Body : ${resp.body}");
+      print("================================");
 
       if (streamedResponse.statusCode == 200 ||
           streamedResponse.statusCode == 201) {
+
         setState(() {
-          uploadStatus = "Upload successful: ${selectedFile!.name}".tr;
+          uploadStatus = "Upload successful: ${selectedFile!.name}";
           uploadProgress = 1.0;
         });
 
-        Fluttertoast.showToast(msg: "Slot booked successfully.".tr);
+        Fluttertoast.showToast(msg: "Slot booked successfully.");
 
-        // ⬇⬇⬇ Correct: Navigation after success
-        Future.delayed(Duration(milliseconds: 500), () {
+        Future.delayed(const Duration(milliseconds: 500), () {
           if (mounted) {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => HomePage()),
+              MaterialPageRoute(
+                builder: (context) => PawlliRadio(
+                  radioid: widget.radioid,
+                  radioname: widget.radioname,
+                  fromPaymentFlow: true,
+                ),
+              ),
               (route) => false,
             );
           }
         });
+      }
+      else {
+        print("❌ FILE UPLOAD FAILED");
+        print("Status Code : ${streamedResponse.statusCode}");
+        print("Response : ${resp.body}");
       }
     } catch (e) {
       setState(() {
@@ -760,7 +810,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                    'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                    'https://app.pawdli.com/media/static/topimage.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -797,7 +847,9 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                     SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.all(16),
-                      child: Column(
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Slot Details Card
@@ -856,8 +908,14 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                 fontWeight: FontWeight.bold)),
                           SizedBox(height: 8),
                           Material(
-                            child: TextField(
+                            child: TextFormField(
                               controller: programNameController,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Please enter program name";
+                                }
+                                return null;
+                              },
                               style: TextStyle(
                                 fontSize: getResponsiveFont(context, 14),
                               ),
@@ -887,10 +945,16 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                 fontWeight: FontWeight.bold)),
                           SizedBox(height: 8),
                           Material(
-                            child: TextField(
+                            child: TextFormField(
+                              controller: programDescriptionController,
                               focusNode: _programDescriptionFocus,
                               maxLines: 3,
-                              controller: programDescriptionController,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Please enter program description";
+                                }
+                                return null;
+                              },
                               decoration: InputDecoration(
                                 hintText: 'Enter Description'.tr,
                                 hintStyle: TextStyle(
@@ -1187,17 +1251,32 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
 
                           ElevatedButton(
                             onPressed: () {
-                              print("🚀 BOOK SLOT CLICKED");
-                              print("🎭 PROGRAM MODE: $programMode");
-                              print("🎥 PROGRAM TYPE: $selectedProgramType");
+                              if (!_formKey.currentState!.validate()) {
+                                return;
+                              }
 
-                              if (programMode == 'Live') {
-                                print("🟢 LIVE FLOW → CALL createOrder()");
-                                createOrder(); // ✅ LIVE booking
+                              if (languageController.selectedLanguages.isEmpty) {
+                                Get.snackbar(
+                                  "Validation",
+                                  "Please select language",
+                                  snackPosition: SnackPosition.TOP,
+                                );
+                                return;
+                              }
+
+                              if (programMode == "Recorded" && selectedFile == null) {
+                                Get.snackbar(
+                                  "Validation",
+                                  "Please upload Audio/Video file",
+                                  snackPosition: SnackPosition.TOP,
+                                );
+                                return;
+                              }
+
+                              if (programMode == "Live") {
+                                createOrder();
                               } else {
-                                print(
-                                    "📼 RECORDED FLOW → CALL uploadSelectedFile()");
-                                uploadSelectedFile(); // ✅ RECORDED booking
+                                uploadSelectedFile();
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -1271,6 +1350,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                         ],
                       ),
                     ),
+                    )
                   ],
                 ),
               ),

@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
+import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/controller/competition_controller.dart';
 import 'package:pawlli/data/controller/getuserprofilecontroller.dart';
 import 'package:pawlli/data/controller/petslistcontroller.dart';
@@ -13,13 +14,13 @@ import 'package:pawlli/presentation/screens/Pet%20Adoption/pet_adt_view.dart';
 import 'package:pawlli/presentation/screens/add%20pet/addpet.dart';
 import 'package:pawlli/presentation/screens/good%20bye%20buddy/goodbyebudddy.dart';
 import 'package:pawlli/presentation/screens/homepage/countdownbutton.dart';
+import 'package:pawlli/presentation/screens/meet%20a%20vet/appointment.dart';
 import 'package:pawlli/presentation/screens/notification%20page/notificationpage.dart';
 import 'package:pawlli/presentation/screens/pet%20Radio/petradio.dart';
+import 'package:pawlli/presentation/screens/pet%20therapy/pet_therapy.dart';
 import 'package:pawlli/presentation/screens/pet_store/Store_Orders/orders_list.dart';
 import 'package:pawlli/presentation/screens/pet_store/pet_storemain.dart';
-import 'package:pawlli/presentation/screens/pet%20therapy/pet_therapy.dart';
 import 'package:pawlli/presentation/screens/petprofile/editpetprofile.dart';
-import 'package:pawlli/presentation/screens/potcast/potcast.dart';
 import 'package:pawlli/presentation/screens/reelspage/reels.dart';
 import 'package:pawlli/presentation/screens/types%20of%20categaries/typesofcategaries.dart';
 import 'package:pawlli/presentation/screens/userprofile/userprofile.dart';
@@ -117,7 +118,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  final bool isSuperUser = GetStorage().read('is_superuser') ?? false;
+  final bool isSuperUser = GetStorage().read(LocalStorageConstants.isSuperUser) ?? false;
 
   final UserProfileController userProfileController =
       Get.put(UserProfileController());
@@ -133,25 +134,30 @@ class _HomePageState extends State<HomePage> {
       bool hasUnreadGoodbyeBuddy = true;
 
   @override
-  void initState() {
-    super.initState();
-    print("🏠 HomePage initState → CompetitionController CREATED");
+    void initState() {
+      super.initState();
 
-    // ✅ Load user profile ONCE
-    final userId = int.tryParse(
-      GetStorage().read('userId')?.toString() ?? '',
-    );
+      Future.microtask(() async {
 
-    if (userId != null) {
-      userProfileController.loadUserProfile(userId);
+        final userId = GetStorage().read(LocalStorageConstants.userId);
+
+        print("HOME USER ID = $userId");
+
+        if (userId != null) {
+          print("HOME CALLING loadUserProfile");
+
+          await userProfileController.loadUserProfile(userId);
+
+          print("HOME loadUserProfile FINISHED");
+        }
+      });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (reelController.reels.isEmpty) {
+          reelController.fetchReels();
+        }
+      });
     }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (reelController.reels.isEmpty) {
-        reelController.fetchReels();
-      }
-    });
-  }
 
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -177,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: NetworkImage(
-                            'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                            'https://app.pawdli.com/media/static/topimage.png'),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -197,15 +203,27 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ProfilePage()),
-                          );
+                              builder: (context) => ProfilePage(),
+                            ),
+                          ).then((_) {
+                            final userId = int.tryParse(
+                              GetStorage().read('userId')?.toString() ?? '',
+                            );
+
+                            if (userId != null) {
+                              userProfileController.loadUserProfile(userId);
+                            }
+                          });
                         },
                         child: Obx(() {
                           final profile =
                               userProfileController.userProfile.value;
                           final String imageUrl = profile?.profilePicture ?? '';
 
-                          print("🖼 FINAL IMAGE URL => $imageUrl");
+                          print("======== HOME PROFILE ========");
+                          print("Image URL: $imageUrl");
+                          print("Controller object: ${userProfileController.userProfile.value}");
+                          print("==============================");
 
                           return CircleAvatar(
                             radius: 32,
@@ -217,19 +235,17 @@ class _HomePageState extends State<HomePage> {
                               child: ClipOval(
                                 child: imageUrl.isNotEmpty
                                     ? CachedNetworkImage(
-                                        imageUrl: imageUrl,
+                                        imageUrl: "$imageUrl?v=${DateTime.now().millisecondsSinceEpoch}",
                                         width: 60,
                                         height: 60,
                                         fit: BoxFit.cover,
                                         placeholder: (context, url) =>
-                                            const CircularProgressIndicator(
-                                                strokeWidth: 2),
+                                            const CircularProgressIndicator(strokeWidth: 2),
                                         errorWidget: (context, url, error) =>
-                                            Image.asset(Assets
-                                                .images.hpsittingdog.path),
+                                            Image.asset(Assets.images.hpsittingdog.path),
                                       )
                                     : CachedNetworkImage(
-                                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/hpsittingdog.png',
+                                        imageUrl: 'https://app.pawdli.com/media/static/hpsittingdog.png',
                                         width: 60,
                                         height: 60,
                                         fit: BoxFit.cover,
@@ -316,12 +332,17 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-
                               setState(() {
                                 hasUnreadOrders = false;
                               });
 
-                              Get.to(() => AdminOrderListPage());
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AdminOrderListPage(),
+                                ),
+                              );
+
                               print("Super User Clicked");
                             },
                             child: Padding(
@@ -452,12 +473,12 @@ class _HomePageState extends State<HomePage> {
                                 } 
                                 else {
                                   imageProvider = const NetworkImage(
-                                      'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/golden+retriverr.png');
+                                      'https://app.pawdli.com/media/static/golden+retriverr.png');
                                 }
                               } 
                               else {
                                 imageProvider = const NetworkImage(
-                                    'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/golden+retriverr.png');
+                                    'https://app.pawdli.com/media/static/golden+retriverr.png');
                               }
 
                               return GestureDetector(
@@ -476,12 +497,37 @@ class _HomePageState extends State<HomePage> {
                                   child: Column(
                                     children: [
 
-                                      CircleAvatar(
-                                        radius: screenWidth * 0.08,
-                                        backgroundColor: Colours.secondarycolour,
-                                        backgroundImage: imageProvider,
-                                        child: null,
+                                    CircleAvatar(
+                                      radius: screenWidth * 0.08,
+                                      backgroundColor: Colours.secondarycolour,
+                                      child: ClipOval(
+                                        child: SizedBox(
+                                          width: screenWidth * 0.16,
+                                          height: screenWidth * 0.16,
+                                          child: (pet.petProfileImage != null &&
+                                                  pet.petProfileImage!.isNotEmpty)
+                                              ? CachedNetworkImage(
+                                                  imageUrl: pet.petProfileImage!.startsWith("http")
+                                                      ? pet.petProfileImage!
+                                                      : "https://app.pawdli.com${pet.petProfileImage!}",
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (context, url) => const Center(
+                                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                                  ),
+                                                  errorWidget: (context, url, error) => Icon(
+                                                    Icons.pets,
+                                                    color: Colours.primarycolour,
+                                                    size: 30,
+                                                  ),
+                                                )
+                                              : Icon(
+                                                  Icons.pets,
+                                                  color: Colours.primarycolour,
+                                                  size: 30,
+                                                ),
+                                        ),
                                       ),
+                                    ),
 
                                       // CircleAvatar(
                                       //   radius: screenWidth * 0.08,
@@ -1016,7 +1062,7 @@ class _HomePageState extends State<HomePage> {
                       height: screenHeight *
                           0.2, // Adjust the height to fit the design
                       child: CachedNetworkImage(
-                          imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png',
+                          imageUrl: 'https://app.pawdli.com/media/static/yellowcard.png',
                           width: screenWidth * 0.1,
                           height: screenHeight * 0.12,
                           fit: BoxFit.contain,
@@ -1062,7 +1108,7 @@ class _HomePageState extends State<HomePage> {
                       bottom:
                           screenHeight * -0.0001, // Adjust vertical position
                       child: CachedNetworkImage(
-                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/PetRadio.png', // Updated image path
+                        imageUrl: 'https://app.pawdli.com/media/static/PetRadio.png', // Updated image path
                         width: screenWidth * 0.50, // Adjust width
                         height: screenHeight * 0.25, // Adjust height
                         fit: BoxFit.contain, // Ensures the image fits properly
@@ -1100,7 +1146,7 @@ class _HomePageState extends State<HomePage> {
                       height: screenHeight *
                           0.2, // Adjust the height to fit the design
                       child: CachedNetworkImage(
-                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png',
+                        imageUrl: 'https://app.pawdli.com/media/static/browncard.png',
                         width: screenWidth * 0.1,
                         height: screenHeight * 0.12,
                         fit: BoxFit.contain,
@@ -1141,7 +1187,7 @@ class _HomePageState extends State<HomePage> {
                       right: screenWidth * 0.06, // Adjust horizontal position
                       bottom: screenHeight * 0.03, // Adjust vertical position
                       child: CachedNetworkImage(
-                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/petstore_icon.png', // Updated image path
+                        imageUrl: 'https://app.pawdli.com/media/static/petstore_icon.png', // Updated image path
                         width: screenWidth * 0.9,
                         height: screenHeight * 0.16, // Adjust height
                         fit: BoxFit.cover, // Ensures the image fits properly
@@ -1211,7 +1257,7 @@ class _HomePageState extends State<HomePage> {
                         height: screenHeight *
                             0.2, // Adjust the height to fit the design
                         child: CachedNetworkImage(
-                            imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png',
+                            imageUrl: 'https://app.pawdli.com/media/static/yellowcard.png',
                             width: screenWidth * 0.05,
                             height: screenHeight * 0.12,
                             fit: BoxFit.contain,
@@ -1259,7 +1305,7 @@ class _HomePageState extends State<HomePage> {
                         bottom: screenHeight *
                             -0.050, // Adjust the vertical position
                         child: CachedNetworkImage(
-                          imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/PetTherapy.png',
+                          imageUrl: 'https://app.pawdli.com/media/static/PetTherapy.png',
                           width: screenWidth * 0.55, // Adjust width
                           height: screenHeight * 0.30, // Adjust height
                           fit: BoxFit.fill, // Ensures the image fits properly
@@ -1296,7 +1342,7 @@ class _HomePageState extends State<HomePage> {
                       height: screenHeight *
                           0.2, // Adjust the height to fit the design
                       child: CachedNetworkImage(
-                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png',
+                        imageUrl: 'https://app.pawdli.com/media/static/browncard.png',
                         width: screenWidth * 0.1,
                         height: screenHeight * 0.12,
                         fit: BoxFit.contain,
@@ -1342,7 +1388,7 @@ class _HomePageState extends State<HomePage> {
                       // child: Image.asset(
                       //   'assets/images/allanimals.png', // Updated image path
                       child: CachedNetworkImage(
-                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/allanimals.png', // Dynamic Image
+                        imageUrl: 'https://app.pawdli.com/media/static/allanimals.png', // Dynamic Image
                         width: screenWidth * 0.60, // Adjust width
                         height: screenHeight * 0.30, // Adjust height
                         fit:
@@ -1392,7 +1438,7 @@ class _HomePageState extends State<HomePage> {
                         height: screenHeight *
                             0.2, // Adjust the height to fit the design
                         child: CachedNetworkImage(
-                          imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/yellowcard.png',
+                          imageUrl: 'https://app.pawdli.com/media/static/yellowcard.png',
                           width: screenWidth * 0.1,
                           height: screenHeight * 0.12,
                           fit: BoxFit.contain,
@@ -1440,7 +1486,7 @@ class _HomePageState extends State<HomePage> {
                         bottom: screenHeight *
                             -0.012, // Adjust the vertical position
                         child: CachedNetworkImage(
-                          imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Pet_Podcast1.png',
+                          imageUrl: 'https://app.pawdli.com/media/static/Pet_Podcast1.png',
                           width: screenWidth * 0.6, // Adjust width
                           height: screenHeight * 0.28, // Adjust height
                           fit: BoxFit.fill,
@@ -1455,21 +1501,17 @@ class _HomePageState extends State<HomePage> {
                   vertical: screenHeight * 0.01),
               child: GestureDetector(
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text("Coming Soon".tr),
-                        content: Text("This feature will be available soon!".tr),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text("OK".tr),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  // Navigate first
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AppointmentPage()),
+                  ).then((_) {
+                    // Use addPostFrameCallback to perform actions after the frame is rendered
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      // Here you can perform updates like calling setState or modifying observables
+                      print('Card tapped');
+                    });
+                  });
                 },
                 child: Stack(
                   children: [
@@ -1480,7 +1522,7 @@ class _HomePageState extends State<HomePage> {
                       height: screenHeight *
                           0.2, // Adjust the height to fit the design
                       child: CachedNetworkImage(
-                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/browncard.png',
+                        imageUrl: 'https://app.pawdli.com/media/static/browncard.png',
                         width: screenWidth * 0.1,
                         height: screenHeight * 0.12,
                         fit: BoxFit.contain,
@@ -1529,7 +1571,7 @@ class _HomePageState extends State<HomePage> {
 
                       /// Adjust the vertical position
                       child: CachedNetworkImage(
-                        imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/MeetAVet.png',
+                        imageUrl: 'https://app.pawdli.com/media/static/MeetAVet.png',
                         width: screenWidth * 0.58, // Adjust width
                         height: screenHeight * 0.28, // Adjust height
                         fit: BoxFit.contain, // Ensures the image fits properly
@@ -1576,7 +1618,7 @@ class _HomePageState extends State<HomePage> {
                                   top: screenHeight * 0.048,
                                   left: screenWidth * 0.001,
                                   child: CachedNetworkImage(
-                                    imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/homeallbg.png',
+                                    imageUrl: 'https://app.pawdli.com/media/static/homeallbg.png',
                                     width: screenWidth * 0.29,
                                     height: screenHeight * 0.14,
                                     fit: BoxFit.cover,
@@ -1586,7 +1628,7 @@ class _HomePageState extends State<HomePage> {
                                   top: screenHeight * -0.01,
                                   left: screenWidth * -0.04,
                                   child: CachedNetworkImage(
-                                    imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Pet_Adoption.png',
+                                    imageUrl: 'https://app.pawdli.com/media/static/Pet_Adoption.png',
                                     width: screenWidth * 0.38,
                                     height: screenHeight * 0.18,
                                     fit: BoxFit.cover,
@@ -1645,7 +1687,7 @@ class _HomePageState extends State<HomePage> {
                                   bottom: screenHeight * 0.060,
                                   right: screenWidth * 0.04,
                                   child: CachedNetworkImage (
-                                    imageUrl: 'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/Goodbye_Buddy.png',
+                                    imageUrl: 'https://app.pawdli.com/media/static/Goodbye_Buddy.png',
                                     width: screenWidth * 0.40,
                                     height: screenHeight * 0.15,
                                     fit: BoxFit.cover,

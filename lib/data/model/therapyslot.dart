@@ -5,7 +5,7 @@ class TherapySlotPageModel {
 
   factory TherapySlotPageModel.fromJson(Map<String, dynamic> json) {
     return TherapySlotPageModel(
-      data: (json['data'] as List)
+      data: (json['slots'] as List)
           .map((item) => TherapySlot.fromJson(item))
           .toList(),
     );
@@ -20,7 +20,8 @@ class TherapySlot {
   final String? startTime;
   final String? endTime;
   final String? amount;
-  final bool? isAvailable;
+  final bool? bookedSlot;
+
 
   TherapySlot({
     this.slotId,
@@ -30,7 +31,8 @@ class TherapySlot {
     this.startTime,
     this.endTime,
     this.amount,
-    this.isAvailable,
+    this.bookedSlot,
+
   });
 
   factory TherapySlot.fromJson(Map<String, dynamic> json) {
@@ -42,7 +44,7 @@ class TherapySlot {
       startTime: json['start_time'],
       endTime: json['end_time'],
       amount: json['amount'],
-      isAvailable: json['is_available'],
+      bookedSlot: json['is_booked'],
     );
   }
 }

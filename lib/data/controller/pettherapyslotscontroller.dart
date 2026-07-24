@@ -11,7 +11,6 @@ class TherapySlotController extends GetxController {
 
   Future<void> loadTherapySlots({
     required int therapyId,
-    required String day,
     required String date,
   }) async {
     try {
@@ -21,7 +20,6 @@ class TherapySlotController extends GetxController {
 
       final result = await ApiService.fetchtherapySlots(
         therapyId,
-        day,
         date,
       );
 

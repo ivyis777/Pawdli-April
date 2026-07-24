@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:pawlli/data/api%20service.dart';
 
 import 'package:pawlli/data/model/getuserprofilemodel.dart';
@@ -29,6 +30,10 @@ class UserProfileController extends GetxController {
 
       if (profileData != null) {
         userProfile.value = profileData;
+        GetStorage().write(
+          "profile_picture",
+          profileData.profilePicture,
+        );
       } else {
         errorMessage.value = "Failed to load profile data.";
       }

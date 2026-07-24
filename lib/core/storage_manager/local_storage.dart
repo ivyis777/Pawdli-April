@@ -11,6 +11,7 @@ class LocalStorageConstants {
   static const String name = "name";
   static const String isTestLogin = 'isTestLogin';
   static const String isSuperUser = "is_superuser";
+  static const String isDoctor = "is_doctor";
   static const String profileImage = "profile_image";
   
 

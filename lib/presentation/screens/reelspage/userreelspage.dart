@@ -231,24 +231,26 @@ class _UserReelsPageState extends State<UserReelsPage> {
   // }
 
   Future<void> fetchUserProfile() async {
-  final data = await ApiService.getUserProfile(widget.userId);
+    final data = await ApiService.getUserProfile(widget.userId);
 
-  if (data != null) {
-    setState(() {
-      profileImage = data["user"]["profile_picture"];
-      GetStorage().write("profile_picture", profileImage);
+    if (data != null) {
+      final image = data["user"]["profile_picture"] ?? "";
 
-      isFollowing = data["user"]["is_following"];
+      setState(() {
+        profileImage = image.startsWith("http")
+            ? image
+            : "https://app.pawdli.com$image";
 
-      followersCount = data["stats"]["followers_count"];
-      followingCount = data["stats"]["following_count"];
-      postsCount = data["stats"]["posts_count"];
-    });
+        isFollowing = data["user"]["is_following"];
 
-    print("PROFILE API RESPONSE IMAGE: ${data["user"]["profile_picture"]}");
+        followersCount = data["stats"]["followers_count"];
+        followingCount = data["stats"]["following_count"];
+        postsCount = data["stats"]["posts_count"];
+      });
 
+      print("USER PROFILE IMAGE: $profileImage");
+    }
   }
-}
 
   /// ✅ REEL ITEM UI
   Widget buildReelItem(ReelItem reel) {
@@ -394,7 +396,7 @@ class _UserReelsPageState extends State<UserReelsPage> {
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                      'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png',
+                      'https://app.pawdli.com/media/static/topimage.png',
                     ),
                     fit: BoxFit.cover,
                   ),

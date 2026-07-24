@@ -184,7 +184,7 @@ class _AdminOrderDetailspageState
                 height: 90,
 
                 child: Image.network(
-                  'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png',
+                  'https://app.pawdli.com/media/static/topimage.png',
                   fit: BoxFit.cover,
 
                   errorBuilder:

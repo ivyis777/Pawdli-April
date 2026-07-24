@@ -17,14 +17,27 @@ import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/api_logger.dart';
 import 'package:pawlli/data/app%20url.dart';
 import 'package:pawlli/data/controller/cartviewcontroller.dart';
+import 'package:pawlli/data/model/ConsultationDetailsModel.dart';
+import 'package:pawlli/data/model/ConsultationModel.dart';
+import 'package:pawlli/data/model/ConsultationRequestModel.dart';
+import 'package:pawlli/data/model/DoctorAcceptModel.dart';
+import 'package:pawlli/data/model/DoctorProfileModel.dart';
+import 'package:pawlli/data/model/DoctorToggleModel.dart';
+import 'package:pawlli/data/model/LiveConsultationModel.dart';
 import 'package:pawlli/data/model/PetStoreCategariesModel.dart' hide Data;
+import 'package:pawlli/data/model/PrescriptionModel.dart';
+import 'package:pawlli/data/model/SymptomModel.dart';
+import 'package:pawlli/data/model/TherapyBookingModel.dart';
 import 'package:pawlli/data/model/TransactionnsModel.dart';
+import 'package:pawlli/data/model/VetPaymentModel.dart';
+import 'package:pawlli/data/model/VetPaymentVerifyModel.dart';
 import 'package:pawlli/data/model/WalletBalancemodel.dart'as Balance;
 import 'package:pawlli/data/model/admin_ordermodel.dart';
 import 'package:pawlli/data/model/adoptioncreation.dart';
 import 'package:pawlli/data/model/allpetradiomodel.dart'as All;
 import 'package:pawlli/data/model/cartviewmodel.dart';
 import 'package:pawlli/data/model/competition_model.dart';
+import 'package:pawlli/data/model/couponResponseModel.dart';
 import 'package:pawlli/data/model/createpetmodel.dart' hide Data;
 import 'package:pawlli/data/model/descriptionmodel.dart';
 import 'package:pawlli/data/model/editadoptionmodel.dart';
@@ -46,6 +59,7 @@ import 'package:pawlli/data/model/productVariantmodel.dart';
 import 'package:pawlli/data/model/productpromotionmodel.dart';
 import 'package:pawlli/data/model/programlistmodel.dart' hide Data;
 import 'package:pawlli/data/model/promotionmodel.dart';
+import 'package:pawlli/data/model/rating_review_model.dart';
 import 'package:pawlli/data/model/recentpetchatmodel.dart';
 import 'package:pawlli/data/model/reelUploadmodel.dart';
 import 'package:pawlli/data/model/reelitemmodel.dart';
@@ -54,6 +68,7 @@ import 'package:pawlli/data/model/slotcreationmodel.dart'as slot;
 import 'package:pawlli/data/model/storeprocductmodel.dart' hide Data;
 import 'package:pawlli/data/model/storesearchmodel.dart';
 import 'package:pawlli/data/model/subcategarymodel.dart' as sub;
+import 'package:pawlli/data/model/therapySuperUsermodel.dart';
 import 'package:pawlli/data/model/therapyslot.dart';
 import 'package:pawlli/data/model/topupmodel.dart';
 import 'package:pawlli/data/model/typesofcategaries.dart'as typesofcategaries;
@@ -418,6 +433,56 @@ static Future<LoginModel> loginAPI({
     );
   }
 }
+
+static Future<LoginModel> googleLoginAPI({
+    required String email,
+  }) async {
+
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    final body = jsonEncode({
+      "email": email,
+    });
+
+    try {
+
+      print("GOOGLE LOGIN REQUEST");
+      print(body);
+
+      final response = await http.post(
+        Uri.parse(AppUrl.GoogleLoginURL),
+        headers: headers,
+        body: body,
+      );
+
+      print("Status Code : ${response.statusCode}");
+      print("Response : ${response.body}");
+
+      final json = jsonDecode(response.body);
+
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw ApiException(
+          message: json["message"] ?? "Google Login Failed",
+          statusCode: response.statusCode,
+        );
+      }
+
+      return LoginModel.fromJson(json);
+
+    } catch (e) {
+
+      if (e is ApiException) {
+        rethrow;
+      }
+
+      throw ApiException(
+        message: "Something went wrong.",
+        statusCode: 500,
+      );
+    }
+  }
 
 
   
@@ -1827,319 +1892,655 @@ static Future<GoodbyeRequestDetailsModel?> getGoodbyeRequestDetails({
     return await request.send();
   }
 
-static Future<Map<String, dynamic>?> startCall({
-  required int userId,
-  required int bookingId,
-  required String callType,
-  bool retry = true,
-}) async {
-  final body = jsonEncode({
-    "user_id": userId,
-    "booking_id": bookingId,
-    "call_type": callType,
-  });
+// static Future<Map<String, dynamic>?> startCall({
+//   required int userId,
+//   required int bookingId,
+//   required String callType,
+//   bool retry = true,
+// }) async {
+//   final body = jsonEncode({
+//     "user_id": userId,
+//     "booking_id": bookingId,
+//     "call_type": callType,
+//   });
 
-  try {
-    String? accessToken = await getAccessToken();
-    if (accessToken == null) throw Exception("No access token available");
+//   try {
+//     String? accessToken = await getAccessToken();
+//     if (accessToken == null) throw Exception("No access token available");
 
-    final response = await http.post(
-      Uri.parse(AppUrl.StartCallUrl),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $accessToken",
-      },
-      body: body,
-    );
+//     final response = await http.post(
+//       Uri.parse(AppUrl.StartCallUrl),
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Authorization": "Bearer $accessToken",
+//       },
+//       body: body,
+//     );
 
-    final responseData = json.decode(response.body);
-    print("📞 Start Call Response: $responseData");
+//     final responseData = json.decode(response.body);
+//     print("📞 Start Call Response: $responseData");
 
-    if (response.statusCode == 200) {
-      return {
-        "status_code": 200,
-        "response": responseData,
+//     if (response.statusCode == 200) {
+//       return {
+//         "status_code": 200,
+//         "response": responseData,
         
+//       };
+//     } else if (response.statusCode == 400 &&
+//     responseData['existing_session_id'] != null) {
+
+//   final existingSessionId = responseData['existing_session_id'];
+
+//   debugPrint("♻️ Existing live session found: $existingSessionId");
+
+//   return {
+//     "status_code": 200,
+//     "response": {
+//       "session_id": existingSessionId,
+//       "reuse": true,
+//     },
+//   };
+// }
+// else if (response.statusCode == 401 && retry) {
+//       print("🔄 Token expired. Refreshing...");
+//       accessToken = await refreshToken();
+//       if (accessToken != null) {
+//         return startCall(
+//           userId: userId,
+//           bookingId: bookingId,
+//           callType: callType,
+//           retry: false,
+//         );
+//       }
+//     }
+
+//     return {
+//       "status_code": response.statusCode,
+//       "response": responseData,
+//     };
+//   } catch (e) {
+//     print("🚨 Exception in startCall: $e");
+//     return null;
+//   }
+// }
+
+// static Future<Map<String, dynamic>?> restartCall(
+//   int userId,
+//   int sessionId, {
+//   bool retry = true,
+// }) async {
+//   final requestBody = jsonEncode({
+//     "user_id": userId,
+//     "session_id": sessionId,
+//   });
+
+//   try {
+//     String? accessToken = await getAccessToken();
+//     if (accessToken == null) throw Exception("No access token found");
+
+//     final response = await http.post(
+//       Uri.parse(AppUrl.ReStartCallUrl),
+//       body: requestBody,
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': 'Bearer $accessToken',
+//       },
+//     );
+
+//     print('➡️ Restart API response: ${response.body}');
+
+//     if (response.statusCode == 200) {
+//       return json.decode(response.body);
+//     } else if (response.statusCode == 401 && retry) {
+//       print("🔁 Token expired. Refreshing...");
+//       accessToken = await refreshToken();
+//       if (accessToken != null) {
+//         return restartCall(userId, sessionId, retry: false);
+//       } else {
+//         throw Exception("Token refresh failed. Please login again.");
+//       }
+//     }
+
+//     return {
+//       "status_code": response.statusCode,
+//       "response": json.decode(response.body),
+//     };
+//   } catch (e) {
+//     print("❌ Exception in rejoinCall: $e");
+//     return null;
+//   }
+// }
+
+
+// static Future<Map<String, dynamic>?> joinCall({
+//   required int userId,
+//   required int sessionId,
+//   bool retry = true,
+// }) async {
+//   final bodyData = {
+//     "user_id": userId,
+//     "session_id": sessionId,
+//   };
+
+//   try {
+//     String? accessToken = await getAccessToken();
+//     if (accessToken == null) throw Exception("No access token found");
+
+//     final response = await http.post(
+//       Uri.parse(AppUrl.JoinCallUrl),
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Authorization": "Bearer $accessToken",
+//       },
+//       body: jsonEncode(bodyData),
+//     );
+
+//     print('Join Call Request Body: $bodyData');
+
+//     if (response.statusCode == 200) {
+//       final responseData = jsonDecode(response.body);
+//       print('✅ Join Call Response: $responseData');
+
+//       return {
+//         "status_code": response.statusCode,
+//         "response": responseData,
+//       };
+//     } else if (response.statusCode == 401 && retry) {
+//       print("🔁 Token expired. Refreshing...");
+//       accessToken = await refreshToken();
+//       if (accessToken != null) {
+//         return joinCall(userId: userId, sessionId: sessionId, retry: false);
+//       } else {
+//         throw Exception("Token refresh failed. Please login again.");
+//       }
+//     } else {
+//       print('❌ Error Response: ${response.statusCode} - ${response.body}');
+//       return {
+//         "status_code": response.statusCode,
+//         "response": jsonDecode(response.body),
+//       };
+//     }
+//   } catch (e) {
+//     print('🚨 Join Call Exception: $e');
+//     return null;
+//   }
+// }
+
+
+// static Future<Map<String, dynamic>?> rejoinlisternerCall({
+//   required int userId,
+//   required int sessionId,
+//   bool retry = true,
+// }) async {
+//   final bodyData = {
+//     "user_id": userId,
+//     "session_id": sessionId,
+//   };
+
+//   try {
+//     String? accessToken = await getAccessToken();
+//     if (accessToken == null) throw Exception("No access token available");
+
+//     final response = await http.post(
+//       Uri.parse(AppUrl.ReJoinCallUrl),
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Authorization": "Bearer $accessToken",
+//       },
+//       body: jsonEncode(bodyData),
+//     );
+
+//     final responseData = jsonDecode(response.body);
+//     print('🔄 Rejoin Listener Call Response: $responseData');
+
+//     if (response.statusCode == 200) {
+//       return {
+//         "status_code": 200,
+//         "response": responseData,
+//       };
+//     } else if (response.statusCode == 401 && retry) {
+//       print("🔁 Token expired, attempting refresh...");
+//       accessToken = await refreshToken();
+//       if (accessToken != null) {
+//         return rejoinlisternerCall(
+//           userId: userId,
+//           sessionId: sessionId,
+//           retry: false,
+//         );
+//       } else {
+//         throw Exception("Token refresh failed. Please login again.");
+//       }
+//     }
+
+//     return {
+//       "status_code": response.statusCode,
+//       "response": responseData,
+//     };
+//   } catch (e) {
+//     print('❌ Rejoin Listener Call Exception: $e');
+//     return null;
+//   }
+// }
+// static Future<bool> endCall({
+//   required int userId,
+//   required int sessionId,
+//   bool retry = true,
+// }) async {
+//   try {
+//     String? accessToken = await getAccessToken();
+//     if (accessToken == null) throw Exception("No access token found");
+
+//     final response = await http.post(
+//       Uri.parse(AppUrl.EndCallUrl),
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Authorization": "Bearer $accessToken",
+//       },
+//       body: jsonEncode({
+//         "user_id": userId,
+//         "session_id": sessionId,
+//       }),
+//     );
+
+//     if (response.statusCode == 200) {
+//       return true;
+//     } else if (response.statusCode == 401 && retry) {
+//       print("🔁 Token expired. Refreshing...");
+
+//       // Attempt token refresh
+//       String? refreshedToken = await refreshToken();
+//       if (refreshedToken != null) {
+//         return endCall(userId: userId, sessionId: sessionId, retry: false);
+//       } else {
+//         print("Token refresh failed. Please login again.");
+//       }
+//     } else {
+//       print('End Call Failed - Status Code: ${response.statusCode}');
+//       print('Response Body: ${response.body}');
+//     }
+//   } catch (e) {
+//     print('End Call Exception: $e');
+//   }
+//   return false;
+// }
+
+// static Future<bool> LeaveCall({
+//   required int userId,
+//   required int sessionId,
+//   bool retry = true,
+// }) async {
+//   try {
+//     String? accessToken = await getAccessToken();
+//     if (accessToken == null) throw Exception("No access token found");
+
+//     final response = await http.post(
+//       Uri.parse(AppUrl.LeaveCallUrl),
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Authorization": "Bearer $accessToken",
+//       },
+//       body: jsonEncode({
+//         "user_id": userId,
+//         "session_id": sessionId,
+//       }),
+//     );
+
+//     if (response.statusCode == 200) {
+//       return true;
+//     } else if (response.statusCode == 401 && retry) {
+//       print("🔁 Token expired. Refreshing...");
+
+//       // Attempt token refresh
+//       String? refreshedToken = await refreshToken();
+//       if (refreshedToken != null) {
+//         return LeaveCall(userId: userId, sessionId: sessionId, retry: false);
+//       } else {
+//         print("Token refresh failed. Please login again.");
+//       }
+//     } else {
+//       print('Leave Call Failed - Status Code: ${response.statusCode}');
+//       print('Response Body: ${response.body}');
+//     }
+//   } catch (e) {
+//     print('Leave Call Exception: $e');
+//   }
+//   return false;
+// }
+
+  static Future<Map<String, dynamic>?> websocketStartRoom({
+    required int bookingId,
+    required String callType,
+  }) async {
+
+    try {
+
+      print("========================================");
+      print("🚀 START ROOM API");
+      print("📌 BOOKING ID: $bookingId");
+      print("📌 CALL TYPE: $callType");
+
+      String? accessToken = await getAccessToken();
+
+      print("🔑 ACCESS TOKEN: $accessToken");
+
+      final url =
+          "${AppUrl.mainURL}/user/pawdli_websocket_start/";
+
+      print("🌐 API URL: $url");
+
+      final requestBody = {
+        "booking_id": bookingId.toString(),
+        "call_type": callType.toLowerCase(),
       };
-    } else if (response.statusCode == 400 &&
-    responseData['existing_session_id'] != null) {
 
-  final existingSessionId = responseData['existing_session_id'];
+      print("📤 REQUEST BODY: $requestBody");
 
-  debugPrint("♻️ Existing live session found: $existingSessionId");
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $accessToken",
+        },
+        body: jsonEncode(requestBody),
+      );
 
-  return {
-    "status_code": 200,
-    "response": {
-      "session_id": existingSessionId,
-      "reuse": true,
-    },
-  };
-}
-else if (response.statusCode == 401 && retry) {
-      print("🔄 Token expired. Refreshing...");
-      accessToken = await refreshToken();
-      if (accessToken != null) {
-        return startCall(
-          userId: userId,
-          bookingId: bookingId,
-          callType: callType,
-          retry: false,
+      print("📥 STATUS CODE: ${response.statusCode}");
+      print("📥 RESPONSE BODY: ${response.body}");
+
+      final data = jsonDecode(response.body);
+
+      print("✅ START ROOM SUCCESS");
+      print("📌 SESSION ID: ${data['session_id']}");
+      print("📌 WEBSOCKET URL: ${data['websocket_url']}");
+      print("========================================");
+
+      return data;
+
+    } catch (e, stack) {
+
+      print("========================================");
+      print("❌ START ROOM ERROR");
+      print("ERROR: $e");
+      print("STACK: $stack");
+      print("========================================");
+
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> websocketJoinRoom({
+    required int bookingId,
+  }) async {
+
+    try {
+
+      print("========================================");
+      print("🎧 JOIN ROOM API");
+      print("📌 BOOKING ID: $bookingId");
+
+      String? accessToken = await getAccessToken();
+
+      print("🔑 ACCESS TOKEN: $accessToken");
+
+      final url =
+          "${AppUrl.mainURL}/user/pawdli_websocket_join/";
+
+      print("🌐 API URL: $url");
+
+      final requestBody = {
+        "booking_id": bookingId.toString(),
+      };
+
+      print("📤 REQUEST BODY: $requestBody");
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $accessToken",
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      print("📥 STATUS CODE: ${response.statusCode}");
+      print("📥 RESPONSE BODY: ${response.body}");
+
+      final data = jsonDecode(response.body);
+
+      print("✅ JOIN ROOM SUCCESS");
+      print("📌 SESSION ID: ${data['session_id']}");
+      print("📌 WEBSOCKET URL: ${data['websocket_url']}");
+      print("========================================");
+
+      return data;
+
+    } catch (e, stack) {
+
+      print("========================================");
+      print("❌ JOIN ROOM ERROR");
+      print("ERROR: $e");
+      print("STACK: $stack");
+      print("========================================");
+
+      return null;
+    }
+  }
+
+  static Future<bool> websocketEndRoom({
+    required int bookingId,
+  }) async {
+
+    try {
+
+      print("========================================");
+      print("🛑 END ROOM API");
+      print("📌 BOOKING ID: $bookingId");
+
+      String? accessToken = await getAccessToken();
+
+      print("🔑 ACCESS TOKEN: $accessToken");
+
+      final url =
+          "${AppUrl.mainURL}/user/pawdli_websocket_end/";
+
+      print("🌐 API URL: $url");
+
+      final requestBody = {
+        "booking_id": bookingId.toString(),
+      };
+
+      print("📤 REQUEST BODY: $requestBody");
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $accessToken",
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      print("📥 STATUS CODE: ${response.statusCode}");
+      print("📥 RESPONSE BODY: ${response.body}");
+
+      print("✅ END ROOM SUCCESS");
+      print("========================================");
+
+      return response.statusCode == 200;
+
+    } catch (e, stack) {
+
+      print("========================================");
+      print("❌ END ROOM ERROR");
+      print("ERROR: $e");
+      print("STACK: $stack");
+      print("========================================");
+
+      return false;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> websocketRestartRoom({
+      required int bookingId,
+    }) async {
+
+      try {
+
+        print("========================================");
+        print("🔄 RESTART ROOM API");
+        print("📌 BOOKING ID: $bookingId");
+
+        String? accessToken =
+            await getAccessToken();
+
+        final url =
+            "${AppUrl.mainURL}/user/pawdli/websocket/restart/";
+
+        final response = await http.post(
+          Uri.parse(url),
+
+          headers: {
+            "Content-Type": "application/json",
+
+            "Authorization":
+                "Bearer $accessToken",
+          },
+
+          body: jsonEncode({
+            "booking_id":
+                bookingId.toString(),
+          }),
         );
-      }
-    }
 
-    return {
-      "status_code": response.statusCode,
-      "response": responseData,
-    };
-  } catch (e) {
-    print("🚨 Exception in startCall: $e");
-    return null;
-  }
-}
-
-static Future<Map<String, dynamic>?> restartCall(
-  int userId,
-  int sessionId, {
-  bool retry = true,
-}) async {
-  final requestBody = jsonEncode({
-    "user_id": userId,
-    "session_id": sessionId,
-  });
-
-  try {
-    String? accessToken = await getAccessToken();
-    if (accessToken == null) throw Exception("No access token found");
-
-    final response = await http.post(
-      Uri.parse(AppUrl.ReStartCallUrl),
-      body: requestBody,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $accessToken',
-      },
-    );
-
-    print('➡️ Restart API response: ${response.body}');
-
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else if (response.statusCode == 401 && retry) {
-      print("🔁 Token expired. Refreshing...");
-      accessToken = await refreshToken();
-      if (accessToken != null) {
-        return restartCall(userId, sessionId, retry: false);
-      } else {
-        throw Exception("Token refresh failed. Please login again.");
-      }
-    }
-
-    return {
-      "status_code": response.statusCode,
-      "response": json.decode(response.body),
-    };
-  } catch (e) {
-    print("❌ Exception in rejoinCall: $e");
-    return null;
-  }
-}
-
-
-static Future<Map<String, dynamic>?> joinCall({
-  required int userId,
-  required int sessionId,
-  bool retry = true,
-}) async {
-  final bodyData = {
-    "user_id": userId,
-    "session_id": sessionId,
-  };
-
-  try {
-    String? accessToken = await getAccessToken();
-    if (accessToken == null) throw Exception("No access token found");
-
-    final response = await http.post(
-      Uri.parse(AppUrl.JoinCallUrl),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $accessToken",
-      },
-      body: jsonEncode(bodyData),
-    );
-
-    print('Join Call Request Body: $bodyData');
-
-    if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
-      print('✅ Join Call Response: $responseData');
-
-      return {
-        "status_code": response.statusCode,
-        "response": responseData,
-      };
-    } else if (response.statusCode == 401 && retry) {
-      print("🔁 Token expired. Refreshing...");
-      accessToken = await refreshToken();
-      if (accessToken != null) {
-        return joinCall(userId: userId, sessionId: sessionId, retry: false);
-      } else {
-        throw Exception("Token refresh failed. Please login again.");
-      }
-    } else {
-      print('❌ Error Response: ${response.statusCode} - ${response.body}');
-      return {
-        "status_code": response.statusCode,
-        "response": jsonDecode(response.body),
-      };
-    }
-  } catch (e) {
-    print('🚨 Join Call Exception: $e');
-    return null;
-  }
-}
-
-
-static Future<Map<String, dynamic>?> rejoinlisternerCall({
-  required int userId,
-  required int sessionId,
-  bool retry = true,
-}) async {
-  final bodyData = {
-    "user_id": userId,
-    "session_id": sessionId,
-  };
-
-  try {
-    String? accessToken = await getAccessToken();
-    if (accessToken == null) throw Exception("No access token available");
-
-    final response = await http.post(
-      Uri.parse(AppUrl.ReJoinCallUrl),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $accessToken",
-      },
-      body: jsonEncode(bodyData),
-    );
-
-    final responseData = jsonDecode(response.body);
-    print('🔄 Rejoin Listener Call Response: $responseData');
-
-    if (response.statusCode == 200) {
-      return {
-        "status_code": 200,
-        "response": responseData,
-      };
-    } else if (response.statusCode == 401 && retry) {
-      print("🔁 Token expired, attempting refresh...");
-      accessToken = await refreshToken();
-      if (accessToken != null) {
-        return rejoinlisternerCall(
-          userId: userId,
-          sessionId: sessionId,
-          retry: false,
+        print(
+          "📥 STATUS CODE: ${response.statusCode}",
         );
-      } else {
-        throw Exception("Token refresh failed. Please login again.");
+
+        print(
+          "📥 BODY: ${response.body}",
+        );
+
+        final data =
+            jsonDecode(response.body);
+
+        // ✅ SUCCESS
+        if (response.statusCode == 200) {
+
+          print("✅ RESTART ROOM SUCCESS");
+
+          return {
+            "status_code": response.statusCode,
+            "response": data,
+          };
+        }
+
+        // ❌ FAILED
+        print("❌ RESTART ROOM FAILED");
+
+        return {
+          "status_code": response.statusCode,
+          "response": data,
+        };
+
+      } catch (e) {
+
+        print("❌ RESTART ERROR: $e");
+
+        return null;
       }
     }
 
-    return {
-      "status_code": response.statusCode,
-      "response": responseData,
-    };
-  } catch (e) {
-    print('❌ Rejoin Listener Call Exception: $e');
-    return null;
-  }
-}
-static Future<bool> endCall({
-  required int userId,
-  required int sessionId,
-  bool retry = true,
-}) async {
-  try {
-    String? accessToken = await getAccessToken();
-    if (accessToken == null) throw Exception("No access token found");
+  static Future<Map<String, dynamic>?> websocketRejoinRoom({
+    required int bookingId,
+  }) async {
 
-    final response = await http.post(
-      Uri.parse(AppUrl.EndCallUrl),
+    try {
+
+      print("========================================");
+      print("🔄 REJOIN ROOM API");
+      print("📌 BOOKING ID: $bookingId");
+
+      String? accessToken =
+          await getAccessToken();
+
+      final url =
+          "${AppUrl.mainURL}/user/pawdli/websocket/rejoin/";
+
+      final response = await http.post(
+        Uri.parse(url),
+
+        headers: {
+          "Content-Type":
+              "application/json",
+
+          "Authorization":
+              "Bearer $accessToken",
+        },
+
+        body: jsonEncode({
+          "booking_id":
+              bookingId.toString(),
+        }),
+      );
+
+      print("📥 STATUS CODE: ${response.statusCode}");
+      print("📥 BODY: ${response.body}");
+
+      return jsonDecode(response.body);
+
+    } catch (e) {
+
+      print("❌ REJOIN ERROR: $e");
+
+      return null;
+    }
+  }
+
+  static Future<List<dynamic>> getIceServers() async {
+
+  try {
+
+    String? accessToken =
+        await getAccessToken();
+
+    final response = await http.get(
+
+      Uri.parse(
+        "${AppUrl.mainURL}/user/api/ice-config/",
+      ),
+
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $accessToken",
+
+        "Authorization":
+            "Bearer $accessToken",
+
+        "Content-Type":
+            "application/json",
       },
-      body: jsonEncode({
-        "user_id": userId,
-        "session_id": sessionId,
-      }),
     );
 
-    if (response.statusCode == 200) {
-      return true;
-    } else if (response.statusCode == 401 && retry) {
-      print("🔁 Token expired. Refreshing...");
-
-      // Attempt token refresh
-      String? refreshedToken = await refreshToken();
-      if (refreshedToken != null) {
-        return endCall(userId: userId, sessionId: sessionId, retry: false);
-      } else {
-        print("Token refresh failed. Please login again.");
-      }
-    } else {
-      print('End Call Failed - Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
-    }
-  } catch (e) {
-    print('End Call Exception: $e');
-  }
-  return false;
-}
-
-static Future<bool> LeaveCall({
-  required int userId,
-  required int sessionId,
-  bool retry = true,
-}) async {
-  try {
-    String? accessToken = await getAccessToken();
-    if (accessToken == null) throw Exception("No access token found");
-
-    final response = await http.post(
-      Uri.parse(AppUrl.LeaveCallUrl),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $accessToken",
-      },
-      body: jsonEncode({
-        "user_id": userId,
-        "session_id": sessionId,
-      }),
-    );
+    print("================================");
+    print("🧊 ICE CONFIG API");
+    print("STATUS: ${response.statusCode}");
+    print("BODY: ${response.body}");
+    print("================================");
 
     if (response.statusCode == 200) {
-      return true;
-    } else if (response.statusCode == 401 && retry) {
-      print("🔁 Token expired. Refreshing...");
 
-      // Attempt token refresh
-      String? refreshedToken = await refreshToken();
-      if (refreshedToken != null) {
-        return LeaveCall(userId: userId, sessionId: sessionId, retry: false);
-      } else {
-        print("Token refresh failed. Please login again.");
-      }
-    } else {
-      print('Leave Call Failed - Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
+      final data =
+          jsonDecode(response.body);
+
+      return data['iceServers'] ?? [];
     }
+
+    return [];
+
   } catch (e) {
-    print('Leave Call Exception: $e');
+
+    print("❌ ICE CONFIG ERROR: $e");
+
+    return [];
   }
-  return false;
 }
 
 static Future<UpdatePetModel?> updatePetProfile(UpdatePetModel model, String petId) async {
@@ -3255,6 +3656,7 @@ static Future<Editadoptionmodel?> updateAdoptionPetProfile(Editadoptionmodel pet
     return null;
   }
 }
+ 
  static Future<PetTherapyModel?> fetchAllPetTherapies({required String date}) async {
   try {
     String? accessToken = await getAccessToken();
@@ -3306,7 +3708,6 @@ static Future<Editadoptionmodel?> updateAdoptionPetProfile(Editadoptionmodel pet
 
   static Future<TherapySlotPageModel?> fetchtherapySlots(
     int therapyId,
-    String day,
     String date,
   ) async {
     try {
@@ -3315,7 +3716,13 @@ static Future<Editadoptionmodel?> updateAdoptionPetProfile(Editadoptionmodel pet
         throw Exception("Authorization failed: No valid access token");
       }
 
-      final uri = Uri.parse('${AppUrl.therapySlotURL}/$therapyId?date=$date');
+      final uri = Uri.parse(
+        '${AppUrl.therapySlotURL}/$therapyId/available-slots/',
+      ).replace(
+        queryParameters: {
+          'date': date,
+        },
+      );
       final response = await http.get(
         uri,
         headers: {
@@ -3337,7 +3744,7 @@ static Future<Editadoptionmodel?> updateAdoptionPetProfile(Editadoptionmodel pet
         accessToken = await refreshToken();
 
         if (accessToken != null) {
-          return fetchtherapySlots(therapyId, day, date);
+          return fetchtherapySlots(therapyId, date);
         } else {
           throw Exception("Failed to refresh token. User must re-login.");
         }
@@ -3350,6 +3757,7 @@ static Future<Editadoptionmodel?> updateAdoptionPetProfile(Editadoptionmodel pet
       return null;
     }
   }
+  
   static Future<List<podcast.Data>> fetchPodcastEpisodeList(int podcastId) async {
   try {
     String? accessToken = await getAccessToken();
@@ -4731,32 +5139,1178 @@ static Future<List<CompetitionModel>> fetchCompetitionButton() async {
 
   /// 🔹 TOGGLE FOLLOW
   static Future<bool> toggleFollow(int userId, bool currentState) async {
+  String? accessToken = await getAccessToken();
 
-    String? accessToken = await getAccessToken();
-
-    if (accessToken == null) {
-      print("❌ No access token found");
-      return currentState;
-    }
-
-    final response = await http.post(
-      Uri.parse("${AppUrl.Follow}$userId/"),
-      headers: {
-        "Authorization": "Bearer $accessToken",
-        "Content-Type": "application/json",
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-
-      /// API gives only message → so we toggle manually
-      if (data["message"] == "Followed") return true;
-      if (data["message"] == "Unfollowed") return false;
-    }
-
+  if (accessToken == null) {
+    print("❌ No access token found");
     return currentState;
   }
+
+  final url = "${AppUrl.Follow}$userId/";
+
+  print("==================================");
+  print("FOLLOW URL: $url");
+  print("FOLLOW USER ID: $userId");
+
+  final response = await http.post(
+    Uri.parse(url),
+    headers: {
+      "Authorization": "Bearer $accessToken",
+      "Content-Type": "application/json",
+    },
+  );
+
+  print("FOLLOW STATUS CODE: ${response.statusCode}");
+  print("FOLLOW RESPONSE BODY: ${response.body}");
+  print("==================================");
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+
+    if (data["message"] == "Followed") return true;
+    if (data["message"] == "Unfollowed") return false;
+  }
+
+  return currentState;
+}
+
+    static Future<bool> submitReview(
+        RatingReviewModel review,
+        String token,
+        ) async {
+
+      try {
+
+        final response = await http.post(
+          Uri.parse(AppUrl.RatingandReview),
+
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+
+          body: jsonEncode(review.toJson()),
+        );
+
+        print("REVIEW STATUS : ${response.statusCode}");
+        print("REVIEW RESPONSE : ${response.body}");
+
+        if (response.statusCode == 200 ||
+            response.statusCode == 201) {
+          return true;
+        }
+
+        return false;
+
+      } catch (e) {
+        print("REVIEW ERROR : $e");
+        return false;
+      }
+    }
+
+
+    Future<DoctorProfileModel?> getDoctorProfile(
+        int userId) async {
+
+      try {
+
+        String? accessToken = await getAccessToken();
+
+        final response = await http.get(
+          Uri.parse(
+            "${AppUrl.mainURL}/user/doctor/profile/$userId/",
+          ),
+          headers: {
+            "Authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          },
+        );
+
+        print("PROFILE STATUS CODE : ${response.statusCode}");
+        print("PROFILE RESPONSE : ${response.body}");
+
+        if (response.statusCode == 200) {
+          return DoctorProfileModel.fromJson(
+            jsonDecode(response.body),
+          );
+        }
+
+      } catch (e) {
+        print("GET PROFILE ERROR : $e");
+      }
+
+      return null;
+    }
+
+    Future<DoctorToggleModel?> toggleDoctorStatus(
+        int userId) async {
+
+      try {
+
+        String? accessToken = await getAccessToken();
+
+        final response = await http.post(
+          Uri.parse(
+            "${AppUrl.mainURL}/user/doctor/toggle-active/$userId/",
+          ),
+          headers: {
+            "Authorization": "Bearer $accessToken",
+            "Content-Type": "application/json",
+          },
+        );
+
+        print("TOGGLE STATUS CODE : ${response.statusCode}");
+        print("TOGGLE RESPONSE : ${response.body}");
+
+        if (response.statusCode == 200) {
+
+          return DoctorToggleModel.fromJson(
+            jsonDecode(response.body),
+          );
+        }
+
+      } catch (e) {
+        print("TOGGLE ERROR : $e");
+      }
+
+      return null;
+    }
+
+    /// LIVE CONSULTATIONS
+    static Future<LiveConsultationModel?>
+    fetchLiveConsultations() async {
+
+      try {
+
+        String? accessToken =
+        await getAccessToken();
+
+        final response =
+        await http.get(
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/doctor-live-consultations/",
+          ),
+
+          headers: {
+
+            "Authorization":
+            "Bearer $accessToken",
+
+            "Content-Type":
+            "application/json",
+          },
+        );
+
+        print(
+            "LIVE CONSULTATION STATUS : ${response.statusCode}");
+
+        print(
+            "LIVE CONSULTATION RESPONSE : ${response.body}");
+
+        if (response.statusCode == 200) {
+
+          return LiveConsultationModel.fromJson(
+
+            jsonDecode(response.body),
+          );
+        }
+
+      } catch (e) {
+
+        print(
+            "LIVE CONSULTATION ERROR : $e");
+      }
+
+      return null;
+    }
+
+    /// ACCEPT CONSULTATION
+    static Future<DoctorAcceptModel?>
+    acceptConsultation(
+        int consultationRequestId) async {
+
+      try {
+
+        String? accessToken =
+        await getAccessToken();
+
+        final response =
+        await http.post(
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/doctor-accept-consultation/",
+          ),
+
+          headers: {
+
+            "Authorization":
+            "Bearer $accessToken",
+
+            "Content-Type":
+            "application/json",
+          },
+
+          body: jsonEncode({
+
+            "consultation_request_id":
+            consultationRequestId,
+          }),
+        );
+
+        print(
+            "ACCEPT STATUS : ${response.statusCode}");
+
+        print(
+            "ACCEPT RESPONSE : ${response.body}");
+
+        if (response.statusCode == 200) {
+
+          return DoctorAcceptModel.fromJson(
+            jsonDecode(response.body),
+          );
+        }
+
+      } catch (e) {
+
+        print(
+            "ACCEPT ERROR : $e");
+      }
+
+      return null;
+    }
+
+
+    static Future<bool> declineConsultation(
+      int consultationRequestId,
+    ) async {
+
+      try {
+
+        String? accessToken =
+            await LocalStorage.getAccessToken();
+
+        final response = await http.post(
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/decline-consultation/",
+          ),
+
+          headers: {
+
+            "Authorization": "Bearer $accessToken",
+
+            "Content-Type": "application/json",
+          },
+
+          body: jsonEncode({
+
+            "consultation_request_id":
+                consultationRequestId,
+          }),
+        );
+
+        print("DECLINE STATUS : ${response.statusCode}");
+        print("DECLINE RESPONSE : ${response.body}");
+
+        if (response.statusCode == 200) {
+
+          final data = jsonDecode(response.body);
+
+          return data["status"] == true;
+        }
+
+        return false;
+
+      } catch (e) {
+
+        print("DECLINE ERROR : $e");
+
+        return false;
+      }
+    }
+
+    /// LEAVE CONSULTATION
+    static Future<bool>
+    leaveConsultation(
+        int consultationRequestId) async {
+
+      try {
+
+        String? accessToken =
+        await getAccessToken();
+
+        final response =
+        await http.post(
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/leave-consultation/",
+          ),
+
+          headers: {
+
+            "Authorization":
+            "Bearer $accessToken",
+
+            "Content-Type":
+            "application/json",
+          },
+
+          body: jsonEncode({
+
+            "consultation_request_id":
+            consultationRequestId,
+          }),
+        );
+
+        print(
+            "LEAVE RESPONSE : ${response.body}");
+
+        return response.statusCode == 200;
+
+      } catch (e) {
+
+        print(
+            "LEAVE ERROR : $e");
+      }
+
+      return false;
+    }
+
+    /// REJOIN CONSULTATION
+    static Future<DoctorAcceptModel?>
+    rejoinConsultation(
+        int consultationRequestId) async {
+
+      try {
+
+        String? accessToken =
+        await getAccessToken();
+
+        final response =
+        await http.post(
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/rejoin-consultation/",
+          ),
+
+          headers: {
+
+            "Authorization":
+            "Bearer $accessToken",
+
+            "Content-Type":
+            "application/json",
+          },
+
+          body: jsonEncode({
+
+            "consultation_request_id":
+            consultationRequestId,
+          }),
+        );
+
+        print(
+            "REJOIN RESPONSE : ${response.body}");
+
+        if (response.statusCode == 200) {
+
+          return DoctorAcceptModel.fromJson(
+            jsonDecode(response.body),
+          );
+        }
+
+      } catch (e) {
+
+        print(
+            "REJOIN ERROR : $e");
+      }
+
+      return null;
+    }
+
+    /// END CONSULTATION
+    static Future<bool>
+    endConsultation(
+        int consultationRequestId) async {
+
+      try {
+
+        String? accessToken =
+        await getAccessToken();
+
+        final response =
+        await http.post(
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/end-consultation/",
+          ),
+
+          headers: {
+
+            "Authorization":
+            "Bearer $accessToken",
+
+            "Content-Type":
+            "application/json",
+          },
+
+          body: jsonEncode({
+
+            "consultation_request_id":
+            consultationRequestId,
+          }),
+        );
+
+        print(
+            "END RESPONSE : ${response.body}");
+
+        return response.statusCode == 200;
+
+      } catch (e) {
+
+        print(
+            "END ERROR : $e");
+      }
+
+      return false;
+    }
+
+      static Future<SymptomModel?> fetchSymptoms() async {
+
+        try {
+
+          String? accessToken =
+              await getAccessToken();
+
+          final response = await http.get(
+
+            Uri.parse(
+              "$baseUrl/user/symptom/list/",
+            ),
+
+            headers: {
+
+              "Authorization":
+                  "Bearer $accessToken",
+
+              "Content-Type":
+                  "application/json",
+            },
+          );
+
+          print(
+            "SYMPTOMS STATUS : ${response.statusCode}",
+          );
+
+          print(
+            "SYMPTOMS RESPONSE : ${response.body}",
+          );
+
+          if (response.statusCode == 200) {
+
+            final jsonData =
+                jsonDecode(response.body);
+
+            return SymptomModel.fromJson(
+              jsonData,
+            );
+          }
+
+        } catch (e) {
+
+          print(
+            "FETCH SYMPTOMS ERROR : $e",
+          );
+        }
+
+        return null;
+      }
+
+      /// CREATE CONSULTATION REQUEST
+    static Future<ConsultationRequestModel?>
+    createConsultationRequest({
+
+      required String petId,
+
+      required String problemDescription,
+
+      required List<String> symptomIds,
+
+      required String otherSymptom,
+
+      required List<File> issueImages,
+
+    }) async {
+
+      try {
+
+        String? accessToken =
+        await getAccessToken();
+
+        var request =
+        http.MultipartRequest(
+
+          "POST",
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/consultation-request/create/",
+          ),
+        );
+
+        /// HEADERS
+        request.headers.addAll({
+
+          "Authorization":
+          "Bearer $accessToken",
+        });
+
+        /// BODY
+        request.fields['pet'] = petId;
+
+        request.fields['problem_description'] =
+            problemDescription;
+
+        request.fields['other_symptom'] =
+            otherSymptom;
+
+        /// SYMPTOMS
+        for (String symptomId
+        in symptomIds) {
+
+          request.fields.addAll({
+
+            "symptoms":
+            symptomId,
+          });
+        }
+
+        /// IMAGES
+        for (File image
+        in issueImages) {
+
+          request.files.add(
+
+            await http.MultipartFile
+                .fromPath(
+
+              "issue_images",
+
+              image.path,
+            ),
+          );
+        }
+
+        final response =
+        await request.send();
+
+        final responseData =
+        await response.stream
+            .bytesToString();
+
+        print(
+            "CONSULTATION CREATE STATUS : ${response.statusCode}");
+
+        print(
+            "CONSULTATION CREATE RESPONSE : $responseData");
+
+        if (response.statusCode == 200 ||
+            response.statusCode == 201) {
+
+          return ConsultationRequestModel
+              .fromJson(
+            jsonDecode(responseData),
+          );
+        }
+
+      } catch (e) {
+
+        print(
+            "CREATE CONSULTATION ERROR : $e");
+      }
+
+      return null;
+    }
+
+    static Future<bool> cancelConsultationRequest({
+      required int consultationRequestId,
+      required String cancellationReason,
+    }) async {
+
+      try {
+
+        String? accessToken =
+            await LocalStorage.getAccessToken();
+
+        final response = await http.post(
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/cancel-consultation/$consultationRequestId/",
+          ),
+
+          headers: {
+
+            "Authorization": "Bearer $accessToken",
+
+            "Content-Type": "application/json",
+          },
+
+          body: jsonEncode({
+
+            "cancellation_reason": cancellationReason,
+
+          }),
+        );
+
+        print("==================================");
+        print("CANCEL CONSULTATION API");
+        print("STATUS : ${response.statusCode}");
+        print("BODY : ${response.body}");
+        print("==================================");
+
+        if (response.statusCode == 200) {
+
+          final data = jsonDecode(response.body);
+
+          return data["status"] == true;
+        }
+
+        return false;
+
+      } catch (e) {
+
+        print("CANCEL CONSULTATION ERROR : $e");
+
+        return false;
+      }
+    }
+
+    /// GET CONSULTATION DETAILS
+    static Future<ConsultationDetailsModel?>
+    getConsultationDetails(
+        int consultationId) async {
+
+      try {
+
+        String? accessToken =
+        await getAccessToken();
+
+        final response =
+        await http.get(
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/consultation-request/details/$consultationId/",
+          ),
+
+          headers: {
+
+            "Authorization":
+            "Bearer $accessToken",
+
+            "Content-Type":
+            "application/json",
+          },
+        );
+
+        print(
+            "CONSULTATION DETAILS STATUS : ${response.statusCode}");
+
+        print(
+            "CONSULTATION DETAILS RESPONSE : ${response.body}");
+
+        if (response.statusCode == 200) {
+
+          final jsonData =
+          jsonDecode(response.body);
+
+          return ConsultationDetailsModel
+              .fromJson(jsonData);
+        }
+
+      } catch (e) {
+
+        print(
+            "CONSULTATION DETAILS ERROR : $e");
+      }
+
+      return null;
+    }
+
+    Future<List<ConsultationModel>>
+        getConsultations() async {
+
+      String? token =
+          await LocalStorage.getAccessToken();
+
+      final response = await http.get(
+        Uri.parse(
+          "${AppUrl.mainURL}/user/consultation-list/",
+        ),
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (response.statusCode == 200) {
+
+        final data =
+            jsonDecode(response.body);
+
+        List list = data["data"];
+
+        return list
+            .map(
+              (e) =>
+                  ConsultationModel.fromJson(e),
+            )
+            .toList();
+      }
+
+      return [];
+    }
+
+    Future<bool> updatePrescription({
+
+      required int prescriptionId,
+
+      required Map<String, dynamic>
+          requestBody,
+
+    }) async {
+
+      String? token =
+          await LocalStorage
+              .getAccessToken();
+
+      final response =
+          await http.put(
+
+        Uri.parse(
+
+          "${AppUrl.mainURL}/user/update-prescription/$prescriptionId/",
+        ),
+
+        headers: {
+
+          "Authorization":
+              "Bearer $token",
+
+          "Content-Type":
+              "application/json",
+        },
+
+        body: jsonEncode(
+          requestBody,
+        ),
+      );
+
+      print(
+        "UPDATE STATUS : ${response.statusCode}",
+      );
+
+      print(
+        "UPDATE RESPONSE : ${response.body}",
+      );
+
+      return response.statusCode == 200;
+    }
+
+     Future<bool> createPrescription(
+        PrescriptionModel model) async {
+
+      try {
+
+        String? token =
+            await LocalStorage.getAccessToken();
+
+        print(
+          "PRESCRIPTION TOKEN : $token",
+        );
+
+        final body =
+            model.toJson();
+
+        print(
+          "PRESCRIPTION REQUEST : ${jsonEncode(body)}",
+        );
+
+        final response =
+            await http.post(
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/create-prescription/",
+          ),
+
+          headers: {
+
+            "Authorization":
+                "Bearer $token",
+
+            "Content-Type":
+                "application/json",
+          },
+
+          body: jsonEncode(body),
+        );
+
+        print(
+          "PRESCRIPTION STATUS : ${response.statusCode}",
+        );
+
+        print(
+          "PRESCRIPTION RESPONSE : ${response.body}",
+        );
+
+        return response.statusCode == 200 ||
+               response.statusCode == 201;
+
+      } catch (e) {
+
+        print(
+          "PRESCRIPTION ERROR : $e",
+        );
+
+        return false;
+      }
+    }
+
+
+    static Future<ApplyCouponModel?> applyCoupon({
+      required int consultationRequestId,
+      required String couponCode,
+    }) async {
+      try {
+
+        String? accessToken =
+          await getAccessToken();
+          
+        final response = await http.post(
+          Uri.parse(
+            "$baseUrl/user/apply-coupon/$consultationRequestId/",
+          ),
+          headers: {
+
+              "Authorization":
+              "Bearer $accessToken",
+
+              "Content-Type":
+              "application/json",
+            },
+          body: jsonEncode({
+            "coupon_code": couponCode,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          return ApplyCouponModel.fromJson(
+            jsonDecode(response.body),
+          );
+        }
+      } catch (e) {
+        print(e);
+      }
+
+      return null;
+    }
+
+
+    /// REVIEW & PAY API
+    static Future<VetPaymentModel?>
+      reviewAndPay({
+
+        required int consultationRequestId,
+
+        required String paymentType,
+
+      }) async {
+
+        try {
+
+          String? accessToken =
+          await getAccessToken();
+
+          final response =
+          await http.post(
+
+            Uri.parse(
+              "${AppUrl.mainURL}/user/review-and-pay/",
+            ),
+
+            headers: {
+
+              "Authorization":
+              "Bearer $accessToken",
+
+              "Content-Type":
+              "application/json",
+            },
+
+            body: jsonEncode({
+
+              "consultation_request_id":
+              consultationRequestId,
+
+              "payment_type":
+              paymentType,
+            }),
+          );
+
+          print(
+              "REVIEW PAY STATUS : ${response.statusCode}");
+
+          print(
+              "REVIEW PAY RESPONSE : ${response.body}");
+
+          if (response.statusCode == 200) {
+
+            return VetPaymentModel.fromJson(
+              jsonDecode(response.body),
+            );
+          }
+
+        } catch (e) {
+
+          print(
+              "REVIEW PAY ERROR : $e");
+        }
+
+        return null;
+      }
+
+    /// VERIFY PAYMENT API
+  static Future<PaymentVerifyModel?>
+    verifyConsultationPayment({
+
+      required int paymentTransactionId,
+
+      String? razorpayOrderId,
+
+      String? razorpayPaymentId,
+
+      String? razorpaySignature,
+
+    }) async {
+
+      try {
+
+        String? accessToken =
+        await getAccessToken();
+
+        final response =
+        await http.post(
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/verify-payment/",
+          ),
+
+          headers: {
+
+            "Authorization":
+            "Bearer $accessToken",
+
+            "Content-Type":
+            "application/json",
+          },
+
+          body: jsonEncode({
+
+            "payment_transaction_id":
+            paymentTransactionId,
+
+            "razorpay_order_id":
+            razorpayOrderId,
+
+            "razorpay_payment_id":
+            razorpayPaymentId,
+
+            "razorpay_signature":
+            razorpaySignature,
+          }),
+        );
+
+        print(
+            "VERIFY STATUS : ${response.statusCode}");
+
+        print(
+            "VERIFY RESPONSE : ${response.body}");
+
+        if (response.statusCode == 200) {
+
+          return PaymentVerifyModel.fromJson(
+            jsonDecode(response.body),
+          );
+        }
+
+      } catch (e) {
+
+        print(
+            "VERIFY PAYMENT ERROR : $e");
+      }
+
+      return null;
+    }
+
+    static Future<TherapyBookingModel?>
+        fetchTherapyBookings() async {
+
+      try {
+
+        final box = GetStorage();
+
+        String? token =
+            box.read(LocalStorageConstants.access);
+
+        final response = await http.get(
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/pettherapy/all-bookings/",
+          ),
+
+          headers: {
+
+            "Authorization":
+                "Bearer $token",
+
+            "Content-Type":
+                "application/json",
+          },
+        );
+
+        print(
+            "📤 Therapy Bookings API:");
+
+        print(response.body);
+
+        if (response.statusCode == 200) {
+
+          final decoded =
+              jsonDecode(response.body);
+
+          return TherapyBookingModel
+              .fromJson(decoded);
+
+        } else {
+
+          print(
+              "❌ Failed Bookings API");
+
+          return null;
+        }
+
+      } catch (e) {
+
+        print(
+            "❌ Exception Therapy Booking API: $e");
+
+        return null;
+      }
+    }
+
+    static Future<SuperTherapyBookingModel?>
+        fetchAllTherapyBookings() async {
+
+      try {
+
+        final box = GetStorage();
+
+        String? token =
+            box.read(LocalStorageConstants.access);
+
+        final response = await http.get(
+
+          Uri.parse(
+            "${AppUrl.mainURL}/user/pettherapy/all-bookings/",
+          ),
+
+          headers: {
+
+            "Authorization": "Bearer $token",
+
+            "Content-Type": "application/json",
+          },
+        );
+
+        print("ALL BOOKINGS RESPONSE");
+        print(response.body);
+
+        if (response.statusCode == 200) {
+
+          return SuperTherapyBookingModel.fromJson(
+            jsonDecode(response.body),
+          );
+
+        } else {
+
+          return null;
+        }
+
+      } catch (e) {
+
+        print(e);
+
+        return null;
+      }
+    }
+
+    static Future<bool> updateTherapyBookingStatus({
+      required int bookingId,
+      required String bookingStatus,
+    }) async {
+      try {
+        final box = GetStorage();
+
+        final token =
+            box.read(LocalStorageConstants.access);
+
+        final response = await http.put(
+          Uri.parse(
+            "${AppUrl.mainURL}/user/pettherapy/booking/$bookingId/update-status/",
+          ),
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode({
+            "booking_status": bookingStatus.toLowerCase(),
+          }),
+        );
+
+        print(response.body);
+
+        return response.statusCode == 200;
+      } catch (e) {
+        print(e);
+        return false;
+      }
+    }
+
+    static Future<bool> cancelTherapyBooking({
+      required int bookingId,
+    }) async {
+      try {
+        final box = GetStorage();
+
+        final token =
+            box.read(LocalStorageConstants.access);
+
+        final response = await http.put(
+          Uri.parse(
+            "${AppUrl.mainURL}/user/pettherapy/cancel-booking/$bookingId/",
+          ),
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json",
+          },
+        );
+
+        print(response.body);
+
+        return response.statusCode == 200;
+      } catch (e) {
+        print(e);
+        return false;
+      }
+    }
 
   // Future<bool> toggleFollow(int userId) async {
   //   final token = GetStorage().read("access") ?? "";

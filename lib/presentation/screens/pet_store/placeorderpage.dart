@@ -381,7 +381,13 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       Fluttertoast.showToast(msg: "Order placed successfully".tr);
       await cartController.loadCart();
       await walletBalanceController.fetchWalletBalance(int.parse(userId!));
-      Get.to(() => OrdersPage());
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OrdersPage(),
+        ),
+      );
+
     }
   }
 
@@ -404,12 +410,17 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
 
     Fluttertoast.showToast(msg: "Payment Failed".tr);
 
-    Get.to(() => Paymentfailure(
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Paymentfailure(
           orderId: razorpayOrderId ?? "",
           paymentId: "",
           signature: "",
           paymentVerifiedModel: null,
-        ));
+        ),
+      ),
+    );
   }
 
   void _startRazorpay({
@@ -463,11 +474,11 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Get.back(result: false),
+              onPressed: () => Navigator.pop(context, false),
               child:  Text("Cancel".tr),
             ),
             ElevatedButton(
-              onPressed: () => Get.back(result: true),
+              onPressed: () => Navigator.pop(context, true),
               child:  Text("Confirm".tr),
             ),
           ],
@@ -479,6 +490,18 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
 
     // 🔥 Checkout API
     final selectedAddress = addressController.selectedAddress.value;
+
+    print("========== CHECKOUT DEBUG ==========");
+    print("Subtotal = ${_calculateSubtotal()}");
+    print("Coupon Discount = $couponDiscount");
+    print("Wallet Balance = $walletBalance");
+    print("Wallet Used = $usedWalletAmount");
+    print("Payable Amount = $payableAmount");
+    print("Coupon Code = $appliedCoupon");
+    print("Use Wallet = $useWallet");
+    print("Payment Method = $selectedPaymentMethod");
+    print("Selected Cart IDs = ${widget.selectedCartIds}");
+    print("====================================");
 
     await checkoutController.checkout(
       cartItems: widget.selectedCartIds,
@@ -502,7 +525,14 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       await cartController.loadCart();
       await walletBalanceController
           .fetchWalletBalance(int.parse(userId!)); // ⭐ ADD
-      Get.offAll(() => OrdersPage());
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OrdersPage(),
+        ),
+        (route) => false,
+      );
+
       return;
     }
 
@@ -512,7 +542,13 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       await cartController.loadCart();
       await walletBalanceController
           .fetchWalletBalance(int.parse(userId!)); // ⭐ ADD
-      Get.to(() => OrdersPage());
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OrdersPage(),
+        ),
+      );
+
       return;
     }
 
@@ -545,7 +581,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                        'https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png'),
+                        'https://app.pawdli.com/media/static/topimage.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -810,13 +846,21 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
                           TextStyle(fontSize: getResponsiveFont(context, 14), fontWeight: FontWeight.bold)),
                   GestureDetector(
                     onTap: () async {
-                      final result = await Get.to(() => AddressListPage());
-                      if (result == true) setState(() {});
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddressListPage(),
+                        ),
+                      );
+
+                      if (result == true) {
+                        setState(() {});
+                      }
                     },
                     child:  Text(
                       "Change Delivery Address".tr,
                       style: TextStyle(
-                          color: Colors.grey, fontSize: getResponsiveFont(context, 12),fontWeight: FontWeight.w600),
+                          color: Colors.black54, fontSize: getResponsiveFont(context, 12),fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
@@ -824,7 +868,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
               const SizedBox(height: 10),
               addr == null
                   ?  Text("No address selected".tr,
-                      style: TextStyle(color: Colors.grey,fontSize: getResponsiveFont(context, 13)))
+                      style: TextStyle(color: Colors.black54,fontSize: getResponsiveFont(context, 13)))
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

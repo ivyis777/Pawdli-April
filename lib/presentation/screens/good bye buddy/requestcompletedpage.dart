@@ -109,9 +109,13 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         Get.snackbar("Success".tr, "Request Completed".tr);
 
-        Get.offAll(() => MainLayout());
-
-        Get.back(result: true);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainLayout(),
+          ),
+          (route) => false,
+        );
       } else {
         Get.snackbar("Error".tr, res);
       }
@@ -141,7 +145,7 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
               height: 100,
               width: 250,
               child: Image.network(
-                "https://pawlli-podcasts.s3.ap-south-1.amazonaws.com/static_images/topimage.png", // 🔴 change if your path different
+                "https://app.pawdli.com/media/static/topimage.png", // 🔴 change if your path different
                 fit: BoxFit.cover,
               ),
             ),
@@ -152,7 +156,7 @@ class _CompleteRequestPageState extends State<CompleteRequestPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colours.brownColour),
           onPressed: () {
-            Get.back();
+            Navigator.pop(context);
           },
         ),
 

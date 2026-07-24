@@ -271,6 +271,41 @@ void initState() {
                                       context,
                                 MaterialPageRoute(builder: (context) => Petswitch(receiverId:widget.petId,receiverImage:widget.petProfileImage,receiverName:pet.name.toString()), // Replace with your HomePage widget
                               ));},
+
+                              // onPressed: () {
+                              //     showDialog(
+                              //       context: context,
+                              //       barrierDismissible: false,
+                              //       builder: (context) {
+                              //         return AlertDialog(
+                              //           shape: RoundedRectangleBorder(
+                              //             borderRadius: BorderRadius.circular(16),
+                              //           ),
+                              //           title: const Text(
+                              //             "Coming Soon",
+                              //             textAlign: TextAlign.center,
+                              //           ),
+                              //           content: const Text(
+                              //             "Chat feature is coming soon.",
+                              //             textAlign: TextAlign.center,
+                              //           ),
+                              //           actionsAlignment: MainAxisAlignment.center,
+                              //           actions: [
+                              //             ElevatedButton(
+                              //               style: ElevatedButton.styleFrom(
+                              //                 backgroundColor: Colours.primarycolour,
+                              //                 foregroundColor: Colors.white,
+                              //               ),
+                              //               onPressed: () {
+                              //                 Navigator.pop(context);
+                              //               },
+                              //               child: const Text("OK"),
+                              //             ),
+                              //           ],
+                              //         );
+                              //       },
+                              //     );
+                              //   },
                                 
                                                             
                                   child: Text(
