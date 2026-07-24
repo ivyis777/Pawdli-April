@@ -16,6 +16,7 @@ import 'package:pawlli/presentation/screens/pet%20therapy/TherapyBookingListPage
 import 'package:pawlli/presentation/screens/pet%20therapy/pet_therapy.dart';
 import 'package:pawlli/presentation/screens/therapypaymentverification/therapysuccess.dart';
 import 'package:pawlli/presentation/screens/therapypaymentverification/therapyfailure.dart';
+import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -72,6 +73,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
   int _studentsIndex = 1;
   int _employeesIndex = 1;
   int _memberCount = 1;
+  
 
   final TextEditingController _therapyDetailsController =
       TextEditingController();
@@ -103,6 +105,12 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
   String? _orderId;
   String? user_id;
   bool _isChecked = false;
+  final TextEditingController couponController = TextEditingController();
+  bool couponApplied = false;
+  double discountAmount = 0.0;
+  double payableAmount = 0.0;
+  String appliedCoupon = "";
+
 
   double get finalAmount {
     if (_isOnsite == 'Onsite') {
@@ -128,7 +136,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
   @override
   void initState() {
     super.initState();
-
+    payableAmount = finalAmount;
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -171,6 +179,62 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
     super.dispose();
   }
 
+  Future<void> verifyCoupon() async {
+    try {
+      List<int> slotIds = widget.selectedSlots
+          .map((e) => (e as TherapySlot).slotId ?? 0)
+          .where((id) => id != 0)
+          .toList();
+
+      var response = await http.post(
+        Uri.parse("https://app.pawdli.com/user/therapy/coupon/verify/"),
+        headers: {
+          "Authorization":
+              "Bearer ${box.read(LocalStorageConstants.access)}",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "slot_ids": slotIds,
+          "coupon_code": couponController.text.trim(),
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (data["success"] == true) {
+        setState(() {
+          couponApplied = true;
+          appliedCoupon = data["coupon_code"];
+          couponController.text = appliedCoupon;
+          discountAmount = double.parse(data["discount"].toString());
+          payableAmount = double.parse(data["final_amount"].toString());
+        });
+
+        Get.snackbar(
+          "Success",
+          data["message"],
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        setState(() {
+          couponApplied = false;
+          discountAmount = 0;
+          payableAmount = finalAmount;
+        });
+
+        Get.snackbar(
+          "Coupon",
+          data["message"].toString(),
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> createOrder() async {
     if (userId == null || userId == 0) {
       Fluttertoast.showToast(msg: "User ID not found! Please login again.".tr);
@@ -193,7 +257,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
     Map<String, dynamic> orderData = {
       "user_id": userId,
       "slots": flattenedSlots,
-      "amount": finalAmount.toStringAsFixed(2),
+      "amount": payableAmount.toStringAsFixed(2),
       "currency": "INR",
       "purpose": "PetTherapy",
       "first_name": _FirstNameController.text,
@@ -260,20 +324,14 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
             await Get.find<TherapyBookingController>().fetchBookings();
           }
 
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PetTherapy(),
-            ),
-            (route) => false,
-          );
+          Get.offAll(() => MainLayout());
 
           Get.snackbar(
             "Success".tr,
             "🎉 Slot booked successfully!".tr,
             snackPosition: SnackPosition.TOP,
             backgroundColor: Colours.primarycolour,
-            colorText: Colours.brownColour,
+            colorText: Colors.black,
             margin: const EdgeInsets.all(12),
             borderRadius: 12,
             duration: const Duration(seconds: 3),
@@ -338,7 +396,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
     String generatedReceipt =
         "receipt_${DateTime.now().millisecondsSinceEpoch}";
     var amountInPaise =
-        (finalAmount * 100).toInt();
+    (payableAmount * 100).toInt();
 
     var options = {
       'key': 'rzp_live_hUYYZly69YfdVs',
@@ -528,7 +586,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
     Map<String, dynamic> orderData = {
       "user_id": userId,
       "slots": flattenedSlots,
-      "amount": finalAmount.toStringAsFixed(2),
+      "amount": payableAmount.toStringAsFixed(2),
       "currency": "INR",
       "purpose": "PetTherapy",
       "first_name": _FirstNameController.text.trim(),
@@ -565,7 +623,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
 
     // 🏦 Call Wallet API
     await Get.find<PayThroughWalletController>().initiatePayment(
-      amount: widget.totalAmount.toStringAsFixed(2),
+      amount: payableAmount.toStringAsFixed(2),
       currency: "INR",
       bookingId: flattenedSlots,
       purpose: "PetTherapy",
@@ -596,8 +654,8 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
         "Success".tr,
         "🎉 Thanks for booking the slot with Wallet!".tr,
         snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
+        backgroundColor: Colors.transparent,
+        colorText: Colors.black,
         duration: const Duration(seconds: 3),
         margin: const EdgeInsets.all(12),
         borderRadius: 12,
@@ -608,13 +666,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
           await Get.find<TherapyBookingController>().fetchBookings();
         }
 
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PetTherapy(),
-          ),
-          (route) => false,
-        );
+        Get.offAll(() => MainLayout());
     } else {
       Get.snackbar(
         "Error".tr,
@@ -1247,7 +1299,144 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                             ),
                             SizedBox(height: 16),
 
-                            if (_isOnsite == 'Onsite')
+                            if (_isOnsite == 'Onsite') ...[
+                            const SizedBox(height: 15),
+
+                            Text(
+                              "Coupon Code",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: getResponsiveFont(context, 14),
+                              ),
+                            ),
+
+                            const SizedBox(height: 8),
+
+                            TextFormField(
+                              controller: couponController,
+                              enabled: !couponApplied,
+                              decoration: InputDecoration(
+                                hintText: "Enter Coupon",
+                                hintStyle: TextStyle(color: Colors.grey[600]),
+
+                                labelText: "Coupon Code",
+                                labelStyle: TextStyle(color: Colors.brown[600]),
+
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: Colours.textColour),
+                                ),
+
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: Colours.textColour),
+                                ),
+
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: Colours.primarycolour),
+                                ),
+
+                                filled: true,
+                                fillColor: Colors.white,
+
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 16,
+                                ),
+
+                                suffixIconConstraints: const BoxConstraints(
+                                  minWidth: 90,
+                                  maxWidth: 100,
+                                ),
+
+                                suffixIcon: Padding(
+                                  padding: const EdgeInsets.all(6),
+                                  child: ElevatedButton(
+                                    onPressed: couponApplied ? null : verifyCoupon,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colours.primarycolour,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                                    ),
+                                    child: Text(
+                                      couponApplied ? "Applied" : "Apply",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            if (couponApplied)
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade50,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.green),
+                                ),
+                                child: Row(
+                                  children: [
+
+                                    const Icon(Icons.discount, color: Colors.green),
+
+                                    const SizedBox(width: 10),
+
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+
+                                          Text(
+                                            appliedCoupon,
+                                            style: const TextStyle(
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+
+                                          Text(
+                                            "Discount : ₹${discountAmount.toStringAsFixed(0)}",
+                                          ),
+
+                                          Text(
+                                            "Payable : ₹${payableAmount.toStringAsFixed(0)}",
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          couponApplied = false;
+                                          appliedCoupon = "";
+                                          discountAmount = 0;
+                                          payableAmount = finalAmount;
+                                          couponController.clear();
+                                        });
+                                      },
+                                      child: const Text(
+                                        "Remove",
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                            const SizedBox(height: 15),
 
                             Row(
                               children: [
@@ -1259,20 +1448,21 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                     });
                                   },
                                 ),
-                                Obx(() {
-                                  print(
-                                      "UI Wallet Balance: ${walletBalanceController.walletBalanceAmount.value}");
-                                  return Text(
-                                    'Wallet Balance: ₹ ${walletBalanceController.walletBalanceAmount.value}'.tr,
-                                    style: TextStyle(
-                                      fontSize: getResponsiveFont(context, 13),
-                                      fontWeight: FontWeight.w500,
-                                      color: Colours.black,
-                                    ),
-                                  );
-                                })
+
+                                Expanded(
+                                  child: Obx(() {
+                                    return Text(
+                                      "Wallet Balance: ₹ ${walletBalanceController.walletBalanceAmount.value}",
+                                      style: TextStyle(
+                                        fontSize: getResponsiveFont(context, 13),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    );
+                                  }),
+                                ),
                               ],
                             ),
+                          ],
 
                             SizedBox(height: 20),
                             Center(
@@ -1405,7 +1595,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                 ),
                                 child: Text(
                                   _isOnsite == 'Onsite'
-                                      ? "Pay ₹${finalAmount.toStringAsFixed(0)}"
+                                      ? "Pay ₹${payableAmount.toStringAsFixed(0)}"
                                       : "Submit".tr,
                                   style: TextStyle(
                                     fontSize: getResponsiveFont(context, 16),

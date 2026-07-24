@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "527884979919-qu4d7pc8jv1r3t58o3g9ristdqkqetnm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ivyis.pawlli",
+            "certificate_hash": "b6d55c657fc35b492f8116126f0f8d610a956388"
+          }
+        },
+        {
           "client_id": "527884979919-588usk26levpqn61r1j86hiknv8aq1n5.apps.googleusercontent.com",
           "client_type": 3
         }

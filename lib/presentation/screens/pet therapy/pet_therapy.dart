@@ -52,9 +52,11 @@ class _PetTherapyState extends State<PetTherapy>
 
     controller = Get.put(PetTherapyController());
 
-    controller.fetchPetTherapies(
-      date: DateFormat('yyyy-MM-dd').format(_selectedDate),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchPetTherapies(
+        date: DateFormat('yyyy-MM-dd').format(_selectedDate),
+      );
+    });
 
     _tabController = TabController(
       length: 2,
@@ -468,7 +470,7 @@ class _PetTherapyState extends State<PetTherapy>
                       child: Text(
                         "More Details",
                         style: TextStyle(
-                          color: Colours.brownColour,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: getResponsiveFont(context, 15),
                         ),
