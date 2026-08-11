@@ -201,17 +201,13 @@ class _AdoptionPetsState extends State<AdoptionPets> {
           child: GestureDetector(
             onTap: () {
               final petId = pet.id;
-              if (petId != null) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditAdoptionPetPage(Id: petId),
-                  ),
-                );
-              } else {
-                Get.snackbar("Error", "Pet ID is missing.".tr);
-              }
-              print(petId);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditAdoptionPetPage(Id: petId),
+                ),
+              );
+                          print(petId);
             },
             child: Stack(
               children: [

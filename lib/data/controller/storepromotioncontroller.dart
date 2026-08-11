@@ -23,7 +23,7 @@ class Storepromotioncontroller extends GetxController {
       print("🔎 Fetching store promotions...");
       List<PromotionModel>? response = await ApiService.StorePromotions();
 
-      if (response != null && response.isNotEmpty) {
+      if (response.isNotEmpty) {
         promotion.assignAll(response);
         print("✅ Fetched ${response.length} promotions.");
       } else {

@@ -19,7 +19,7 @@ class AllSubCategoriesController extends GetxController {
       final categoriesModel = await ApiService.fetchAllSubCategories(categoryId);
 
       // Check if the response is valid (non-null and non-empty)
-      if (categoriesModel != null && categoriesModel.isNotEmpty) {
+      if (categoriesModel.isNotEmpty) {
         // Update the observable list with the fetched data
         allsubCategories.assignAll(categoriesModel.toList()); // Fix applied here
       } else {

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:pawlli/data/model/cartviewmodel.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/api service.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/presentation/screens/pet_store/placeorderpage.dart';
 import '../../../data/controller/cartviewcontroller.dart';
 
@@ -277,9 +276,15 @@ class _CartPageState extends State<CartPage> {
 
     // return Obx(() {
     return Card(
-      elevation: 9,
-      color: const Color.fromARGB(255, 251, 236, 210),
+      elevation: 0,
+      color: Colors.white,
       margin: const EdgeInsets.symmetric(vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(
+          color: Colours.brownColour, width: 0.5
+        )
+      ),
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Row(

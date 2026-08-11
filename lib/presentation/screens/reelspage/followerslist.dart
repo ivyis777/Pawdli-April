@@ -29,6 +29,7 @@ class _FollowersScreenState extends State<FollowersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
         child: Stack(
@@ -74,9 +75,17 @@ class _FollowersScreenState extends State<FollowersScreen> {
               itemCount: users.length,
               itemBuilder: (context, index) {
                 final user = users[index];
+                print("USER DATA: $user");
 
-                final imageUrl =
+                String imageUrl =
                     user["profile_picture"] ?? user["image"] ?? "";
+
+                if (imageUrl.isNotEmpty && !imageUrl.startsWith("http")) {
+                  imageUrl = "https://app.pawdli.com$imageUrl";
+                }
+
+                print("FINAL IMAGE URL: $imageUrl");
+                    // print("IMAGE URL: $imageUrl");
 
                 return ListTile(
                   onTap: () {

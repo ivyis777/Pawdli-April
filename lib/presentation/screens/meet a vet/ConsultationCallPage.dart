@@ -524,7 +524,7 @@ class ConsultationCallPage
           width: 320,
           height: 420,
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.45),
+            color: Colors.black.withValues(alpha: 0.45),
             borderRadius: BorderRadius.circular(15),
           ),
           child: Column(
@@ -618,9 +618,9 @@ class ConsultationCallPage
 
                               isMine
 
-                                  ? Colors.green.withOpacity(.40)
+                                  ? Colors.green.withValues(alpha: .40)
 
-                                  : Colors.blue.withOpacity(.35),
+                                  : Colors.blue.withValues(alpha: .35),
 
                           borderRadius:
                               BorderRadius.circular(

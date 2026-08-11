@@ -15,12 +15,8 @@ class AllCategoriesController extends GetxController {
 
     final categoriesModel = await ApiService.fetchAllCategories();
 
-    if (categoriesModel != null) {
-      allCategories.assignAll(categoriesModel);
-    } else {
-      errorMessage.value = 'Failed to fetch categories';
-    }
-  } catch (e) {
+    allCategories.assignAll(categoriesModel);
+    } catch (e) {
     errorMessage.value = 'An error occurred:';
   } finally {
     isLoading(false); 

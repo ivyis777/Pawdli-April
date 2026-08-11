@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/controller/allpetradiocontroller.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/pawlli%20radio/pawlli_radio.dart';
 
@@ -198,7 +197,7 @@ class _PetradioState extends State<Petradio> {
                                                 fontSize: getResponsiveFont(context, 13),
                                                 fontWeight: FontWeight.w400,
                                               ),
-                                              maxLines: 2,
+                                              maxLines: 4,
                                               overflow: TextOverflow.ellipsis,
                                               softWrap: true,
                                             ),

@@ -2405,7 +2405,7 @@ Widget _iconButton({
       context: context,
 
       backgroundColor:
-    Colors.black.withOpacity(0.45),
+    Colors.black.withValues(alpha: 0.45),
 
       builder: (_) {
 
@@ -2556,7 +2556,7 @@ Widget _iconButton({
         width: 300,
         height: 400,
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.45),
+          color: Colors.black.withValues(alpha: 0.45),
           borderRadius:
               BorderRadius.circular(12),
         ),
@@ -2649,13 +2649,13 @@ Widget _iconButton({
 
                           isMe
 
-                              ? Colors.green.withOpacity(0.40)
+                              ? Colors.green.withValues(alpha: 0.40)
 
                               : getUserColor(
                                   msg['username']
                                           ?.toString() ??
                                       'User',
-                                ).withOpacity(0.40),
+                                ).withValues(alpha: 0.40),
 
                         borderRadius:
                             BorderRadius.circular(16),

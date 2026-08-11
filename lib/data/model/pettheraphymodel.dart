@@ -1,4 +1,3 @@
-import 'package:pawlli/data/model/therapyslot.dart';
 
 class PetTherapyModel {
   final String? message;

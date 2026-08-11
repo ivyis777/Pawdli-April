@@ -13,6 +13,7 @@ class StoreCheckoutController extends GetxController {
   required String paymentMethod,
   bool useWallet = false,
   String? couponCode,
+  double? discountAmount,
   required double walletAmountUsed,
   Map<String, dynamic>? shippingAddress,
 }) async {
@@ -24,6 +25,7 @@ class StoreCheckoutController extends GetxController {
       cartItems: cartItems,
       paymentMethod: paymentMethod,
       couponCode: couponCode,
+      discountAmount: discountAmount,
       useWallet: useWallet,
       walletAmountUsed: walletAmountUsed,
       shippingAddress: shippingAddress,

@@ -1,33 +1,35 @@
 class CouponModel {
-  final String code;
-  final String discountType; // percentage | flat
-  final double discountValue;
-  final double? maxDiscountAmount;
-  final double? minOrderAmount;
+  final bool success;
+  final String message;
+
+  final String couponCode;
+  final String discountType;
+
+  final double discount;
+  final double totalAmount;
+  final double finalAmount;
 
   CouponModel({
-    required this.code,
+    required this.success,
+    required this.message,
+    required this.couponCode,
     required this.discountType,
-    required this.discountValue,
-    this.maxDiscountAmount,
-    this.minOrderAmount,
+    required this.discount,
+    required this.totalAmount,
+    required this.finalAmount,
   });
 
   factory CouponModel.fromJson(Map<String, dynamic> json) {
     return CouponModel(
-      code: json['code'],
-      discountType: json['discount_type'],
-      discountValue: double.tryParse(
-              json['discount_value'].toString()) ??
-          0.0,
-      maxDiscountAmount: json['max_discount_amount'] != null
-          ? double.tryParse(
-              json['max_discount_amount'].toString())
-          : null,
-      minOrderAmount: json['min_order_amount'] != null
-          ? double.tryParse(
-              json['min_order_amount'].toString())
-          : null,
+      success: json["success"] ?? false,
+      message: json["message"] ?? "",
+
+      couponCode: json["coupon_code"] ?? "",
+      discountType: json["discount_type"] ?? "",
+
+      discount: (json["discount"] as num?)?.toDouble() ?? 0.0,
+      totalAmount: (json["total_amount"] as num?)?.toDouble() ?? 0.0,
+      finalAmount: (json["final_amount"] as num?)?.toDouble() ?? 0.0,
     );
   }
 }

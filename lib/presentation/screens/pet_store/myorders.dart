@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/controller/myordercontroller.dart';
 import 'package:pawlli/data/model/ordermodel.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/presentation/screens/pet_store/orderdetailspage.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
@@ -60,7 +59,7 @@ class OrdersPage extends StatelessWidget {
             // ✅ APP BAR ON TOP (Back button + title visible)
             AppBar(
               centerTitle: true,
-              elevation: 5,
+              elevation: 1,
               backgroundColor: Colors.transparent, // IMPORTANT
               foregroundColor: Colours.brownColour,
 
@@ -193,10 +192,15 @@ class OrdersPage extends StatelessWidget {
         );
       },
       child: Card(
-        color: const Color.fromARGB(255, 251, 236, 210),
+        color: Colors.white,
         margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            color: Colours.brownColour,width: 0.3
+          ),
+        ),
+        elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(
@@ -268,15 +272,19 @@ class OrdersPage extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               vertical: 6, horizontal: 12),
                           decoration: BoxDecoration(
-                            color: _statusColor(getDisplayStatus(order)),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: _statusColor(getDisplayStatus(order)),
+                              width: 1,
+                            ),
                           ),
                           child: Text(
                             getDisplayStatus(order),
                             style: TextStyle(
                               fontSize: getResponsiveFont(context, 12),
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              // fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),

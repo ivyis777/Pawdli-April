@@ -1,8 +1,8 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_storage/get_storage.dart' as storage;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,9 +13,11 @@ import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/controller/getuserprofilecontroller.dart';
 import 'package:pawlli/data/controller/updateuserprofilecontroller.dart';
 import 'package:pawlli/data/model/updateprofilemodel.dart';
-import 'package:pawlli/gen/assests.gen.dart';
+// import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
-import 'package:pawlli/presentation/screens/userprofile/userprofile.dart';
+import 'package:pawlli/presentation/screens/homepage/homepage.dart';
+import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
+// import 'package:pawlli/presentation/screens/userprofile/userprofile.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:get/get.dart';
 
@@ -44,7 +46,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       Get.put<UserProfileController>(UserProfileController());
   final UpdateProfileController updateProfileController =
       Get.put(UpdateProfileController());
-
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -55,7 +57,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _pincodeController = TextEditingController();
-  PhoneNumber? _phoneNumber;
+  PhoneNumber _phoneNumber = PhoneNumber(
+    isoCode: 'IN',
+    dialCode: '+91',
+  );
   ImagePicker _picker = ImagePicker();
   File? _imageFile;
   int? _selectedGenderIndex;
@@ -149,6 +154,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
         final userData = userDetails;
 
         setState(() {
+          _usernameController.text = userData.username ?? '';
           _nameController.text = userData.name ?? '';
           _ageController.text = userData.age?.toString() ?? '';
           _emailController.text = userData.email ?? '';
@@ -183,7 +189,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             LocalStorage.clearProfileImage();
           }
 
-          switch (userData.gender?.toLowerCase()) {
+          switch (userData.gender.toLowerCase()) {
             case "male":
               _selectedGenderIndex = 0;
               break;
@@ -199,8 +205,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
         });
 
         // PHONE NUMBER PARSING
-        if (userData.mobile?.isNotEmpty == true) {
-          String rawMobile = userData.mobile!.trim();
+        if (userData.mobile.isNotEmpty == true) {
+          String rawMobile = userData.mobile.trim();
           print("Raw mobile from API: $rawMobile");
 
           String sanitizedMobile = sanitizePhoneNumber(rawMobile);
@@ -211,7 +217,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 .then((phone) {
               setState(() {
                 _phoneNumber = phone;
-                _phoneController.text = phone.parseNumber() ?? '';
+                String number = phone.phoneNumber ?? '';
+                if (number.startsWith(phone.dialCode ?? '')) {
+                  number = number.substring((phone.dialCode ?? '').length);
+                }
+                _phoneController.text = number;
               });
             }).catchError((e) {
               print('PhoneNumber parse error: $e');
@@ -271,7 +281,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     final File? compressed = await _compressImage(image);
 
                     if (compressed != null) {
-                      final File? cropped = await _cropImage(compressed!);
+                      final File? cropped = await _cropImage(compressed);
 
                       if (cropped != null) {
                         setState(() {
@@ -397,9 +407,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                       ],
                     ),
 
-                    SizedBox(
-                        height:
-                            30), // Adjust the space between the CircleAvatar and form
+                    SizedBox(height:30), 
 
                     // Scrollable Form Container
                     Container(
@@ -409,6 +417,46 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // User Name Field
+                            TextFormField(
+                              controller: _usernameController,
+                              textInputAction: TextInputAction.next,
+                                decoration: InputDecoration(
+                                labelText: 'User Name'.tr,
+                                hintText: "Enter unique username",
+                                labelStyle: TextStyle(
+                                  fontSize: getResponsiveFont(context, 13),
+                                  color: Colors.brown[600],
+                                ),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.brown),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colours.primarycolour,
+                                      width: 2.0), // Focus color
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Username is required";
+                                }
+
+                                if (value.trim().length < 4) {
+                                  return "Username must be at least 4 characters";
+                                }
+
+                                if (!RegExp(r'^[a-zA-Z0-9_@#.-]+$').hasMatch(value.trim())) {
+                                  return "Username can contain letters, numbers, _, @, #, . and -";
+                                }
+
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 15),
                             // Name Field
                             TextFormField(
                               controller: _nameController,
@@ -503,10 +551,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                         inactiveBgColor: Colors.grey,
                                         inactiveFgColor: Colors.white,
                                         totalSwitches: 3,
-                                        icons: [
-                                          FontAwesomeIcons.mars,
-                                          FontAwesomeIcons.venus,
-                                          FontAwesomeIcons.transgender
+                                        icons: const [
+                                          Icons.male,
+                                          Icons.female,
+                                          Icons.transgender,
                                         ],
                                         iconSize: 30.0,
                                         borderWidth: 2.0,
@@ -569,23 +617,36 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   _phoneNumber = number;
                                 });
                               },
+
                               onInputValidated: (bool isValid) {
                                 setState(() {
                                   _isPhoneNumberValid = isValid;
                                 });
-                                // print(isValid ? '✅ Valid phone number' : '❌ Invalid phone number');
                               },
-                              selectorConfig: SelectorConfig(
+
+                              selectorConfig: const SelectorConfig(
                                 selectorType: PhoneInputSelectorType.DIALOG,
                               ),
+
                               textFieldController: _phoneController,
-                              
-                              formatInput: false,
+
                               initialValue: _phoneNumber,
+
+                              formatInput: false,
+
+                              // 👇 ADD THESE TWO LINES
+                              maxLength: 10,
+                              keyboardType: TextInputType.number,
+
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your phone number'.tr;
+                                  return 'Please enter your phone number';
                                 }
+
+                                if (!RegExp(r'^[6-9][0-9]{9}$').hasMatch(value)) {
+                                  return 'Please enter a valid 10 digit mobile number';
+                                }
+
                                 return null;
                               },
                               inputDecoration: InputDecoration(
@@ -815,14 +876,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                           if (_formKey.currentState!
                                               .validate()) {
                                             await _updateProfile();
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProfilePage(
-                                                        fromUpdateFlow: true),
-                                              ),
-                                            );
+                                            Get.offAll(() => MainLayout());
                                           }
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -861,6 +915,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   Future<void> _updateProfile() async {
     final model = UpdateProfileModel(
       id: userId,
+      username: _usernameController.text.trim(),
       name: _nameController.text.trim(),
       email: _emailController.text.trim(),
       mobile: _phoneNumber?.phoneNumber?.trim() ?? _phoneController.text.trim(),

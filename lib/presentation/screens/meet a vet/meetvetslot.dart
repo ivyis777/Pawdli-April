@@ -126,7 +126,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: Colors.grey.withValues(alpha: 0.2),
                       blurRadius: 8,
                       spreadRadius: 2,
                       offset: Offset(0, 4),
@@ -172,7 +172,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
-                                  color: Colours.primarycolour.withOpacity(0.1),
+                                  color: Colours.primarycolour.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
@@ -189,7 +189,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
-                                  color: Colours.brownColour.withOpacity(0.1),
+                                  color: Colours.brownColour.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
@@ -282,7 +282,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                                         fontSize: getResponsiveFont(context, 11)),
                                   ),
                                   backgroundColor:
-                                      Colours.primarycolour.withOpacity(0.2),
+                                      Colours.primarycolour.withValues(alpha: 0.2),
                                   deleteIcon: Icon(Icons.close,
                                       size: screenHeight * 0.018),
                                   onDeleted: () => _toggleSlotSelection(slot),
@@ -391,7 +391,7 @@ class _MeetvetslotPageState extends State<Meetvetslot> {
                                           boxShadow: [
                                             BoxShadow(
                                               color:
-                                                  Colors.grey.withOpacity(0.2),
+                                                  Colors.grey.withValues(alpha: 0.2),
                                               blurRadius: 5,
                                               spreadRadius: 2,
                                             ),

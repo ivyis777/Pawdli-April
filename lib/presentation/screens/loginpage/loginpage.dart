@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pawlli/core/form_validation/form_validation.dart';
@@ -11,6 +10,7 @@ import 'package:pawlli/data/controller/logincontroller.dart';
 import 'package:pawlli/data/controller/otpcontroller.dart';
 import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
+import 'package:pawlli/presentation/screens/personalinfopage/personalinfopage.dart';
 import 'package:pawlli/presentation/screens/signuppage/signuppage.dart';
 import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 import 'package:pawlli/presentation/widgets/commonui/commonui.dart';
@@ -557,7 +557,11 @@ class _LoginPageState extends State<LoginPage> {
 
                                     if (result.success) {
                                       print("✅ NAVIGATING TO MAINLAYOUT");
-                                      Get.offAll(() => MainLayout());
+                                      if (result.isNewUser) {
+                                        Get.offAll(() => PersonalInfoPage());
+                                      } else {
+                                        Get.offAll(() => MainLayout());
+                                      }
                                     }
 
                                     Get.snackbar(

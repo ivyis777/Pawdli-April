@@ -130,8 +130,8 @@ class Storemainpromotion extends StatelessWidget {
             debugPrint("🟡 PROMO ITEM → ${promo.toJson()}");
 
             final rawImage =
-                (promo.imageUrl != null && promo.imageUrl!.trim().isNotEmpty)
-                    ? promo.imageUrl!.trim()
+                (promo.imageUrl.trim().isNotEmpty)
+                    ? promo.imageUrl.trim()
                     : (promo.image ?? "").trim();
 
             debugPrint("🟠 RAW IMAGE FROM API → $rawImage");

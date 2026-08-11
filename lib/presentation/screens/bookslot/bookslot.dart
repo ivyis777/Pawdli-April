@@ -354,7 +354,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
       'purpose': 'Host',
       'order_id': _orderId,
       'name': 'Pawlli',
-      'description': programDescriptionController?.text ?? '',
+      'description': programDescriptionController.text ?? '',
       'prefill': {
         'contact': '1234567890',
         'email': 'user@example.com',
@@ -642,7 +642,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
       return;
     }
 
-    if (selectedLanguage == null || selectedLanguage!.isEmpty) {
+    if (selectedLanguage.isEmpty) {
       Fluttertoast.showToast(msg: "Please select language".tr);
       return;
     }
@@ -1196,9 +1196,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                                       ),
                                       SizedBox(height: 4),
                                       Text(
-                                        selectedFile!.size != null
-                                            ? '${(selectedFile!.size / 1024 / 1024).toStringAsFixed(2)} MB'
-                                            : '',
+                                        '${(selectedFile!.size / 1024 / 1024).toStringAsFixed(2)} MB',
                                         style: TextStyle(
                                             fontSize: getResponsiveFont(context, 12),
                                             color: Colors.grey[700]),

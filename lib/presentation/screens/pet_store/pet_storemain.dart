@@ -658,25 +658,19 @@ class _PetstorePageState extends State<PetstorePage> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-
-        // ✅ GRADIENT HERE
-        gradient: const LinearGradient(
-          colors: [
-            Color.fromARGB(255, 247, 178, 2),
-            Color.fromARGB(210, 253, 253, 253),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+        border: Border.all(
+          color: Colours.primarycolour,
+          width: 1,
         ),
-
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(4, 4),
-          )
-        ],
+        // boxShadow: const [
+        //   BoxShadow(
+        //     color: Colors.black26,
+        //     blurRadius: 4,
+        //     offset: Offset(1, 2),
+        //   ),
+        // ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),

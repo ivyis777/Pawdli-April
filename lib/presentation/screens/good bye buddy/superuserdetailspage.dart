@@ -90,6 +90,7 @@ https://www.google.com/maps/search/?api=1&query=${data?.latitude},${data?.longit
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 60, // 🔥 increase height
         backgroundColor: Colors.transparent,

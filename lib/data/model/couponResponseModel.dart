@@ -1,12 +1,10 @@
 class ApplyCouponModel {
   bool? status;
   String? message;
-
   double? totalAmount;
   double? discountAmount;
   double? taxAmount;
   double? consultationFee;
-
   String? couponCode;
 
   ApplyCouponModel({

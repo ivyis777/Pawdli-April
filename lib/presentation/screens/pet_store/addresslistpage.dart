@@ -6,7 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/controller/addresscontroller.dart';
 import 'package:pawlli/data/model/addressmodel.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/presentation/screens/pet_store/add_addresspage.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
@@ -192,7 +191,7 @@ class AddressListPage extends StatelessWidget {
       ),
 
       // ---------------- ADDRESS LIST ----------------
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Obx(() {
         return addressController.allAddresses.isEmpty
             ?  Center(child: Text(
@@ -208,9 +207,18 @@ class AddressListPage extends StatelessWidget {
                   final addr = addressController.allAddresses[i];
 
                   return Card(
-                    color: const Color.fromARGB(255, 251, 236, 210),
+                    color: Colors.white,
+                    elevation: 0,
                     margin:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        side: BorderSide(
+                          color: Colours.brownColour,
+                          width: 1,
+                        ),
+                      ),
+
                     child: ListTile(
                       title: Text(
                         addr.name,

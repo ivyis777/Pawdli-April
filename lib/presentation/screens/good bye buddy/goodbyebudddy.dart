@@ -329,9 +329,22 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
       setState(() {
         _selectedMapLocation =
             latLng.LatLng(position.latitude, position.longitude);
+
         _showMap = true;
+
         _locationPermissionAttempts = 0;
-        _isLoadingLocation = false; // 🔴 FIX
+
+        _isLoadingLocation = false;
+      });
+
+      /// Wait until FlutterMap is built
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_selectedMapLocation != null) {
+          _mapController.move(
+            _selectedMapLocation!,
+            17,
+          );
+        }
       });
     } on PlatformException catch (e) {
       setState(() => _isLoadingLocation = false);
@@ -498,7 +511,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
           place.locality,
           place.postalCode,
           place.country
-        ].where((part) => part != null && part!.isNotEmpty).join(', ');
+        ].where((part) => part != null && part.isNotEmpty).join(', ');
 
         setState(() {
           _locationString = address;
@@ -569,12 +582,28 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
           child: ElevatedButton(
             onPressed: _confirmLocation,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
+              backgroundColor: Colours.primarycolour,
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
             child:  Text(
               'Confirm Location'.tr,
-              style: TextStyle(fontSize: getResponsiveFont(context, 15)),
+              style: TextStyle(fontSize: getResponsiveFont(context, 15), 
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 100,
+          right: 20,
+          child: FloatingActionButton(
+            heroTag: "myLocation",
+            mini: true,
+            backgroundColor: Colors.white,
+            onPressed: _goToCurrentLocation,
+            child: Icon(
+              Icons.my_location,
+              color: Colors.blue,
             ),
           ),
         ),
@@ -582,16 +611,25 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
           top: 20,
           right: 20,
           child: FloatingActionButton(
+            heroTag: "closeMap",
+            mini: true,
+            backgroundColor: Colors.white,
             onPressed: () {
               if (_selectedMapLocation == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Please select a location".tr)),
+                  SnackBar(
+                    content: Text("Please select a location".tr),
+                  ),
                 );
                 return;
               }
+
               _confirmLocation();
             },
-            child: const Icon(Icons.close),
+            child: Icon(
+              Icons.close,
+              color: Colours.primarycolour,
+            ),
           ),
         ),
       ],
@@ -730,6 +768,31 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
     }
   }
 
+  Future<void> _goToCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      final current = latLng.LatLng(
+        position.latitude,
+        position.longitude,
+      );
+
+      _mapController.move(current, 17);
+
+      setState(() {
+        _selectedMapLocation = current;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Unable to get current location"),
+        ),
+      );
+    }
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -745,6 +808,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 60,
         backgroundColor: Colors.transparent,
@@ -836,31 +900,98 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                           SizedBox(height: 8),
                           ElevatedButton(
                             onPressed: _openMapForLocationSelection,
-                            child: Text("Select Location from Map".tr),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colours.primarycolour,
+                              elevation: 0,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 14,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                side: BorderSide(
+                                  color: Colors.grey,
+                                  // width: 1.5,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.location_on_outlined,
+                                  color: Colours.black,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "Select Location from Map".tr,
+                                  style: TextStyle(
+                                    fontSize: getResponsiveFont(context, 14),
+                                    // fontWeight: FontWeight.w600,
+                                    color: Colours.black
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           if (_locationString != null)
                             Text("Address: ".tr + "$_locationString"),
 
                           SizedBox(height: 16),
 
-                          // IMAGE PICKER
+                          /// UPLOAD IMAGES TITLE
+                          Text(
+                            "Upload Images".tr,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: getResponsiveFont(context, 14),
+                            ),
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          /// IMAGE PICKER
                           GestureDetector(
                             onTap: _showImageSourceOptions,
                             child: Card(
+                              color: Colors.white,
+                              elevation: 0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                side: BorderSide(color: Colours.black),
+                                borderRadius: BorderRadius.circular(16),
+                                side: BorderSide(
+                                  color: Colors.grey,
+                                  width: 1,
+                                ),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Center(child: Text("Upload Image".tr,
-                                style: TextStyle(fontSize: getResponsiveFont(context, 14)),
-                                )),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 15,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.cloud_upload_outlined,
+                                      color: Colours.black,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Upload Image".tr,
+                                      style: TextStyle(
+                                        fontSize: getResponsiveFont(context, 14),
+                                        // fontWeight: FontWeight.w600,
+                                        color: Colours.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
 
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
 
                           if (_imageFiles != null && _imageFiles!.isNotEmpty)
                             SizedBox(
@@ -874,7 +1005,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                     child: Stack(
                                       children: [
                                         ClipRRect(
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(16),
                                           child: Image.file(
                                             File(_imageFiles![index].path),
                                             width: 120,
@@ -914,7 +1045,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                               ),
                             ),
 
-                          SizedBox(height: 16),
+                          SizedBox(height: 10),
 
                           Text(
                             'Landmark:'.tr,
@@ -1002,7 +1133,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                     "Missing details".tr,
                                     "Please fill all fields and upload images".tr,
                                     // snackPosition: SnackPosition.TOP,
-                                    bg: Colors.orange,
+                                    bg: Colours.primarycolour,
                                     // colorText: Colors.white,
                                   );
                                   return;
@@ -1178,16 +1309,18 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                   }
                                 },
                                 child: Card(
-                                  elevation: 5,
+                                  elevation: 0,
                                   margin: const EdgeInsets.only(bottom: 16),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
+                                    side: BorderSide(
+                                      color: Colours.brownColour, width: 0.5
+                                    ),
                                   ),
                                   child: Container(
                                     padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          255, 251, 236, 210),
+                                      color: Colors.white,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Column(
@@ -1206,25 +1339,30 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                                               ),
                                             ),
                                             Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 6),
-                                              decoration: BoxDecoration(
-                                                color: item["status"] == "completed"
-                                                    ? Colors.green.shade100
-                                                    : Colors.orange.shade100,
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
+                                              padding: const EdgeInsets.symmetric(
+                                                horizontal: 12,
+                                                vertical: 6,
                                               ),
-                                              child: Text(
-                                                item["status"],
-                                                style: TextStyle(
-                                                  color: item["status"] ==
-                                                          "completed"
+                                              decoration: BoxDecoration(
+                                                color: Colors.white, // White background
+                                                borderRadius: BorderRadius.circular(20),
+                                                border: Border.all(
+                                                  color: item["status"] == "completed"
                                                       ? Colors.green
                                                       : Colors.orange,
-                                                  // fontWeight: FontWeight.bold,
+                                                  width: 1,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                item["status"] != null && item["status"].toString().isNotEmpty
+                                                    ? "${item["status"].toString()[0].toUpperCase()}${item["status"].toString().substring(1)}"
+                                                    : "",
+                                                style: TextStyle(
+                                                  color: item["status"] == "completed"
+                                                      ? Colors.black
+                                                      : Colors.black,
+                                                  // fontWeight: FontWeight.w600,
+                                                  fontSize: getResponsiveFont(context, 12),
                                                 ),
                                               ),
                                             )

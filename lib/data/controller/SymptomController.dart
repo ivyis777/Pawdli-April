@@ -13,6 +13,8 @@ class SymptomController extends GetxController {
   void onInit() {
     super.onInit();
 
+    print("SymptomController HashCode => $hashCode");
+
     fetchSymptoms();
   }
 

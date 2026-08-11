@@ -209,12 +209,11 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),
-            dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: Colours.primarycolour,
               ),
-            ),
+            ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -292,7 +291,10 @@ class _AddPetAdoptionState extends State<AddPetAdoption> {
             inactiveFgColor: Colors.white,
             totalSwitches: 2,
             labels: ['Male'.tr, 'Female'.tr],
-            icons: [FontAwesomeIcons.mars, FontAwesomeIcons.venus],
+            icons: const [
+              Icons.male,
+              Icons.female,
+            ],
             activeBgColors: [
               [Colours.primarycolour],
               [Colours.primarycolour]

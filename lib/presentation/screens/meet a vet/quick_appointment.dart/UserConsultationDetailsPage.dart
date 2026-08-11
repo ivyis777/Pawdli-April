@@ -117,7 +117,7 @@ class _UserConsultationDetailsPageState
         widget.consultationData;
 
     return Scaffold(
-
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 60,
         backgroundColor: Colors.transparent,
@@ -177,14 +177,16 @@ class _UserConsultationDetailsPageState
 
                 borderRadius:
                     BorderRadius.circular(20),
-
-                boxShadow: [
-
-                  BoxShadow(
-                    blurRadius: 8,
-                    color: Colors.black12,
-                  ),
-                ],
+                    border: Border.all(
+                      color: Colours.brownColour,
+                      width: 1,
+                    ),
+                // boxShadow: [
+                //   BoxShadow(
+                //     blurRadius: 8,
+                //     color: Colors.black12,
+                //   ),
+                // ],
               ),
 
               child: Column(
@@ -232,6 +234,12 @@ class _UserConsultationDetailsPageState
                   const SizedBox(height: 10),
 
                   Text(
+                    "Pet Type : ${data["pet_type"]}",
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
                     "Breed : ${data["pet_breed"]}",
                   ),
                 ],
@@ -257,14 +265,16 @@ class _UserConsultationDetailsPageState
 
                 borderRadius:
                     BorderRadius.circular(20),
-
-                boxShadow: [
-
-                  BoxShadow(
-                    blurRadius: 8,
-                    color: Colors.black12,
-                  ),
-                ],
+                    border: Border.all(
+                      color: Colours.brownColour,
+                      width: 1,
+                    ),
+                // boxShadow: [
+                //   BoxShadow(
+                //     blurRadius: 8,
+                //     color: Colors.black12,
+                //   ),
+                // ],
               ),
 
               child: Column(
@@ -394,14 +404,16 @@ class _UserConsultationDetailsPageState
 
                 borderRadius:
                     BorderRadius.circular(20),
-
-                boxShadow: [
-
-                  BoxShadow(
-                    blurRadius: 8,
-                    color: Colors.black12,
-                  ),
-                ],
+                    border: Border.all(
+                      color: Colours.brownColour,
+                      width: 1,
+                    ),
+                // boxShadow: [
+                //   BoxShadow(
+                //     blurRadius: 8,
+                //     color: Colors.black12,
+                //   ),
+                // ],
               ),
 
               child: Column(
@@ -474,14 +486,16 @@ class _UserConsultationDetailsPageState
 
                 borderRadius:
                     BorderRadius.circular(20),
-
-                boxShadow: [
-
-                  BoxShadow(
-                    blurRadius: 8,
-                    color: Colors.black12,
-                  ),
-                ],
+                    border: Border.all(
+                      color: Colours.brownColour,
+                      width: 1,
+                    ),
+                // boxShadow: [
+                //   BoxShadow(
+                //     blurRadius: 8,
+                //     color: Colors.black12,
+                //   ),
+                // ],
               ),
 
               child: Column(

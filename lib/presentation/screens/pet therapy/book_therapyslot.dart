@@ -110,6 +110,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
   double discountAmount = 0.0;
   double payableAmount = 0.0;
   String appliedCoupon = "";
+  int? couponId;
 
 
   double get finalAmount {
@@ -204,10 +205,17 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
       if (data["success"] == true) {
         setState(() {
           couponApplied = true;
-          appliedCoupon = data["coupon_code"];
+
+          couponId = data["Coupon_id"];
+
+          appliedCoupon = data["coupon_code"] ?? "";
           couponController.text = appliedCoupon;
-          discountAmount = double.parse(data["discount"].toString());
-          payableAmount = double.parse(data["final_amount"].toString());
+
+          discountAmount =
+              double.tryParse(data["applied_discount"].toString()) ?? 0.0;
+
+          payableAmount =
+              double.tryParse(data["final_amount"].toString()) ?? finalAmount;
         });
 
         Get.snackbar(
@@ -241,7 +249,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
       return;
     }
 
-    if (widget.selectedSlotIds == null || widget.selectedSlotIds.isEmpty) {
+    if (widget.selectedSlotIds.isEmpty) {
       Fluttertoast.showToast(
           msg: "No slots selected. Please choose at least one slot.".tr);
       return;
@@ -273,6 +281,12 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
       "for_employees": _employeesIndex == 0,
       "description": programDescriptionController.text
     };
+
+    if (couponApplied && couponId != null) {
+      orderData["coupon_id"] = couponId;
+      orderData["coupon_code"] = appliedCoupon;
+      orderData["applied_discount"] = discountAmount;
+    }
 // 🔹 Conditional fields
     if (_therapyTakenIndex == 0) {
       orderData["previous_pet_therapy_details"] =
@@ -405,7 +419,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
       "purpose": "PetTherapy",
       'order_id': _orderId,
       'name': 'Pawlli',
-      'description': programDescriptionController?.text ?? '',
+      'description': programDescriptionController.text ?? '',
       'prefill': {
         'contact': '1234567890',
         'email': 'user@example.com',
@@ -570,7 +584,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
       return;
     }
 
-    if (widget.selectedSlots == null || widget.selectedSlots.isEmpty) {
+    if (widget.selectedSlots.isEmpty) {
       Fluttertoast.showToast(
           msg: "No slots selected. Please choose at least one slot.".tr);
       return;
@@ -602,6 +616,11 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
       "for_employees": _employeesIndex == 0,
       "description": programDescriptionController.text.trim(),
     };
+      if (couponApplied && couponId != null) {
+        orderData["coupon_id"] = couponId;
+        orderData["coupon_code"] = appliedCoupon;
+        orderData["applied_discount"] = discountAmount;
+      }
 
     // 🔹 Conditional fields
     if (_therapyTakenIndex == 0) {
@@ -705,12 +724,11 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),
-            dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: Colours.primarycolour,
               ),
-            ),
+            ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -827,7 +845,10 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
             inactiveFgColor: Colors.white,
             totalSwitches: 2,
             labels: ['Male'.tr, 'Female'.tr],
-            icons: [FontAwesomeIcons.mars, FontAwesomeIcons.venus],
+            icons: const [
+              Icons.male,
+              Icons.female,
+            ],
             activeBgColors: [
               [Colours.primarycolour],
               [Colours.primarycolour]
@@ -1421,6 +1442,7 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                       onPressed: () {
                                         setState(() {
                                           couponApplied = false;
+                                          couponId = null;
                                           appliedCoupon = "";
                                           discountAmount = 0;
                                           payableAmount = finalAmount;

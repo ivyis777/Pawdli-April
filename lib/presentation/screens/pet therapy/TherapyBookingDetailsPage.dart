@@ -504,10 +504,10 @@ class _TherapyBookingDetailsPageState
               widget.booking.mode ?? "-",
             ),
 
-            buildDetailCard(
-              "Therapy Type",
-              widget.booking.therapyType ?? "-",
-            ),
+            // buildDetailCard(
+            //   "Therapy Type",
+            //   widget.booking.therapyType ?? "-",
+            // ),
 
             buildDetailCard(
               "Created At",
@@ -533,29 +533,21 @@ class _TherapyBookingDetailsPageState
             if (widget.booking.slot != null)
 
             Container(
-
               margin: const EdgeInsets.only(bottom: 12),
-
               padding: const EdgeInsets.all(14),
-
               decoration: BoxDecoration(
-
                 color: Colors.white,
-
                 borderRadius: BorderRadius.circular(14),
-
-                boxShadow: const [
-
-                  BoxShadow(
-
-                    color: Colors.black12,
-
-                    blurRadius: 4,
-
-                  ),
-
-                ],
-
+                border: Border.all(
+                  color: Colours.brownColour,
+                  width: 0.3,
+                ),
+                // boxShadow: const [
+                //   BoxShadow(
+                //     color: Colors.black12,
+                //     blurRadius: 4,
+                //   ),
+                // ],
               ),
 
               child: Row(
@@ -586,19 +578,19 @@ class _TherapyBookingDetailsPageState
 
                       children: [
 
-                        Text(
+                        // Text(
 
-                          "Slot ID : ${widget.booking.slot!.slotId}",
+                        //   "Slot ID : ${widget.booking.slot!.slotId}",
 
-                          style: const TextStyle(
+                        //   style: const TextStyle(
 
-                            fontWeight: FontWeight.bold,
+                        //     fontWeight: FontWeight.bold,
 
-                          ),
+                        //   ),
 
-                        ),
+                        // ),
 
-                        const SizedBox(height: 4),
+                        // const SizedBox(height: 4),
 
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -677,19 +669,18 @@ class _TherapyBookingDetailsPageState
           const EdgeInsets.all(14),
 
       decoration: BoxDecoration(
-
         color: Colors.white,
-
-        borderRadius:
-            BorderRadius.circular(14),
-
-        boxShadow: [
-
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-          ),
-        ],
+        borderRadius:BorderRadius.circular(14),
+        border: Border.all(
+          color: Colours.brownColour,
+          width: 0.3,
+        ),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black12,
+        //     blurRadius: 4,
+        //   ),
+        // ],
       ),
 
       child: Row(

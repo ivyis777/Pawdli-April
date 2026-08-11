@@ -47,7 +47,7 @@ class _SymptomWidgetState
     extends State<SymptomWidget> {
 
   final SymptomController symptomController =
-    Get.put(SymptomController());
+    Get.find<SymptomController>();
 
   Set<String> selectedSymptoms = {};
 
@@ -96,6 +96,9 @@ class _SymptomWidgetState
                   CircularProgressIndicator(),
             );
           }
+
+          print("WIDGET SYMPTOM COUNT => ${symptomController.symptomsList.length}");
+          print(symptomController.symptomsList.map((e) => e.name).toList());
 
           return Wrap(
             spacing: 14,
@@ -187,7 +190,7 @@ class _SymptomWidgetState
                                   BorderRadius.circular(12),
 
                               borderSide: BorderSide(
-                                color: Colours.primarycolour.withOpacity(0.4),
+                                color: Colours.primarycolour.withValues(alpha: 0.4),
 
                                 width: 1,
                               ),
@@ -346,7 +349,7 @@ class _SymptomWidgetState
           color: isSelected
               ? Colours.primarycolour
               : Colours.primarycolour
-                  .withOpacity(0.4),
+                  .withValues(alpha: 0.4),
 
           width: 1.5,
         ),

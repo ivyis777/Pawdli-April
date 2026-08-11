@@ -110,12 +110,16 @@ class TherapyBookingListPage
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 4,
-                      ),
-                    ],
+                    border: Border.all(
+                      color: Colours.primarycolour,
+                      width: 0.5,
+                    ),
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: Colours.primarycolour,
+                    //     blurRadius: 4,
+                    //   ),
+                    // ],
                   ),
                   child: Row(
                     children: [

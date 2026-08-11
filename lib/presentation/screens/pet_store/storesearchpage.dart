@@ -274,8 +274,8 @@ class StoreSearchPage extends StatelessWidget {
                                   backgroundColor:
                                       Colours
                                           .primarycolour
-                                          .withOpacity(
-                                              0.1),
+                                          .withValues(
+                                              alpha: 0.1),
                                   child: Icon(
                                     Icons.pets,
                                     color: Colours

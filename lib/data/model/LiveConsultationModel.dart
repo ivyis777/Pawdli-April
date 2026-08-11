@@ -37,6 +37,8 @@ class LiveConsultationData {
 
   String? petGender;
 
+  String? petType;
+
   String? petBreed;
 
   List<String>? symptoms;
@@ -69,6 +71,9 @@ class LiveConsultationData {
 
     petGender =
     json['pet_gender'];
+
+    petType =
+    json['pet_type'];
 
     petBreed =
     json['pet_breed'];

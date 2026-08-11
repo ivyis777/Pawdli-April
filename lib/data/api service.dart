@@ -1105,7 +1105,7 @@ static Future<PaymentVerificationModel?> verifyPayment({
 
    var requestBody = {
     'razorpay_order_id': razorpay_order_id,
-    'razorpay_signature': (razorpay_signature?.isNotEmpty ?? false) ? razorpay_signature : "N/A", // Send signature
+    'razorpay_signature': (razorpay_signature.isNotEmpty ?? false) ? razorpay_signature : "N/A", // Send signature
     'razorpay_payment_id': (razorpay_payment_id?.isNotEmpty ?? false) ? razorpay_payment_id : "N/A", // Always include this field
     if (failureErrorCode != null) 'failure_error_code': failureErrorCode,
     if (failureErrorMessage != null) 'failure_error_message': failureErrorMessage,
@@ -5628,107 +5628,95 @@ static Future<List<CompetitionModel>> fetchCompetitionButton() async {
       }
 
       /// CREATE CONSULTATION REQUEST
-    static Future<ConsultationRequestModel?>
-    createConsultationRequest({
-
+    static Future<ConsultationRequestModel?> createConsultationRequest({
       required String petId,
-
       required String problemDescription,
-
       required List<String> symptomIds,
-
       required String otherSymptom,
-
       required List<File> issueImages,
-
     }) async {
 
       try {
 
-        String? accessToken =
-        await getAccessToken();
+        String? accessToken = await getAccessToken();
+        Dio dio = Dio();
+        FormData formData = FormData();
 
-        var request =
-        http.MultipartRequest(
+        /// BODY
+        formData.fields.add(
+          MapEntry("pet", petId),
+        );
 
-          "POST",
-
-          Uri.parse(
-            "${AppUrl.mainURL}/user/consultation-request/create/",
+        formData.fields.add(
+          MapEntry(
+            "problem_description",
+            problemDescription,
           ),
         );
 
-        /// HEADERS
-        request.headers.addAll({
-
-          "Authorization":
-          "Bearer $accessToken",
-        });
-
-        /// BODY
-        request.fields['pet'] = petId;
-
-        request.fields['problem_description'] =
-            problemDescription;
-
-        request.fields['other_symptom'] =
-            otherSymptom;
+        formData.fields.add(
+          MapEntry(
+            "other_symptom",
+            otherSymptom,
+          ),
+        );
 
         /// SYMPTOMS
-        for (String symptomId
-        in symptomIds) {
-
-          request.fields.addAll({
-
-            "symptoms":
-            symptomId,
-          });
-        }
-
-        /// IMAGES
-        for (File image
-        in issueImages) {
-
-          request.files.add(
-
-            await http.MultipartFile
-                .fromPath(
-
-              "issue_images",
-
-              image.path,
+        for (String symptomId in symptomIds) {
+          formData.fields.add(
+            MapEntry(
+              "symptoms",
+              symptomId,
             ),
           );
         }
 
-        final response =
-        await request.send();
+        /// IMAGES
+        for (File image in issueImages) {
+          formData.files.add(
+            MapEntry(
+              "issue_images",
+              await MultipartFile.fromFile(
+                image.path,
+              ),
+            ),
+          );
+        }
 
-        final responseData =
-        await response.stream
-            .bytesToString();
+        print("FIELDS => ${formData.fields}");
+        final response = await dio.post(
+          "${AppUrl.mainURL}/user/consultation-request/create/",
+          data: formData,
+          options: Options(
+            headers: {
+              "Authorization": "Bearer $accessToken",
+            },
+          ),
+        );
 
         print(
-            "CONSULTATION CREATE STATUS : ${response.statusCode}");
+          "CONSULTATION CREATE STATUS : ${response.statusCode}",
+        );
 
         print(
-            "CONSULTATION CREATE RESPONSE : $responseData");
+          "CONSULTATION CREATE RESPONSE : ${response.data}",
+        );
 
         if (response.statusCode == 200 ||
             response.statusCode == 201) {
 
-          return ConsultationRequestModel
-              .fromJson(
-            jsonDecode(responseData),
+          return ConsultationRequestModel.fromJson(
+
+            response.data is Map<String, dynamic>
+                ? response.data
+                : jsonDecode(response.data),
           );
         }
-
       } catch (e) {
-
         print(
-            "CREATE CONSULTATION ERROR : $e");
+          "CREATE CONSULTATION ERROR : $e",
+        );
       }
-
       return null;
     }
 

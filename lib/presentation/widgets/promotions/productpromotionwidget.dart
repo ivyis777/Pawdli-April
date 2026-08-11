@@ -139,9 +139,8 @@ class Productpromotion extends StatelessWidget {
           ),
           items: controller.promotions.map((promo) {
             /// FINAL FIX → Get image from BOTH fields
-            final image = (promo.imageUrl != null &&
-                    promo.imageUrl!.trim().isNotEmpty)
-                ? promo.imageUrl!
+            final image = (promo.imageUrl.trim().isNotEmpty)
+                ? promo.imageUrl
                 : (promo.image ?? "");
 
             // debugPrint("💛 FINAL PRODUCT IMAGE USED → $image");

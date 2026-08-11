@@ -303,12 +303,11 @@ class _EditPetPageState extends State<EditPetPage> {
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),
-            dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: Colours.primarycolour,
               ),
-            ),
+            ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -388,7 +387,7 @@ class _EditPetPageState extends State<EditPetPage> {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: DropdownButtonFormField<String>(
-          value:
+          initialValue:
               validCategoryNames.contains(_selectedType) ? _selectedType : null,
           items: validCategoryNames.map((name) {
             return DropdownMenuItem<String>(
@@ -457,7 +456,7 @@ class _EditPetPageState extends State<EditPetPage> {
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: DropdownButtonFormField<String>(
           // ✅ Ensure selected value is in the dropdown
-          value: validBreeds.contains(_selectedBreed) ? _selectedBreed : null,
+          initialValue: validBreeds.contains(_selectedBreed) ? _selectedBreed : null,
           items: validBreeds.map((name) {
             return DropdownMenuItem<String>(
               value: name,
@@ -517,7 +516,10 @@ class _EditPetPageState extends State<EditPetPage> {
               inactiveFgColor: Colors.white,
               totalSwitches: 2,
               labels: ['Male'.tr, 'Female'.tr],
-              icons: [FontAwesomeIcons.mars, FontAwesomeIcons.venus],
+              icons: const [
+                Icons.male,
+                Icons.female
+              ],
               activeBgColors: [
                 [Colours.primarycolour],
                 [Colours.primarycolour]

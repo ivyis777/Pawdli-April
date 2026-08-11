@@ -123,7 +123,7 @@ class _MeetVetDoctorListState extends State<MeetVetDoctorList> {
                       shape: BoxShape.circle,
                     ),
                     todayDecoration: BoxDecoration(
-                      color: Colours.brownColour.withOpacity(0.5),
+                      color: Colours.brownColour.withValues(alpha: 0.5),
                       shape: BoxShape.circle,
                     ),
                   ),

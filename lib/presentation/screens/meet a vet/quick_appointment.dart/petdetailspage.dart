@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/api%20service.dart';
 import 'package:pawlli/data/controller/QuickConsultationController.dart';
+import 'package:pawlli/data/controller/SymptomController.dart';
 import 'package:pawlli/data/model/petslistmodel.dart' show Data;
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/add%20pet/addpet.dart';
@@ -44,6 +45,10 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
     );
 
   /// CONTROLLERS
+  
+  final SymptomController symptomController =
+    Get.put(SymptomController());
+    
   final TextEditingController
       _petNameController =
       TextEditingController();
@@ -374,7 +379,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
 
                   border: Border.all(
                     color: Colours.primarycolour
-                        .withOpacity(0.4),
+                        .withValues(alpha: 0.4),
                   ),
                 ),
 
@@ -583,7 +588,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
 
                 border: Border.all(
                   color: Colours.primarycolour
-                      .withOpacity(0.4),
+                      .withValues(alpha: 0.4),
                 ),
               ),
 
@@ -680,7 +685,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
 
                     border: Border.all(
                       color: Colours.primarycolour
-                          .withOpacity(0.4),
+                          .withValues(alpha: 0.4),
                     ),
                   ),
 
@@ -1003,7 +1008,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
 
                 border: Border.all(
                   color: Colours.primarycolour
-                      .withOpacity(0.4),
+                      .withValues(alpha: 0.4),
                 ),
               ),
 
@@ -1122,7 +1127,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> {
 
             border: Border.all(
               color: Colours.primarycolour
-                  .withOpacity(0.4),
+                  .withValues(alpha: 0.4),
             ),
           ),
 

@@ -92,6 +92,7 @@ class _UserRequestDetailsPageState extends State<UserRequestDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 60, // 🔥 increase height
         backgroundColor: Colors.transparent,

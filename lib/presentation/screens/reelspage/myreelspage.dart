@@ -300,7 +300,7 @@ class _MyReelsPageState extends State<MyReelsPage> {
                                   begin: Alignment.bottomCenter,
                                   end: Alignment.topCenter,
                                   colors: [
-                                    Colors.black.withOpacity(0.35),
+                                    Colors.black.withValues(alpha: 0.35),
                                     Colors.transparent,
                                   ],
                                 ),
@@ -316,7 +316,7 @@ class _MyReelsPageState extends State<MyReelsPage> {
                               icon: Container(
                                 padding: const EdgeInsets.all(4),
                                 decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.4),
+                                  color: Colors.black.withValues(alpha: 0.4),
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
@@ -390,7 +390,7 @@ class _MyReelsPageState extends State<MyReelsPage> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 3),
                               decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.6),
+                                color: Colors.black.withValues(alpha: 0.6),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(

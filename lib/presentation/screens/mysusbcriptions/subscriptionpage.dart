@@ -216,7 +216,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     final controller = Get.put(SubscriptionController());
 
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Positioned(
@@ -258,7 +258,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   children: [
-                    Text("Filter: ".tr,
+                    Text("Filter: ",
                         style: TextStyle(
                           fontSize: getResponsiveFont(context, 14),
                           fontWeight: FontWeight.w600,
@@ -431,7 +431,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Host: ${program.host?.isNotEmpty == true ? program.host! : "Self"}',
+                                  'Host: ${program.host.isNotEmpty == true ? program.host : "Self"}',
                                   style: TextStyle(
                                     fontSize: getResponsiveFont(context, 13),
                                       color: isExpired

@@ -10,7 +10,6 @@ import 'package:pawlli/data/controller/topupcontroller.dart';
 import 'package:pawlli/data/controller/transactioncontroller.dart';
 import 'package:pawlli/data/controller/walletbalancecontroller.dart';
 import 'package:pawlli/data/model/topupmodel.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:get/get.dart';
 import 'package:pawlli/presentation/screens/homepage/homepage.dart';
 import 'package:pawlli/presentation/screens/payment%20failure/payment_failure.dart';

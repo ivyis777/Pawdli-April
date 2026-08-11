@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 
-import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/api%20service.dart';
 import 'package:pawlli/presentation/screens/loginpage/loginpage.dart';
 

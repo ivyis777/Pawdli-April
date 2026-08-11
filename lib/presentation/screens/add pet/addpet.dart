@@ -234,12 +234,11 @@ class _AddPetPageState extends State<AddPetPage> {
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),
-            dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: Colours.primarycolour,
               ),
-            ),
+            ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -312,7 +311,7 @@ class _AddPetPageState extends State<AddPetPage> {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: DropdownButtonFormField<String>(
-          value:
+          initialValue:
               _selectedType, // should be null initially for validation to work properly
           hint: Text(
             'Select Type'.tr,
@@ -391,7 +390,7 @@ class _AddPetPageState extends State<AddPetPage> {
       }
 
       return DropdownButtonFormField<String>(
-        value: _selectedBreed?.isNotEmpty == true ? _selectedBreed : null,
+        initialValue: _selectedBreed?.isNotEmpty == true ? _selectedBreed : null,
         items: breedList.map<DropdownMenuItem<String>>((e) {
           return DropdownMenuItem<String>(
             value: e.name,
@@ -455,7 +454,10 @@ class _AddPetPageState extends State<AddPetPage> {
             inactiveFgColor: Colors.white,
             totalSwitches: 2,
             labels: ['Male'.tr, 'Female'.tr],
-            icons: [FontAwesomeIcons.mars, FontAwesomeIcons.venus],
+            icons: const [
+              Icons.male,
+              Icons.female
+            ],
             activeBgColors: [
               [Colours.primarycolour],
               [Colours.primarycolour]

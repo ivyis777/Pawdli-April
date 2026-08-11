@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:intl/intl.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/quick_appointment.dart/PrescriptionPage.dart';
@@ -88,783 +90,605 @@ final issueImages =
     ),
 
   body: SingleChildScrollView(
-
-
     child: Padding(
+      padding:const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment:CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colours.brownColour,
+                    width: 1,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
 
-  padding:
-      const EdgeInsets.all(16),
+                    Text(
+                      "Pet Information",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colours.primarycolour,
+                      ),
+                    ),
 
-  child: Column(
+                    const Divider(),
 
-    crossAxisAlignment:
-        CrossAxisAlignment.start,
+                    Text("Pet Name : ${consultationData["pet_name"]}"),
 
-    children: [
+                    const SizedBox(height: 10),
 
-      Text(
+                    Text("Pet Age : ${consultationData["pet_age"]}"),
 
-  "Pet Information",
+                    const SizedBox(height: 10),
 
-  style: TextStyle(
+                    Text("Pet Gender : ${consultationData["pet_gender"]}"),
 
-    color:
-        Colours.brownColour,
+                    const SizedBox(height: 10),
 
-    fontSize:
-        getResponsiveFont(
-            context,
-            16),
+                    Text("Pet Type : ${consultationData["pet_type"]}"),
 
-    fontWeight:
-        FontWeight.bold,
-  ),
-),
+                    const SizedBox(height: 10),
 
-const SizedBox(height: 12),
-
-_buildInfoCard(
-  "Pet Name",
-  consultationData["pet_name"] ?? "",
-),
-
-_buildInfoCard(
-  "Pet Age",
-  consultationData["pet_age"] ?? "",
-),
-
-_buildInfoCard(
-  "Pet Gender",
-  consultationData["pet_gender"] ?? "",
-),
-
-_buildInfoCard(
-  "Pet Breed",
-  consultationData["pet_breed"] ?? "",
-),
-
-const SizedBox(height: 20),
-
-
-
-Text(
-
-  "Consultation Information",
-
-  style: TextStyle(
-
-    color:
-        Colours.brownColour,
-
-    fontSize:
-        getResponsiveFont(
-            context,
-            16),
-
-    fontWeight:
-        FontWeight.bold,
-  ),
-),
-
-const SizedBox(height: 12),
-
-_buildInfoCard(
-
-  "Status",
-
-  consultationData[
-      "consultation_status"] ??
-      "",
-),
-
-_buildInfoCard(
-
-  "Type",
-
-  consultationData[
-      "consultation_type"] == 1
-
-      ? "Quick Consultation"
-
-      : "Scheduled Consultation",
-),
-
-_buildInfoCard(
-
-  "Created Date",
-
-  DateFormat(
-    "dd-MM-yyyy",
-  ).format(
-
-    DateTime.parse(
-      consultationData[
-          "created_at"],
-    ),
-  ),
-),
-
-const SizedBox(height: 20),
-
-Text(
-
-  "Symptoms",
-
-  style: TextStyle(
-
-    color:
-        Colours.brownColour,
-
-    fontSize:
-        getResponsiveFont(
-            context,
-            16),
-
-    fontWeight:
-        FontWeight.bold,
-  ),
-),
-
-const SizedBox(height: 12),
-
-symptoms.isEmpty
-
-    ? const Text(
-        "No Symptoms",
-      )
-
-    : Wrap(
-
-        spacing: 10,
-
-        runSpacing: 10,
-
-        children:
-
-            symptoms.map<Widget>(
-          (symptom) {
-
-            return Container(
-
-              padding:
-                  const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 10,
-              ),
-
-              decoration:
-                  BoxDecoration(
-
-                color:
-                    Colors.white,
-
-                borderRadius:
-                    BorderRadius.circular(
-                        30),
-
-                border: Border.all(
-                  color: Colours
-                      .primarycolour,
+                    Text("Breed : ${consultationData["pet_breed"]}"),
+                  ],
                 ),
               ),
 
-              child: Text(
+              const SizedBox(height: 20),
 
-                symptom,
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colours.brownColour,
+                    width: 1,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Consultation Information",
+                      style: TextStyle(
+                        fontSize: getResponsiveFont(context, 18),
+                        fontWeight: FontWeight.bold,
+                        color: Colours.primarycolour,
+                      ),
+                    ),
 
-                style: TextStyle(
-                  color: Colours
-                      .primarycolour,
+                    const Divider(),
+
+                    Text(
+                      "Status : ${consultationData["consultation_status"] ?? "-"}",
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Text(
+                      "Consultation Type : ${consultationData["consultation_type"] == 1 ? "Quick Consultation" : "Scheduled Consultation"}",
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Text(
+                      "Created Date : ${DateFormat("dd MMM yyyy").format(DateTime.parse(consultationData["created_at"]))}",
+                    ),
+                  ],
                 ),
               ),
-            );
-          },
-        ).toList(),
-      ),
 
-const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-Text(
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colours.brownColour,
+                    width: 1,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
 
-  "Problem Description",
+                    Text(
+                      "Symptoms",
+                      style: TextStyle(
+                        fontSize: getResponsiveFont(context, 18),
+                        fontWeight: FontWeight.bold,
+                        color: Colours.primarycolour,
+                      ),
+                    ),
 
-  style: TextStyle(
+                    const Divider(),
 
-    color:
-        Colours.brownColour,
+                    if (symptoms.isEmpty)
+                      const Text(
+                        "No Symptoms",
+                      )
+                    else
+                      Text(
+                        symptoms.join(", "),
+                        style: TextStyle(
+                          fontSize: getResponsiveFont(context, 15),
+                          color: Colors.black87,
+                          // fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
 
-    fontSize:
-        getResponsiveFont(
-            context,
-            16),
+              const SizedBox(height: 20),
 
-    fontWeight:
-        FontWeight.bold,
-  ),
-),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colours.brownColour,
+                    width: 1,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
 
-const SizedBox(height: 12),
+                    Text(
+                      "Problem Description",
+                      style: TextStyle(
+                        fontSize: getResponsiveFont(context, 18),
+                        fontWeight: FontWeight.bold,
+                        color: Colours.primarycolour,
+                      ),
+                    ),
 
-Container(
+                    const Divider(),
 
-  width:
-      double.infinity,
+                    Text(
+                      consultationData["problem_description"] ?? "-",
+                      style: TextStyle(
+                        fontSize: getResponsiveFont(context, 14),
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
-  padding:
-      const EdgeInsets.all(
-          16),
+              const SizedBox(height: 20),
 
-  decoration:
-      BoxDecoration(
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colours.brownColour,
+                    width: 1,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
 
-    color: Colors.white,
+                    Text(
+                      "Issue Images",
+                      style: TextStyle(
+                        fontSize: getResponsiveFont(context, 18),
+                        fontWeight: FontWeight.bold,
+                        color: Colours.primarycolour,
+                      ),
+                    ),
 
-    borderRadius:
-        BorderRadius.circular(
-            15),
+                    const Divider(),
 
-    border: Border.all(
-      color: Colours
-          .primarycolour
-          .withOpacity(0.4),
-    ),
-  ),
+                    if (issueImages.isEmpty)
 
-  child: Text(
+                      Container(
+                        height: 120,
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colours.primarycolour.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: const Text(
+                          "No Images Available",
+                        ),
+                      )
 
-    consultationData[
-            "problem_description"] ??
-        "-",
+                    else
 
-    style: TextStyle(
+                      SizedBox(
+                        height: 110,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: issueImages.length,
+                          itemBuilder: (context, index) {
 
-      fontSize:
-          getResponsiveFont(
-              context,
-              14),
-    ),
-  ),
-),
+                            return Container(
+                              width: 110,
+                              margin: const EdgeInsets.only(right: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colours.primarycolour, width: 0.3
+                                ),
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Get.to(
+                                    () => FullScreenImageViewer(
+                                      images: issueImages,
+                                      initialIndex: index,
+                                    ),
+                                  );
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.network(
+                                    issueImages[index]["image"],
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return const Center(
+                                        child: Icon(Icons.image_not_supported),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+              ),
 
-const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-Text(
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colours.brownColour,
+                    width: 1,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
 
-  "Issue Images",
+                    Text(
+                      "Prescription Details",
+                      style: TextStyle(
+                        fontSize: getResponsiveFont(context, 18),
+                        fontWeight: FontWeight.bold,
+                        color: Colours.primarycolour,
+                      ),
+                    ),
 
-  style: TextStyle(
+                    const Divider(),
 
-    color:
-        Colours.brownColour,
+                    if (prescription == null)
 
-    fontSize:
-        getResponsiveFont(
-            context,
-            16),
+                      const Text(
+                        "Prescription Not Available",
+                      )
 
-    fontWeight:
-        FontWeight.bold,
-  ),
-),
+                    else ...[
 
-const SizedBox(height: 12),
+                      Text(
+                        "Diagnosis : ${prescription["diagnosis"] ?? "-"}",
+                      ),
 
-issueImages.isEmpty
+                      const SizedBox(height: 10),
 
-? Container(
+                      Text(
+                        "Doctor Notes : ${prescription["doctor_notes"] ?? "-"}",
+                      ),
 
-    height: 120,
+                      const SizedBox(height: 10),
 
-    width:
-        double.infinity,
+                      Text(
+                        "Precautions : ${prescription["precautions"] ?? "-"}",
+                      ),
 
-    alignment:
-        Alignment.center,
+                      const SizedBox(height: 10),
 
-    decoration:
-        BoxDecoration(
+                      Text(
+                        "Follow Up : ${prescription["follow_up_advice"] ?? "-"}",
+                      ),
 
-      color: Colors.white,
+                      const SizedBox(height: 10),
 
-      borderRadius:
-          BorderRadius.circular(
-              15),
+                      Text(
+                        "Next Visit : ${prescription["next_visit_date"] ?? "-"}",
+                      ),
+                    ],
+                  ],
+                ),
+              ),
 
-      border: Border.all(
-        color: Colours
-            .primarycolour
-            .withOpacity(0.4),
-      ),
-    ),
+              const SizedBox(height: 20),
 
-    child: const Text(
-      "No Images Available",
-    ),
-)
+              if (prescription != null) ...[
 
-:
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Colours.brownColour,
+                      width: 1,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
 
-SizedBox(
+                      Text(
+                        "Medicines",
+                        style: TextStyle(
+                          fontSize: getResponsiveFont(context, 18),
+                          fontWeight: FontWeight.bold,
+                          color: Colours.primarycolour,
+                        ),
+                      ),
 
-  height: 140,
+                      const Divider(),
 
-  child:
-      ListView.builder(
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: medicines.length,
+                        separatorBuilder: (_, __) => const Divider(height: 30),
+                        itemBuilder: (context, index) {
 
-    scrollDirection:
-        Axis.horizontal,
+                          final medicine = medicines[index];
 
-    itemCount:
-        issueImages.length,
+                          String dosePattern =
+                              "${medicine["morning"] == true ? "I" : "0"} - "
+                              "${medicine["afternoon"] == true ? "I" : "0"} - "
+                              "${medicine["night"] == true ? "I" : "0"}";
 
-    itemBuilder:
-        (context, index) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
 
-      return Padding(
+                              Text(
+                                "Medicine ${index + 1}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: getResponsiveFont(context, 16),
+                                  color: Colours.brownColour,
+                                ),
+                              ),
 
-        padding:
-            const EdgeInsets.only(
-          right: 12,
+                              const SizedBox(height: 12),
+
+                              Text(
+                                "Medicine Name : ${medicine["medicine_name"] ?? "-"}",
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              Text(
+                                "Quantity : ${medicine["quantity"] ?? "-"}",
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              Text(
+                                "Dose Pattern : $dosePattern",
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              Text(
+                                "Duration : ${medicine["duration_days"] ?? "-"} Days",
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              Text(
+                                "Direction : ${medicine["direction_of_use"] ?? "-"}",
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+              ],
+
+
+              if (prescription != null)
+
+              Column(
+
+                children: [
+
+                  const SizedBox(height: 20),
+
+                  SizedBox(
+
+                    width:
+                        double.infinity,
+
+                    child:
+                        ElevatedButton(
+
+                      style:
+                          ElevatedButton.styleFrom(
+
+                        backgroundColor:
+                            Colours.primarycolour,
+
+                        foregroundColor:
+                            Colors.white,
+
+                        padding:
+                            const EdgeInsets.symmetric(
+                          vertical: 16,
+                        ),
+
+                        shape:
+                            RoundedRectangleBorder(
+
+                          borderRadius:
+                              BorderRadius.circular(
+                                  15),
+                        ),
+                      ),
+
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PrescriptionPage(
+                              consultationRequestId:
+                                  consultationData["consultation_request_id"],
+                              prescriptionData: prescription,
+                            ),
+                          ),
+                        );
+                      },
+
+                      child: const Text(
+                        "Update Prescription",
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
 
-        child:
-            ClipRRect(
+    class FullScreenImageViewer extends StatefulWidget {
+      final List images;
+      final int initialIndex;
 
-          borderRadius:
-              BorderRadius.circular(
-                  15),
+      const FullScreenImageViewer({
+        Key? key,
+        required this.images,
+        required this.initialIndex,
+      }) : super(key: key);
 
-          child:
-              Image.network(
+      @override
+      State<FullScreenImageViewer> createState() =>
+          _FullScreenImageViewerState();
+    }
 
-            issueImages[index]
-                ["image"],
+    class _FullScreenImageViewerState
+        extends State<FullScreenImageViewer> {
 
-            width: 140,
+      late final PageController _pageController;
 
-            fit:
-                BoxFit.cover,
+      late int currentIndex;
 
-            errorBuilder:
-                (
-              context,
-              error,
-              stackTrace,
-            ) {
+      @override
+      void initState() {
+        super.initState();
 
-              return Container(
+        currentIndex = widget.initialIndex;
 
-                width: 140,
+        _pageController = PageController(
+          initialPage: widget.initialIndex,
+        );
+      }
 
-                color:
-                    Colors.grey[300],
+      @override
+      Widget build(BuildContext context) {
 
-                child:
-                    const Icon(
-                  Icons.image,
+        return Scaffold(
+
+          backgroundColor: Colors.black,
+
+          appBar: AppBar(
+
+            backgroundColor: Colors.black,
+
+            elevation: 0,
+
+            title: Text(
+              "${currentIndex + 1} / ${widget.images.length}",
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+
+          body: PageView.builder(
+
+            controller: _pageController,
+
+            itemCount: widget.images.length,
+
+            onPageChanged: (index) {
+
+              setState(() {
+
+                currentIndex = index;
+
+              });
+            },
+
+            itemBuilder: (context, index) {
+
+              return Center(
+
+                child: InteractiveViewer(
+
+                  minScale: 1,
+
+                  maxScale: 5,
+
+                  child: Image.network(
+
+                    widget.images[index]["image"],
+
+                    fit: BoxFit.contain,
+
+                  ),
                 ),
               );
             },
           ),
-        ),
-      );
-    },
-  ),
-),
-
-const SizedBox(height: 24),
-
-Text(
-
-  "Prescription Details",
-
-  style: TextStyle(
-
-    color:
-        Colours.brownColour,
-
-    fontSize:
-        getResponsiveFont(
-            context,
-            16),
-
-    fontWeight:
-        FontWeight.bold,
-  ),
-),
-
-const SizedBox(height: 12),
-
-if (prescription == null)
-
-  Container(
-
-    width:
-        double.infinity,
-
-    padding:
-        const EdgeInsets.all(
-            16),
-
-    decoration:
-        BoxDecoration(
-
-      color: Colors.white,
-
-      borderRadius:
-          BorderRadius.circular(
-              15),
-
-      border: Border.all(
-        color: Colours
-            .primarycolour
-            .withOpacity(0.4),
-      ),
-    ),
-
-    child: const Text(
-      "Prescription Not Available",
-    ),
-  ),
-
-  if (prescription != null) ...[
-
-  _buildInfoCard(
-
-    "Diagnosis",
-
-    prescription[
-        "diagnosis"] ??
-        "",
-  ),
-
-  _buildInfoCard(
-
-    "Doctor Notes",
-
-    prescription[
-        "doctor_notes"] ??
-        "",
-  ),
-
-  _buildInfoCard(
-
-    "Precautions",
-
-    prescription[
-        "precautions"] ??
-        "",
-  ),
-
-  _buildInfoCard(
-
-    "Follow Up",
-
-    prescription[
-        "follow_up_advice"] ??
-        "",
-  ),
-
-  _buildInfoCard(
-
-    "Next Visit",
-
-    prescription[
-        "next_visit_date"] ??
-        "",
-  ),
-
-  const SizedBox(height: 20),
-],
-
-if (prescription != null) ...[
-
-  Text(
-
-    "Medicines",
-
-    style: TextStyle(
-
-      color:
-          Colours.brownColour,
-
-      fontSize:
-          getResponsiveFont(
-              context,
-              16),
-
-      fontWeight:
-          FontWeight.bold,
-    ),
-  ),
-
-  const SizedBox(height: 12),
-
-  ListView.builder(
-
-    shrinkWrap: true,
-
-    physics:
-        const NeverScrollableScrollPhysics(),
-
-    itemCount:
-        medicines.length,
-
-    itemBuilder:
-        (context, index) {
-
-      final medicine =
-          medicines[index];
-
-      String dosePattern =
-
-          "${medicine["morning"] == true ? "I" : "0"} - "
-          "${medicine["afternoon"] == true ? "I" : "0"} - "
-          "${medicine["night"] == true ? "I" : "0"}";
-
-      return Container(
-
-        margin:
-            const EdgeInsets.only(
-          bottom: 12,
-        ),
-
-        padding:
-            const EdgeInsets.all(
-                16),
-
-        decoration:
-            BoxDecoration(
-
-          color: Colors.white,
-
-          borderRadius:
-              BorderRadius.circular(
-                  15),
-
-          border: Border.all(
-            color: Colours
-                .primarycolour
-                .withOpacity(0.4),
-          ),
-        ),
-
-        child: Column(
-
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-
-          children: [
-
-            _medicineRow(
-              "Medicine",
-              medicine[
-                  "medicine_name"],
-            ),
-
-            _medicineRow(
-              "Quantity",
-              medicine[
-                  "quantity"],
-            ),
-
-            _medicineRow(
-              "Pattern",
-              dosePattern,
-            ),
-
-            _medicineRow(
-              "Duration",
-              "${medicine["duration_days"]} Days",
-            ),
-
-            _medicineRow(
-              "Direction",
-              medicine[
-                  "direction_of_use"],
-            ),
-          ],
-        ),
-      );
-    },
-  ),
-],
-
-
-if (prescription != null)
-
-Column(
-
-  children: [
-
-    const SizedBox(height: 20),
-
-    SizedBox(
-
-      width:
-          double.infinity,
-
-      child:
-          ElevatedButton(
-
-        style:
-            ElevatedButton.styleFrom(
-
-          backgroundColor:
-              Colours.primarycolour,
-
-          foregroundColor:
-              Colors.white,
-
-          padding:
-              const EdgeInsets.symmetric(
-            vertical: 16,
-          ),
-
-          shape:
-              RoundedRectangleBorder(
-
-            borderRadius:
-                BorderRadius.circular(
-                    15),
-          ),
-        ),
-
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PrescriptionPage(
-                consultationRequestId:
-                    consultationData["consultation_request_id"],
-                prescriptionData: prescription,
-              ),
-            ),
-          );
-        },
-
-        child: const Text(
-          "Update Prescription",
-        ),
-      ),
-    ),
-  ],
-),
-    ],
-  ),),),
-);
-  }
-  
-
-  Widget _buildInfoCard(
-  String title,
-  String value,
-) {
-
-  return Container(
-
-    margin:
-        const EdgeInsets.only(
-      bottom: 12,
-    ),
-
-    padding:
-        const EdgeInsets.symmetric(
-      horizontal: 16,
-      vertical: 14,
-    ),
-
-    decoration: BoxDecoration(
-
-      color: Colors.white,
-
-      borderRadius:
-          BorderRadius.circular(15),
-
-      border: Border.all(
-        color: Colours.primarycolour
-            .withOpacity(0.4),
-      ),
-    ),
-
-    child: Row(
-
-      children: [
-
-        SizedBox(
-
-          width: 120,
-
-          child: Text(
-
-            title,
-
-            style: TextStyle(
-
-              color:
-                  Colours.brownColour,
-
-              fontWeight:
-                  FontWeight.w600,
-            ),
-          ),
-        ),
-
-        Expanded(
-
-          child: Text(
-            value,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _medicineRow(
-  String title,
-  String value,
-) {
-
-  return Padding(
-
-    padding:
-        const EdgeInsets.only(
-      bottom: 10,
-    ),
-
-    child: Row(
-
-      children: [
-
-        SizedBox(
-
-          width: 100,
-
-          child: Text(
-
-            title,
-
-            style: TextStyle(
-
-              color:
-                  Colours.brownColour,
-
-              fontWeight:
-                  FontWeight.w600,
-            ),
-          ),
-        ),
-
-        Expanded(
-
-          child: Text(
-            value,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-  
+        );
+      }
     }

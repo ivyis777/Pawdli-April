@@ -81,7 +81,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
+                      color: Colors.black.withValues(alpha: 0.15),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -418,25 +418,19 @@ https://pawlli.app/product/$productId
 
                 Container(
                   decoration: BoxDecoration(
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-
-                    // 🔥 GRADIENT BACKGROUND
-                    gradient: const LinearGradient(
-                          colors: [
-                            Color.fromARGB(255, 247, 178, 2),
-                            Color.fromARGB(210, 253, 253, 253),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 4,
-                        offset: Offset(1, 2),
-                      ),
-                    ],
+                    border: Border.all(
+                      color: Colours.primarycolour,
+                      width: 1,
+                    ),
+                    // boxShadow: const [
+                    //   BoxShadow(
+                    //     color: Colors.black26,
+                    //     blurRadius: 4,
+                    //     offset: Offset(1, 2),
+                    //   ),
+                    // ],
                   ),
 
                   child: ClipRRect(
@@ -480,12 +474,35 @@ https://pawlli.app/product/$productId
 
                               return ChoiceChip(
                                 label: Text(
-                                  variant.variantName ?? "Variant".tr,
+                                  variant.variantName ?? "Variant",
                                   style: TextStyle(
                                     fontSize: getResponsiveFont(context, 13),
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontWeight:
+                                        isSelected ? FontWeight.bold : FontWeight.normal,
                                   ),
                                 ),
+
                                 selected: isSelected,
+
+                                backgroundColor: Colors.white,
+                                selectedColor: Colours.primarycolour,
+
+                                side: BorderSide(
+                                  color: isSelected
+                                      ? Colours.primarycolour  
+                                      : Colours.brownColour,    
+                                  width: isSelected ? 2 : 1,
+                                ),
+
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+
+                                showCheckmark: false,
+
                                 onSelected: (_) {
                                   setState(() {
                                     selectedVariant = variant;
@@ -882,9 +899,9 @@ class _TagChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: Colours.primarycolour,
+        // color: Colours.primarycolour,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colours.primarycolour),
+        // border: Border.all(color: Colours.primarycolour),
       ),
       child: Text(label,
           style: const TextStyle(

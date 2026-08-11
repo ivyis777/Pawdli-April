@@ -28,6 +28,7 @@ class UploadReelPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
         child: Stack(
@@ -176,7 +177,7 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
                           child: Icon(
                             Icons.play_circle_fill,
                             size: 64,
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                           ),
                         ),
                       ],

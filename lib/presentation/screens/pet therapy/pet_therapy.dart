@@ -39,10 +39,9 @@ class _PetTherapyState extends State<PetTherapy>
   DateTime _selectedDate = DateTime.now();
   late final PetTherapyController controller;
   late TabController _tabController;
-  final bookingController =
-      Get.put(TherapyBookingController());
+  final bookingController = Get.put(TherapyBookingController());
 
-  String pageTitle = "Pet Therapy";
+  String pageTitle = "Therapy Pets";
 
   bool _showCalendar = false;
 
@@ -68,7 +67,7 @@ class _PetTherapyState extends State<PetTherapy>
       if (_tabController.index == 0) {
 
         setState(() {
-          pageTitle = "Pet Therapy";
+          pageTitle = "Therapy Pets";
         });
 
       } else {
@@ -95,9 +94,7 @@ class _PetTherapyState extends State<PetTherapy>
     // final controller = Get.put(PetTherapyController());
 
     return Scaffold(
-
       backgroundColor: Colours.secondarycolour,
-
       appBar: PreferredSize(
 
         preferredSize: const Size.fromHeight(110),
@@ -152,7 +149,7 @@ class _PetTherapyState extends State<PetTherapy>
                 }
 
                 setState(() {
-                  pageTitle = "Pet Therapy";
+                  pageTitle = "Therapy Pets";
                   _showCalendar = true;
                 });
 
@@ -172,7 +169,7 @@ class _PetTherapyState extends State<PetTherapy>
 
             tabs: const [
 
-              Tab(text: "Pet Therapy"),
+              Tab(text: "Therapy Pets"),
 
               Tab(text: "Booking List"),
 
@@ -407,27 +404,27 @@ class _PetTherapyState extends State<PetTherapy>
 
                   const SizedBox(height: 2),
 
-                  RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontFamily: FontFamily.Cairo,
-                        fontSize: getResponsiveFont(context, 13),
-                        color: Colours.secondarycolour,
-                      ),
-                      children: [
-                        const TextSpan(
-                          text: "Available : ",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        TextSpan(
-                          text: "${pet.availableStartDate ?? "-"} to ${pet.availableEndDate ?? "-"}",
-                          style: const TextStyle(fontWeight: FontWeight.normal),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // RichText(
+                  //   text: TextSpan(
+                  //     style: TextStyle(
+                  //       fontFamily: FontFamily.Cairo,
+                  //       fontSize: getResponsiveFont(context, 13),
+                  //       color: Colours.secondarycolour,
+                  //     ),
+                  //     children: [
+                  //       const TextSpan(
+                  //         text: "Available : ",
+                  //         style: TextStyle(fontWeight: FontWeight.bold),
+                  //       ),
+                  //       TextSpan(
+                  //         text: "${pet.availableStartDate ?? "-"} to ${pet.availableEndDate ?? "-"}",
+                  //         style: const TextStyle(fontWeight: FontWeight.normal),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
 
-                  const SizedBox(height: 2),
+                  // const SizedBox(height: 2),
 
                   RichText(
                     maxLines: 2,
@@ -450,7 +447,7 @@ class _PetTherapyState extends State<PetTherapy>
                       ],
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
                   TextButton(
                       onPressed: () {
                         Navigator.push(

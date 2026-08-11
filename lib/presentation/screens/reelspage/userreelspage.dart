@@ -275,7 +275,7 @@ class _UserReelsPageState extends State<UserReelsPage> {
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    Colors.black.withOpacity(0.35),
+                    Colors.black.withValues(alpha: 0.35),
                     Colors.transparent,
                   ],
                 ),
@@ -291,7 +291,7 @@ class _UserReelsPageState extends State<UserReelsPage> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
+                color: Colors.black.withValues(alpha: 0.7),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(

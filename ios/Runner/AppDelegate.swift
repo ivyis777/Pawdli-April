@@ -13,6 +13,8 @@ import UserNotifications
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
 
+      FirebaseApp.configure()
+
     // ✅ AUDIO SESSION FOR WEBRTC
     do {
 

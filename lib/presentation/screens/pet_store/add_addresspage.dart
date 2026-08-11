@@ -7,7 +7,6 @@ import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/controller/signcontroller.dart';
 import 'package:pawlli/data/model/addressmodel.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
   double screenWidth = MediaQuery.of(context).size.width;

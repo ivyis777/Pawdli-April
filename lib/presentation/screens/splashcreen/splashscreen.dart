@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/presentation/screens/loginpage/loginpage.dart';
 import 'package:pawlli/presentation/widgets/commonui/commonui.dart';
 import 'package:get/get.dart';

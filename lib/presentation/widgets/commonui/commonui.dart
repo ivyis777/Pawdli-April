@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 
 class Commonui extends StatelessWidget {
   final Widget child;

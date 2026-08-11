@@ -26,6 +26,7 @@ import 'package:pawlli/presentation/screens/types%20of%20categaries/typesofcateg
 import 'package:pawlli/presentation/screens/userprofile/userprofile.dart';
 import 'package:pawlli/presentation/screens/walletpage/walletpage.dart';
 import 'package:get/get.dart';
+import 'package:pawlli/services/NetworkServices.dart';
 
 class MarqueeText extends StatefulWidget {
   final String text;
@@ -136,6 +137,24 @@ class _HomePageState extends State<HomePage> {
   @override
     void initState() {
       super.initState();
+      
+      NetworkService.instance.onRefreshCurrentPage = () async {
+        print("🌐 Internet restored - Refreshing Home");
+
+        final userId = GetStorage().read(LocalStorageConstants.userId);
+
+        if (userId != null) {
+          await userProfileController.loadUserProfile(userId);
+        }
+
+        await petController.userPets();
+
+        await reelController.fetchReels();
+
+        if (mounted) {
+          setState(() {});
+        }
+      };
 
       Future.microtask(() async {
 
@@ -157,6 +176,12 @@ class _HomePageState extends State<HomePage> {
           reelController.fetchReels();
         }
       });
+    }
+
+    @override
+    void dispose() {
+      NetworkService.instance.onRefreshCurrentPage = null;
+      super.dispose();
     }
 
   Widget build(BuildContext context) {
@@ -427,13 +452,22 @@ class _HomePageState extends State<HomePage> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                CircleAvatar(
-                                  radius: screenWidth * 0.07,
-                                  backgroundColor: Colors.transparent,
-                                  child: Icon(
-                                    Icons.pets,
-                                    size: 25,
-                                    color: Colours.primarycolour,
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colours.primarycolour,
+                                      width: 0.5,
+                                    ),
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: screenWidth * 0.07,
+                                    backgroundColor: Colors.transparent,
+                                    child: Icon(
+                                      Icons.pets,
+                                      size: 25,
+                                      color: Colours.primarycolour,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 6),
@@ -496,51 +530,55 @@ class _HomePageState extends State<HomePage> {
                                       horizontal: 6.0),
                                   child: Column(
                                     children: [
-
-                                    CircleAvatar(
-                                      radius: screenWidth * 0.08,
-                                      backgroundColor: Colours.secondarycolour,
-                                      child: ClipOval(
-                                        child: SizedBox(
-                                          width: screenWidth * 0.16,
-                                          height: screenWidth * 0.16,
-                                          child: (pet.petProfileImage != null &&
-                                                  pet.petProfileImage!.isNotEmpty)
-                                              ? CachedNetworkImage(
-                                                  imageUrl: pet.petProfileImage!.startsWith("http")
-                                                      ? pet.petProfileImage!
-                                                      : "https://app.pawdli.com${pet.petProfileImage!}",
-                                                  fit: BoxFit.cover,
-                                                  placeholder: (context, url) => const Center(
-                                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                                  ),
-                                                  errorWidget: (context, url, error) => Icon(
+                                      CircleAvatar(
+                                        radius: screenWidth * 0.07,
+                                        backgroundColor: Colours.secondarycolour,
+                                        child: ClipOval(
+                                          child: SizedBox(
+                                            width: screenWidth * 0.16,
+                                            height: screenWidth * 0.16,
+                                            child: (pet.petProfileImage != null &&
+                                                    pet.petProfileImage!.isNotEmpty)
+                                                ? CachedNetworkImage(
+                                                    imageUrl: pet.petProfileImage!.startsWith("http")
+                                                        ? pet.petProfileImage!
+                                                        : "https://app.pawdli.com${pet.petProfileImage!}",
+                                                    fit: BoxFit.cover,
+                                                    placeholder: (context, url) => const Center(
+                                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                                    ),
+                                                    errorWidget: (context, url, error) => Icon(
+                                                      Icons.pets,
+                                                      color: Colours.primarycolour,
+                                                      size: 30,
+                                                    ),
+                                                  )
+                                                : Icon(
                                                     Icons.pets,
                                                     color: Colours.primarycolour,
                                                     size: 30,
                                                   ),
-                                                )
-                                              : Icon(
-                                                  Icons.pets,
-                                                  color: Colours.primarycolour,
-                                                  size: 30,
-                                                ),
+                                          ),
                                         ),
                                       ),
-                                    ),
 
-                                      // CircleAvatar(
-                                      //   radius: screenWidth * 0.08,
-                                      //   backgroundColor:
-                                      //       Colours.secondarycolour,
-                                      //   backgroundImage: imageProvider,
-                                      //   child: petImage == null ||
-                                      //           petImage.isEmpty
-                                      //       ? const Icon(Icons.pets,
-                                      //           color: Color.fromARGB(
-                                      //               255, 255, 255, 255))
-                                      //       : null, // 🐾 Default paw icon if no image
-                                      // ),
+                                      const SizedBox(height: 6),
+
+                                      SizedBox(
+                                        width: screenWidth * 0.18,
+                                        child: Text(
+                                          pet.name ?? "",
+                                          textAlign: TextAlign.center,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontFamily: FontFamily.Cairo,
+                                            fontSize: getResponsiveFont(context, 14),
+                                            fontWeight: FontWeight.w500,
+                                            color: Colours.brownColour,
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),

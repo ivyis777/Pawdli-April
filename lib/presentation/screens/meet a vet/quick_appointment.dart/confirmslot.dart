@@ -373,7 +373,7 @@ class _ReviewandpayPageState
 
                     border: Border.all(
                       color: Colours.primarycolour
-                          .withOpacity(0.4),
+                          .withValues(alpha: 0.4),
                     ),
                   ),
 
@@ -441,57 +441,62 @@ class _ReviewandpayPageState
                 /// SYMPTOMS
                 Text(
                   "Symptoms",
-
                   style: TextStyle(
-                    fontSize:
-                    getResponsiveFont(
-                        context,
-                        16),
-
-                    fontWeight:
-                    FontWeight.w600,
-
-                    // fontFamily:
-                    // FontFamily.Cairo,
-
-                    color:
-                    Colours.black,
+                    fontSize: getResponsiveFont(context, 16),
+                    fontWeight: FontWeight.w600,
+                    color: Colours.black,
                   ),
                 ),
 
-                const SizedBox(
-                    height: 10),
+                const SizedBox(height: 10),
 
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
+                Builder(
+                  builder: (_) {
+                    List<String> symptomNames =
+                        (consultationDetails?.data?.symptoms ?? [])
+                            .map<String>((e) => e["name"].toString())
+                            .toList();
 
-                  children: (consultationDetails
-                              ?.data
-                              ?.symptoms ??
-                          [])
-                      .map<Widget>((symptom) {
+                    String otherSymptom =
+                        consultationDetails?.data?.otherSymptom?.trim() ?? "";
+
+                    // Remove duplicate names from other_symptom
+                    if (otherSymptom.isNotEmpty) {
+                      List<String> others = otherSymptom
+                          .split(",")
+                          .map((e) => e.trim())
+                          .where((e) => e.isNotEmpty)
+                          .toList();
+
+                      others.removeWhere(
+                        (item) => symptomNames.contains(item),
+                      );
+
+                      symptomNames.addAll(others);
+                    }
 
                     return Container(
-
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 10,
-                      ),
-
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(30),
                         color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          color: Colours.primarycolour.withValues(alpha: 0.4),
+                        ),
                       ),
-
                       child: Text(
-                        symptom["name"] ?? "",
+                        symptomNames.join(", "),
+                        style: TextStyle(
+                          fontSize: getResponsiveFont(context, 14),
+                          color: Colors.black,
+                        ),
                       ),
                     );
-
-                  }).toList(),
+                  },
                 ),
+
+                const SizedBox(height: 24),
 
                 const SizedBox(
                     height: 24),
@@ -536,7 +541,7 @@ class _ReviewandpayPageState
 
                     border: Border.all(
                       color: Colours.primarycolour
-                          .withOpacity(0.4),
+                          .withValues(alpha: 0.4),
                     ),
                   ),
 
@@ -725,7 +730,7 @@ class _ReviewandpayPageState
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(25),
                           border: Border.all(
-                            color: Colours.primarycolour.withOpacity(0.4),
+                            color: Colours.primarycolour.withValues(alpha: 0.4),
                           ),
                         ),
 
@@ -846,7 +851,7 @@ class _ReviewandpayPageState
 
                         value: _useWallet,
 
-                        activeColor:
+                        activeThumbColor:
                             Colours.primarycolour,
 
                         inactiveThumbColor:
@@ -935,7 +940,7 @@ class _ReviewandpayPageState
                     border: Border.all(
                       color:
                       Colours.primarycolour
-                          .withOpacity(0.4),
+                          .withValues(alpha: 0.4),
                     ),
                   ),
 

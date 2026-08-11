@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/model/paymentverificationmodel.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/pawlli%20radio/pawlli_radio.dart';
 

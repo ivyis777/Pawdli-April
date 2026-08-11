@@ -151,12 +151,16 @@ class _SuperTherapyBookingDetailsPageState extends State<SuperTherapyBookingDeta
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(14),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 4,
-                  ),
-                ],
+                border: Border.all(
+                  color: Colours.brownColour,
+                  width: 0.3,
+                ),
+                // boxShadow: const [
+                //   BoxShadow(
+                //     color: Colors.black12,
+                //     blurRadius: 4,
+                //   ),
+                // ],
               ),
               child: Row(
                 children: [
@@ -501,13 +505,16 @@ class _SuperTherapyBookingDetailsPageState extends State<SuperTherapyBookingDeta
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-          )
-        ],
+        border: Border.all(
+          color: Colours.brownColour,
+          width: 0.3,
+        ),
+        // boxShadow: const [
+        //   BoxShadow(
+        //     color: Colors.red,
+        //     blurRadius: 4,
+        //   )
+        // ],
       ),
 
       child: Row(

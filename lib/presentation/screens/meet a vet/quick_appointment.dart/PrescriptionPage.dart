@@ -214,9 +214,9 @@ class _PrescriptionPageState
                 15),
 
         borderSide: BorderSide(
-          color: Colours
-              .primarycolour
-              .withOpacity(0.4),
+          color: Colors
+              .grey
+              .withValues(alpha: 0.4),
         ),
       ),
 
@@ -423,7 +423,7 @@ Widget build(BuildContext context) {
                   BoxDecoration(
 
                 border: Border.all(
-                  color: Colours.primarycolour.withOpacity(0.4),
+                  color: Colors.grey.withValues(alpha: 0.4),
                 ),
 
                 borderRadius:
@@ -483,12 +483,22 @@ Widget build(BuildContext context) {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
-                  elevation: 3
+                  elevation: 0,
+                  foregroundColor: Colours.primarycolour,
+                  side: BorderSide(
+                    color: Colours.primarycolour,
+                    width: 1,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
                 onPressed: addMedicine,
                 child: const Text(
                   "+ Add",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ],
@@ -499,26 +509,24 @@ Widget build(BuildContext context) {
               (index) {
 
                 return Card(
-                  elevation: 4,
+                  elevation: 0,
                   color: Colors.white,
-
-                  margin:
-                      const EdgeInsets.only(
+                  margin:const EdgeInsets.only(
                     top: 15,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(
+                      color: Colours.brownColour,
+                      width: 1,
+                    ),
                   ),
 
                   child: Padding(
-
-                    padding:
-                        const EdgeInsets.all(
-                            15),
-
+                    padding:const EdgeInsets.all(15),
                     child: Column(
-
                       children: [
-
                         TextFormField(
-
                           initialValue:
                               medicines[index]
                                   ["medicine_name"]
@@ -547,7 +555,7 @@ Widget build(BuildContext context) {
                             "Medicine Type",
                           ),
 
-                          value: medicines[index]["medicine_type"],
+                          initialValue: medicines[index]["medicine_type"],
 
                           items: const [
 
@@ -610,7 +618,7 @@ Widget build(BuildContext context) {
                             "Dose Pattern",
                           ),
 
-                          value: medicines[index]
+                          initialValue: medicines[index]
                               ["dose_pattern"],
                               
 
@@ -729,7 +737,7 @@ Widget build(BuildContext context) {
                             "Direction Of Use",
                           ),
 
-                          value: medicines[index]
+                          initialValue: medicines[index]
                               ["direction_of_use"],
 
                           items: const [

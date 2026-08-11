@@ -6,7 +6,6 @@ import 'package:pawlli/data/controller/singledescriptioncontroller.dart';
 import 'package:pawlli/data/controller/subcategariescontroller.dart';
 import 'package:pawlli/data/controller/typesofcategaries.dart';
 import 'package:pawlli/data/model/subcategarymodel.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/descriptionpage/descriptionpage.dart';
 

@@ -208,7 +208,7 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                                 child: CircleAvatar(
                                   radius: 40,
                                   backgroundColor:
-                                      Colours.primarycolour.withOpacity(0.2),
+                                      Colours.primarycolour.withValues(alpha: 0.2),
                                   backgroundImage: fullPetImage.isNotEmpty
                                       ? CachedNetworkImageProvider(fullPetImage)
                                       : null,
@@ -342,12 +342,11 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
                               left: 20,
                               child: CircleAvatar(
                                 radius: 35,
-                                backgroundColor: Colours.brownColour.withOpacity(0.2),
+                                backgroundColor: Colours.brownColour.withValues(alpha: 0.2),
                                 backgroundImage: fullPetImage.isNotEmpty
                                     ? CachedNetworkImageProvider(fullPetImage)
                                     : null,
-                                child: (fullPetImage == null ||
-                                        fullPetImage.isEmpty)
+                                child: (fullPetImage.isEmpty)
                                     ? Icon(
                                         Icons.pets,
                                         color: Colours.brownColour,

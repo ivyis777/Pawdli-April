@@ -6,7 +6,6 @@ import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/controller/notificationcontroller.dart';
 import 'package:pawlli/data/model/notificationmodel.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
@@ -67,6 +66,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Positioned(

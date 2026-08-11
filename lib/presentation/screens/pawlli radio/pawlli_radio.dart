@@ -1385,7 +1385,7 @@ class _PawlliRadioState extends State<PawlliRadio> {
 
         // ✅ ADD THIS LINE (VERY IMPORTANT)
         await programController.loadProgramList(
-          userId!,
+          userId,
           widget.radioid!,
           DateFormat('yyyy-MM-dd').format(_selectedDate),
         );
@@ -1494,14 +1494,37 @@ class _PawlliRadioState extends State<PawlliRadio> {
   Future<void> _openRecordedProgram(dynamic program) async {
     debugPrint("📼 RECORDED PROGRAM FLOW");
 
-    final url = program.recordedUrl;
+    // ✅ Check booking start time first
+    final parts = (program.slotTime ?? "").split('-');
 
-    if (url == null || url.isEmpty) {
-      Fluttertoast.showToast(msg: "Recorded content not available".tr);
+    if (parts.length != 2) {
+      Fluttertoast.showToast(msg: "Invalid slot time");
       return;
     }
 
-    debugPrint("🎬 Opening recorded stream: $url");
+    final startTime = parts[0].trim();
+    final startDateTime =
+        _parseProgramTime(program.date ?? "", startTime);
+
+    final now = DateTime.now();
+
+    if (now.isBefore(startDateTime)) {
+      showStartTimePopup(
+        startTime,
+        formatDate(program.date ?? ""),
+      );
+      return;
+    }
+
+    // ✅ Now allow recorded video
+    final url = program.recordedUrl;
+
+    if (url == null || url.isEmpty) {
+      Fluttertoast.showToast(
+        msg: "Recorded content not available",
+      );
+      return;
+    }
 
     Get.to(
       () => StreamVideoPage(

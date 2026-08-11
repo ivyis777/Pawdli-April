@@ -231,7 +231,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                       disabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
                         borderSide: BorderSide(
-                          color: Colours.primarycolour.withOpacity(0.5),
+                          color: Colours.primarycolour.withValues(alpha: 0.5),
                           width: 1,
                         ),
                       ),
@@ -447,25 +447,19 @@ class _ProductListScreenState extends State<ProductListScreen> {
           Container(
             margin: EdgeInsets.only(top: screenHeight * 0.18),
             decoration: BoxDecoration(
+              color: Colors.white,
               borderRadius: BorderRadius.circular(16),
-
-              // 🔥 TOP → BOTTOM GRADIENT
-              gradient: const LinearGradient(
-                colors: [
-                  Color.fromARGB(210, 253, 253, 253),
-                  Color.fromARGB(255, 247, 178, 2),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+              border: Border.all(
+                color: Colours.primarycolour,
+                width: 0.5,
               ),
-
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 4,
-                  offset: Offset(1, 2),
-                ),
-              ],
+              // boxShadow: const [
+              //   BoxShadow(
+              //     color: Colors.black26,
+              //     blurRadius: 4,
+              //     offset: Offset(1, 2),
+              //   ),
+              // ],
             ),
 
             child: Container(
@@ -508,25 +502,19 @@ class _ProductListScreenState extends State<ProductListScreen> {
           /// IMAGE CARD
           Container(
             decoration: BoxDecoration(
+              color: Colors.white,
               borderRadius: BorderRadius.circular(16),
-
-              // 🔥 TOP → BOTTOM GRADIENT
-              gradient: const LinearGradient(
-                colors: [
-                  Color.fromARGB(255, 247, 178, 2),
-                  Color.fromARGB(210, 253, 253, 253),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+              border: Border.all(
+                color: Colours.brownColour,
+                width: 0.5,
               ),
-
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 4,
-                  offset: Offset(1, 2),
-                ),
-              ],
+              // boxShadow: const [
+              //   BoxShadow(
+              //     color: Colors.black26,
+              //     blurRadius: 0,
+              //     offset: Offset(1, 2),
+              //   ),
+              // ],
             ),
 
             child: ClipRRect(
@@ -554,7 +542,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.8),
+                  color: Colors.black.withValues(alpha: 0.8),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(

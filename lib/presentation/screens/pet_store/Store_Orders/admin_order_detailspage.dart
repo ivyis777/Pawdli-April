@@ -243,16 +243,8 @@ class _AdminOrderDetailspageState
         padding: const EdgeInsets.all(16),
 
         child: Card(
-          color:
-              const Color.fromARGB(
-            255,
-            251,
-            236,
-            210,
-          ),
-
+          color: Colors.white,
           elevation: 2,
-
           shape:
               RoundedRectangleBorder(
             borderRadius:
@@ -335,41 +327,24 @@ class _AdminOrderDetailspageState
 
                   /// STATUS BADGE
                   Container(
-                    padding:
-                        const EdgeInsets
-                            .symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 14,
                       vertical: 8,
                     ),
-
-                    decoration:
-                        BoxDecoration(
-                      color:
-                          getStatusColor(
-                              currentStatus),
-
-                      borderRadius:
-                          BorderRadius
-                              .circular(
-                                  20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: getStatusColor(currentStatus),
+                        width: 1.2,
+                      ),
                     ),
-
                     child: Text(
-                      currentStatus
-                              .capitalizeFirst ??
-                          "",
-
+                      currentStatus.capitalizeFirst ?? "",
                       style: TextStyle(
-                        color:
-                            Colors.white,
-
-                        fontWeight:
-                            FontWeight.bold,
-
-                        fontSize:
-                            getResponsiveFont(
-                                context,
-                                13),
+                        color: getStatusColor(currentStatus),
+                        // fontWeight: FontWeight.bold,
+                        fontSize: getResponsiveFont(context, 13),
                       ),
                     ),
                   ),
@@ -398,16 +373,9 @@ class _AdminOrderDetailspageState
                           color:
                               Colors.white,
 
-                          borderRadius:
-                              BorderRadius
-                                  .circular(
-                                      12),
+                          borderRadius:BorderRadius.circular(12),
 
-                          border:
-                              Border.all(
-                            color: Colors
-                                .grey
-                                .shade300,
+                          border:Border.all(color: Colours.primarycolour, width: 0.5
                           ),
                         ),
 
@@ -586,19 +554,21 @@ class _AdminOrderDetailspageState
                       .map((item) {
 
                     return Card(
+                      color: Colors.white,
                       margin:
                           const EdgeInsets
                               .only(
                                   bottom: 12),
 
-                      shape:
-                          RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(
-                                10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(
+                          color: Colours.primarycolour,
+                          width: 0.5,
+                        ),
                       ),
 
-                      elevation: 2,
+                      elevation: 0,
 
                       child: Padding(
                         padding:

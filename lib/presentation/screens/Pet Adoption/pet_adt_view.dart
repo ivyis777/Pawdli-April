@@ -182,20 +182,16 @@ class _AdoptionViewListState extends State<AdoptionViewList> {
             onTap: () {
               final petId = pet.id;
               final petProfileImage = pet.petProfileImage;
-              if (petId != null) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AdoptionDescriptionPage(
-                      Id: petId,
-                      petProfileImage: petProfileImage ?? '',
-                    ),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdoptionDescriptionPage(
+                    Id: petId,
+                    petProfileImage: petProfileImage ?? '',
                   ),
-                );
-              } else {
-                Get.snackbar("Error", "Pet ID is missing.".tr);
-              }
-            },
+                ),
+              );
+                        },
             child: Stack(
               children: [
                 Container(

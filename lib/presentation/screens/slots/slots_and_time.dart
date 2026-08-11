@@ -244,7 +244,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                                   '${DateFormat('MMM d').format(DateTime.parse(slot.date!))}: ${slot.startTime}',
                                   style: TextStyle(fontSize: getResponsiveFont(context, 12),),
                                 ),
-                                backgroundColor: Colours.primarycolour.withOpacity(0.2),
+                                backgroundColor: Colours.primarycolour.withValues(alpha: 0.2),
                                 deleteIcon: Icon(Icons.close, size: screenHeight * 0.018),
                                 onDeleted: () => _toggleSlotSelection(slot),
                               );
@@ -319,7 +319,7 @@ class _TimeSlotPageState extends State<TimeSlotPage> {
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.grey.withOpacity(0.2),
+                                        color: Colors.grey.withValues(alpha: 0.2),
                                         blurRadius: 5,
                                         spreadRadius: 2,
                                       ),

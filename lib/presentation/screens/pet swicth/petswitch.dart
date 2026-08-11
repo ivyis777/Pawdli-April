@@ -199,7 +199,7 @@ class _PetswitchState extends State<Petswitch> {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Colours.secondarycolour.withOpacity(0.2),
+                  backgroundColor: Colours.secondarycolour.withValues(alpha: 0.2),
                   radius: screenWidth * 0.1,
                   backgroundImage:
                       (petImage.isNotEmpty && petImage.startsWith('http'))

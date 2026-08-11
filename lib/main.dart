@@ -32,6 +32,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:pawlli/presentation/widgets/app_update/app_updatepage.dart';
 import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 import 'package:pawlli/presentation/widgets/fcm.dart';
+import 'package:pawlli/services/NetworkServices.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -182,6 +183,8 @@ void main() async {
 
   runApp(const MyApp());
 
+  NetworkService.instance.startMonitoring();
+
   Future.delayed(const Duration(seconds: 2), () {
     setupFCM();
   });
@@ -214,7 +217,7 @@ class MyApp extends StatelessWidget {
 
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
           child: child!,
         );
       },
@@ -222,7 +225,7 @@ class MyApp extends StatelessWidget {
       translations: Messages(),
       locale: getSavedLocale(),
       fallbackLocale: const Locale('en'),
-      title: 'Flutter Demo',
+      title: 'PAWdLI',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,

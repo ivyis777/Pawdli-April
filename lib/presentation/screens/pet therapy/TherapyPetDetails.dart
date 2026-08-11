@@ -470,7 +470,7 @@ class _TherapyPetDetailsPageState extends State<TherapyPetDetailsPage> {
         children: [
           CircleAvatar(
             radius: 22,
-            backgroundColor: Colours.primarycolour.withOpacity(.15),
+            backgroundColor: Colours.primarycolour.withValues(alpha: .15),
             child: Icon(
               icon,
               color: Colours.primarycolour,

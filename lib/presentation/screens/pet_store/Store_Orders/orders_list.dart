@@ -95,7 +95,7 @@ String formatToIndianTime(String dateTime) {
             /// ✅ APP BAR CONTENT
             AppBar(
               centerTitle: true,
-              elevation: 0,
+              // elevation: 0,
               backgroundColor: Colors.transparent,
               foregroundColor: Colours.brownColour,
 
@@ -115,102 +115,115 @@ String formatToIndianTime(String dateTime) {
           ],
         ),
       ),
-      body: Obx(() {
-        /// 🔹 LOADING
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        /// 🔹 EMPTY
-        if (controller.orderList.isEmpty) {
-          return  Center(child: Text(
-            "No Orders Found".tr,
-            style: TextStyle(
-              fontSize: getResponsiveFont(context, 14),
-            ),
-          ));
-        }
-
-        /// 🔹 LIST
-        return RefreshIndicator(
-          onRefresh: controller.fetchOrders,
-          child: ListView.builder(
-            itemCount: controller.orderList.length,
-            itemBuilder: (context, index) {
-              final AdminOrdermodel order = controller.orderList[index];
-
-              return Card(
-                elevation: 4,
-                color: const Color.fromARGB(255, 251, 236, 210),
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ListTile(
-                  title: Text("Order No: ${order.orderId}".tr,
-                    style: TextStyle(
-                      fontSize: getResponsiveFont(context, 14),
-                      fontWeight: FontWeight.w600,
-                    ),
+      body: Container(
+        color: Colors.white,
+        child: Obx(() {
+          /// 🔹 LOADING
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+        
+          /// 🔹 EMPTY
+          if (controller.orderList.isEmpty) {
+            return  Center(child: Text(
+              "No Orders Found".tr,
+              style: TextStyle(
+                fontSize: getResponsiveFont(context, 14),
+              ),
+            ));
+          }
+        
+          /// 🔹 LIST
+          return RefreshIndicator(
+            onRefresh: controller.fetchOrders,
+            child: ListView.builder(
+              itemCount: controller.orderList.length,
+              itemBuilder: (context, index) {
+                final AdminOrdermodel order = controller.orderList[index];
+        
+                return Card(
+                  elevation: 0,
+                  color: Colors.white,
+                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(
+                      color: Colours.primarycolour, width: 0.3
+                    )
                   ),
-
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Amount: ₹${order.finalAmount}".tr,
+                  child: ListTile(
+                    title: Text("Order No: ${order.orderId}".tr,
                       style: TextStyle(
-                        fontSize: getResponsiveFont(context, 13),
-                      )),
-                      const SizedBox(height: 4),
-                      Text(
-                        "Date: ${formatToIndianTime(order.createdAt)}".tr,
-                        style: TextStyle(fontSize: getResponsiveFont(context, 12), color: Colors.black54),
+                        fontSize: getResponsiveFont(context, 14),
+                        fontWeight: FontWeight.w600,
                       ),
-                    ],
-                  ),
-
-                  /// 🔥 STATUS BUTTON STYLE
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: getStatusColor(order.status),
-                          borderRadius: BorderRadius.circular(20),
+                    ),
+        
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Amount: ₹${order.finalAmount}".tr,
+                        style: TextStyle(
+                          fontSize: getResponsiveFont(context, 13),
+                        )),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Date: ${formatToIndianTime(order.createdAt)}".tr,
+                          style: TextStyle(fontSize: getResponsiveFont(context, 12), color: Colors.black54),
                         ),
-                        child: Text(
-                          order.status.capitalizeFirst ?? "".tr,
-                          style: TextStyle(
+                      ],
+                    ),
+        
+                    /// 🔥 STATUS BUTTON STYLE
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
                             color: Colors.white,
-                            fontSize: getResponsiveFont(context, 12),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: getStatusColor(order.status),
+                              width: 1.2,
+                            ),
+                          ),
+                          child: Text(
+                            order.status.capitalizeFirst ?? "",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: getResponsiveFont(context, 12),
+                              // fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 5),
-                      // const Icon(Icons.arrow_forward_ios, size: 14),
-                    ],
-                  ),
-
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AdminOrderDetailspage(
-                          order: order,
+                        const SizedBox(height: 5),
+                        // const Icon(Icons.arrow_forward_ios, size: 14),
+                      ],
+                    ),
+        
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AdminOrderDetailspage(
+                            order: order,
+                          ),
                         ),
-                      ),
-                    );
-
-                    controller.fetchOrders();
-                  },
-                ),
-              );
-            },
-          ),
-        );
-      }),
+                      );
+        
+                      controller.fetchOrders();
+                    },
+                  ),
+                );
+              },
+            ),
+          );
+        }),
+      ),
     );
   }
 }

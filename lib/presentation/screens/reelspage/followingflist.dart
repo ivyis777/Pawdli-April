@@ -79,6 +79,15 @@ class _FollowingScreenState extends State<FollowingScreen> {
         itemBuilder: (context, index) {
           final user = users[index];
 
+          String imageUrl =
+            user["profile_picture"] ?? user["image"] ?? "";
+
+          if (imageUrl.isNotEmpty && !imageUrl.startsWith("http")) {
+            imageUrl = "https://app.pawdli.com$imageUrl";
+          }
+
+          print("FOLLOWING IMAGE: $imageUrl");
+
           return ListTile(
             onTap: () {
               final userId = user["id"];
@@ -101,12 +110,14 @@ class _FollowingScreenState extends State<FollowingScreen> {
                 child: (user["profile_picture"] != null &&
                         user["profile_picture"].toString().isNotEmpty)
                     ? Image.network(
-                        user["profile_picture"],
+                        imageUrl,
                         width: 50,
                         height: 50,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) {
-                          print("❌ IMAGE ERROR: ${user["profile_picture"]}");
+                        errorBuilder: (context, error, stackTrace) {
+                          print("❌ IMAGE URL: $imageUrl");
+                          print("❌ IMAGE ERROR: $error");
+
                           return Image.asset(
                             "assets/images/profile_avatar1.png",
                             fit: BoxFit.cover,

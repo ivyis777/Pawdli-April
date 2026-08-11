@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'package:pawlli/data/api%20service.dart';
 import 'package:pawlli/data/model/TransactionnsModel.dart';
-import 'package:pawlli/core/storage_manager/local_storage.dart';
 
 class TransactionController extends GetxController {
   var isLoading = false.obs;

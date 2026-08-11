@@ -153,29 +153,33 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
 
   // ------------------- Wallet + Payable Logic -------------------
   void _calculateTotals() {
-    double subtotal = _calculateSubtotal();
+    final subtotal = _calculateSubtotal();
 
-    // 1️⃣ Item-level savings
-    double itemSavings = _calculateItemSavings();
+    final itemSavings = _calculateItemSavings();
 
-    // 2️⃣ Wallet balance
-    double wallet =
-        double.tryParse(walletBalanceController.walletBalanceAmount.value) ??
-            0.0;
+    final wallet = double.tryParse(
+          walletBalanceController.walletBalanceAmount.value,
+        ) ??
+        0.0;
 
-    // 3️⃣ Wallet usage
     usedWalletAmount = (useWallet && wallet > 0)
         ? (wallet >= subtotal ? subtotal : wallet)
-        : 0;
+        : 0.0;
 
-    // 4️⃣ Payable amount
-    payableAmount = subtotal - usedWalletAmount - couponDiscount;
-    if (payableAmount < 0) payableAmount = 0;
+    payableAmount = subtotal;
 
-    // 5️⃣ Total savings
+    // Coupon Discount
+    payableAmount -= couponDiscount;
+
+    // Wallet
+    payableAmount -= usedWalletAmount;
+
+    if (payableAmount < 0) {
+      payableAmount = 0;
+    }
+
     totalSavings = itemSavings + couponDiscount + usedWalletAmount;
 
-    // 🔴 COD rule
     if (payableAmount > 500 && selectedPaymentMethod == "cod") {
       selectedPaymentMethod = "razorpay";
     }
@@ -186,57 +190,44 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
   void _applyCoupon() async {
     if (couponApplied) return;
 
-    final code = couponController.text.trim().toUpperCase();
-    if (code.isEmpty) return;
+    final code = couponController.text.trim();
 
-    final coupon = await CouponService.getCouponByCode(code);
-
-    if (coupon == null) {
-      Fluttertoast.showToast(msg: "Invalid coupon".tr);
+    if (code.isEmpty) {
+      Fluttertoast.showToast(msg: "Enter coupon code");
       return;
     }
 
-    final subtotal = _calculateSubtotal();
+    final result = await CouponService.applyCoupon(
+      cartItems: widget.selectedCartIds,
+      couponCode: code,
+    );
 
-    // 🔴 Minimum order validation
-    if (coupon.minOrderAmount != null && subtotal < coupon.minOrderAmount!) {
-      Fluttertoast.showToast(
-          msg: "Minimum order ₹${coupon.minOrderAmount} required");
+    if (result == null) {
+      Fluttertoast.showToast(msg: "Unable to apply coupon");
       return;
     }
 
-    double discount = 0.0;
-
-    // ✅ Percentage coupon
-    if (coupon.discountType == "percentage") {
-      discount = subtotal * (coupon.discountValue / 100);
-
-      if (coupon.maxDiscountAmount != null &&
-          discount > coupon.maxDiscountAmount!) {
-        discount = coupon.maxDiscountAmount!;
-      }
-    }
-
-    // ✅ Flat coupon
-    if (coupon.discountType == "flat") {
-      discount = coupon.discountValue;
+    if (!result.success) {
+      Fluttertoast.showToast(msg: result.message);
+      return;
     }
 
     setState(() {
       couponApplied = true;
-      appliedCoupon = coupon.code;
-      couponDiscount = discount;
+      appliedCoupon = result.couponCode;
+
+      couponDiscount = result.discount;
+      _calculateTotals();
     });
 
-    Fluttertoast.showToast(msg: "Coupon Applied".tr);
-    _calculateTotals();
+    Fluttertoast.showToast(msg: result.message);
   }
 
   void _removeCoupon() {
     setState(() {
       couponApplied = false;
-      couponDiscount = 0.0;
       appliedCoupon = null;
+      couponDiscount = 0.0;
       couponController.clear();
     });
 
@@ -509,6 +500,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       useWallet: useWallet,
       walletAmountUsed: usedWalletAmount,
       couponCode: appliedCoupon,
+      discountAmount: couponDiscount,
       shippingAddress: {
         "name".tr: selectedAddress?.name,
         "phone".tr: selectedAddress?.phone,
@@ -626,10 +618,14 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
             }
 
             return Card(
-              elevation: 9,
-              color: const Color.fromARGB(255, 251, 236, 210),
+              elevation: 0,
+              color: Colors.white,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
+                borderRadius: BorderRadius.circular(15),
+                side: BorderSide(
+                  color: Colours.brownColour, width: 0.5
+                ),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(15),
                 child: Column(
@@ -775,7 +771,7 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
 
             return SwitchListTile(
               value: walletEnabled ? useWallet : false,
-              activeColor: Colors.blue,
+              activeThumbColor: Colors.blue,
               title: Text(
                 "Use Wallet (₹${walletBalance.toStringAsFixed(2)})".tr,
                 style: TextStyle(
@@ -830,9 +826,14 @@ class _PlaceOrderPageState extends State<PlaceOrderPage> {
       final addr = addressController.selectedAddress.value;
 
       return Card(
-        color: const Color.fromARGB(255, 251, 236, 210),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        elevation: 9,
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+          side: BorderSide(
+            color: Colours.brownColour, width: 0.5
+          )
+        ),
+        elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(

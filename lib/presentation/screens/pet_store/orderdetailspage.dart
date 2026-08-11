@@ -618,20 +618,19 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       horizontal: 12,
                       vertical: 6,
                     ),
-
                     decoration: BoxDecoration(
-                      color: getStatusColor(currentStatus),
-
-                      borderRadius:
-                          BorderRadius.circular(20),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: getStatusColor(currentStatus),
+                        width: 1.2,
+                      ),
                     ),
-
                     child: Text(
                       currentStatus.capitalizeFirst ?? "",
-
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                      style: TextStyle(
+                        color: getStatusColor(currentStatus),
+                        // fontWeight: FontWeight.bold,
                         fontSize: 13,
                       ),
                     ),

@@ -53,7 +53,8 @@ class _ProfilePageState extends State<ProfilePage> {
   bool isNotificationEnabled = true;
   final Uri termsUrl =
       Uri.parse('https://www.pawlli.com/terms-and-conditions/');
-  final Uri privacyUrl = Uri.parse('https://www.pawlli.com/privacy-policy/');
+  final Uri privacyUrl = Uri.parse('https://ivyis777.github.io/pawdli-privacy-policy/');
+  final Uri deleteAccountUrl = Uri.parse('https://ivyis777.github.io/pawdli-delete/delete.html');
   
   Future<void> logout() async {
 
@@ -169,9 +170,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           SizedBox(height: 10),
                           Center(
                             child: Text(
-                              (user?.name?.isEmpty ?? true)
+                              (user?.name.isEmpty ?? true)
                                   ? (user?.username ?? '')
-                                  : user!.name!,
+                                  : user!.name,
                               style: TextStyle(
                                 fontSize: getResponsiveFont(context, 20),
                                 fontWeight: FontWeight.w500,
@@ -269,13 +270,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                 _buildSection(
                                   context,
                                   title: 'Delete Account'.tr,
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              DeleteAccountPage()),
-                                    );
+                                  onTap: () async {
+                                    if (await canLaunchUrl(deleteAccountUrl)) {
+                                      await launchUrl(deleteAccountUrl,
+                                          mode: LaunchMode.externalApplication);
+                                    } else {
+                                      throw 'Could not launch $deleteAccountUrl';
+                                    }
                                   },
                                 ),
                                 _buildSection(
@@ -354,7 +355,7 @@ class _ProfilePageState extends State<ProfilePage> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               spreadRadius: 2,
               blurRadius: 8,
               offset: Offset(0, 4),

@@ -11,7 +11,6 @@ import 'package:pawlli/presentation/screens/homepage/homepage.dart';
 import 'package:pawlli/presentation/screens/mychat/chat.dart';
 import 'package:pawlli/presentation/screens/pet%20Radio/petradio.dart';
 import 'package:pawlli/presentation/screens/pet_store/pet_cart.dart';
-import 'package:pawlli/presentation/screens/potcast/potcast.dart';
 
 class MainLayout extends StatefulWidget {
   MainLayout({super.key});
@@ -184,8 +183,8 @@ class _MainLayoutState extends State<MainLayout> {
           height: 60,
           animationDuration: const Duration(milliseconds: 300),
           items: [
-            const Icon(FontAwesomeIcons.home, color: Colors.white, size: 24),
-            const Icon(FontAwesomeIcons.radio, color: Colors.white, size: 24),
+            const FaIcon(FontAwesomeIcons.house, color: Colors.white, size: 24),
+            const FaIcon(FontAwesomeIcons.radio, color: Colors.white, size: 24),
             Image.network(
               'https://app.pawdli.com/media/static/goodbyebuddy.png',
               width: 50,
@@ -194,7 +193,7 @@ class _MainLayoutState extends State<MainLayout> {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                const Icon(
+                const FaIcon(
                   FontAwesomeIcons.cartArrowDown,
                   color: Colors.white,
                   size: 24,
@@ -235,7 +234,7 @@ class _MainLayoutState extends State<MainLayout> {
                 }),
               ],
             ),
-            const Icon(FontAwesomeIcons.message, color: Colors.white, size: 24),
+            const FaIcon(FontAwesomeIcons.message, color: Colors.white, size: 24),
           ],
           index: _selectedIndex,
           onTap: _onItemTapped,

@@ -158,7 +158,7 @@ class LoginController extends GetxController {
     }
   }
 
-    Future<({bool success, String message})> loginWithGoogle() async {
+    Future<({bool success, String message, bool isNewUser})> loginWithGoogle() async {
 
       try {
 
@@ -173,6 +173,7 @@ class LoginController extends GetxController {
           return (
             success: false,
             message: "Google sign in cancelled",
+            isNewUser: false,
           );
         }
 
@@ -183,6 +184,7 @@ class LoginController extends GetxController {
         if (response.status == true && response.data != null) {
 
           final user = response.data!;
+          final bool isNewUser = user.isNewUser ?? false;
 
           bool isSuper = user.isSuperuser == true;
           bool isDoctor = user.isDoctor == true;
@@ -214,6 +216,8 @@ class LoginController extends GetxController {
             success: true,
             message:
                 response.message ?? "Login Successful",
+                isNewUser: isNewUser,
+
           );
         }
 
@@ -221,6 +225,7 @@ class LoginController extends GetxController {
           success: false,
           message:
               response.message ?? "Google Login Failed",
+              isNewUser: false,
         );
 
       } catch (e) {
@@ -228,6 +233,7 @@ class LoginController extends GetxController {
         return (
           success: false,
           message: e.toString(),
+          isNewUser: false,
         );
 
       } finally {

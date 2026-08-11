@@ -2,6 +2,8 @@ class StoreCheckoutRequestModel {
   List<int> cartItems;
   String paymentMethod; // wallet | razorpay | cod
   String? couponCode;
+  int? couponId;
+  double? discountAmount;
   bool useWallet;
   double walletAmountUsed;
     Map<String, dynamic>? shippingAddress; 
@@ -10,6 +12,8 @@ class StoreCheckoutRequestModel {
     required this.cartItems,
     required this.paymentMethod,
     this.couponCode,
+    this.couponId,
+    this.discountAmount,
     required this.useWallet, 
     required this.walletAmountUsed,
     this.shippingAddress, 
@@ -20,6 +24,8 @@ class StoreCheckoutRequestModel {
       "cart_items": cartItems,
       "payment_method": paymentMethod,
       "coupon_code": couponCode,
+      "coupon_id": couponId,
+      "discount_amount": discountAmount,
       "use_wallet": useWallet,
       "wallet_amount_used": walletAmountUsed,
       "shipping_address": shippingAddress,

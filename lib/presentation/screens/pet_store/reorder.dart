@@ -95,7 +95,7 @@ class _ReorderScreenState extends State<ReorderScreen> {
             child: Container(
               width: MediaQuery.of(context).size.width * 0.55,
               height: screenHeight * 0.10,
-              color: Colours.secondarycolour.withOpacity(0.2),
+              color: Colours.secondarycolour.withValues(alpha: 0.2),
             ),
           ),
 

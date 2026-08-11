@@ -1,9 +1,4 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart' hide Data;
-import 'package:pawlli/core/auth/authservice.dart';
-import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'package:pawlli/data/api service.dart';
 import 'package:pawlli/data/model/cartviewmodel.dart' show Data;
 

@@ -548,16 +548,11 @@ class _AppointmentPageState extends State<AppointmentPage>
   @override
   Widget build(BuildContext context) {
 
-    final screenWidth =
-        MediaQuery.of(context).size.width;
-
-    final screenHeight =
-        MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-
       backgroundColor: Colours.secondarycolour,
-
       appBar: AppBar(
         toolbarHeight: 60,
         backgroundColor: Colors.transparent,
@@ -619,7 +614,7 @@ class _AppointmentPageState extends State<AppointmentPage>
                 ),
                 Switch(
                   value: isOnline,
-                  activeColor: Colours.primarycolour,
+                  activeThumbColor: Colours.primarycolour,
                   onChanged: (value) {
                     toggleDoctorStatus();
                   },
@@ -835,25 +830,19 @@ class _AppointmentPageState extends State<AppointmentPage>
                                           const EdgeInsets
                                               .all(16),
 
-                                      decoration:
-                                          BoxDecoration(
-
-                                        color:
-                                            Colors.white,
-
-                                        borderRadius:
-                                            BorderRadius
-                                                .circular(
-                                                    20),
-
-                                        boxShadow: [
-
-                                          BoxShadow(
-                                            blurRadius: 8,
-                                            color: Colors
-                                                .black12,
-                                          ),
-                                        ],
+                                      decoration:BoxDecoration(
+                                        color:Colors.white,
+                                        borderRadius:BorderRadius.circular(20),
+                                        border: Border.all(
+                                          color: Colours.brownColour,
+                                          width: 1,
+                                        ),
+                                        // boxShadow: [
+                                        //   BoxShadow(
+                                        //     blurRadius: 8,
+                                        //     color: Colors.black12,
+                                        //   ),
+                                        // ],
                                       ),
 
                                       child: Column(
@@ -1366,30 +1355,21 @@ class _AppointmentPageState extends State<AppointmentPage>
 
                               return Container(
 
-                                margin: const EdgeInsets.only(
-                                  bottom: 16,
-                                ),
-
-                                padding: const EdgeInsets.all(
-                                  16,
-                                ),
-
+                                margin: const EdgeInsets.only(bottom: 16),
+                                padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-
                                   color: Colors.white,
-
-                                  borderRadius:
-                                      BorderRadius.circular(
-                                    20,
+                                  borderRadius:BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: Colours.brownColour,
+                                    width: 1,
                                   ),
-
-                                  boxShadow: [
-
-                                    BoxShadow(
-                                      blurRadius: 8,
-                                      color: Colors.black12,
-                                    ),
-                                  ],
+                                  // boxShadow: [
+                                  //   BoxShadow(
+                                  //     blurRadius: 8,
+                                  //     color: Colors.black12,
+                                  //   ),
+                                  // ],
                                 ),
 
                                 child: Column(

@@ -153,8 +153,8 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
           _LocationController.text = petDetails.location ?? '';
           _descriptionController.text = petDetails.description ?? '';
           _birthdayController.text = petDetails.dateOfBirth ?? '';
-          _weightController.text = petDetails.weight?.toString() ?? '';
-          _heightController.text = petDetails.height?.toString() ?? '';
+          _weightController.text = petDetails.weight.toString() ?? '';
+          _heightController.text = petDetails.height.toString() ?? '';
           _microchipController.text = petDetails.microchipNumber ?? '';
           _selectedGender = petDetails.gender;
 
@@ -321,12 +321,11 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),
-            dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: Colours.primarycolour,
               ),
-            ),
+            ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -399,7 +398,10 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
               inactiveFgColor: Colors.white,
               totalSwitches: 2,
               labels: ['Male'.tr, 'Female'.tr],
-              icons: [FontAwesomeIcons.mars, FontAwesomeIcons.venus],
+              icons: const [
+                Icons.male,
+                Icons.female,
+              ],
               activeBgColors: [
                 [Colours.primarycolour],
                 [Colours.primarycolour]
@@ -791,7 +793,7 @@ class _EditAdoptionPetPageState extends State<EditAdoptionPetPage> {
 
   Future<Editadoptionmodel?> _updatePetProfile() async {
     final petData = UserAdoptionData(
-      id: widget.Id!,
+      id: widget.Id,
       message: "Updating...",
       mobileNumber: _phoneNumber!.phoneNumber ?? '',
       isAvailable: _isAvailable,

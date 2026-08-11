@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/presentation/screens/loginpage/loginpage.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
