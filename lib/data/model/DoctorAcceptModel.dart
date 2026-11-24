@@ -17,6 +17,8 @@ class DoctorAcceptModel {
   String? sessionEndTime;
 
   int? remainingSeconds;
+  
+  bool? canRejoin; 
 
   DoctorData? doctor;
   PatientData? patient;
@@ -48,6 +50,9 @@ class DoctorAcceptModel {
 
     remainingSeconds =
     json['remaining_seconds'];
+
+    canRejoin =
+    json['can_rejoin']; 
 
     doctor = json['doctor'] != null
 

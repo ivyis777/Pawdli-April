@@ -67,6 +67,10 @@ class Data {
   /// ✅ RECORDED session support
   String? recordedUrl;
 
+  int? playbackOffset;
+  int? remainingSeconds;
+  bool? isPlayable;
+
   DateTime? dateTime;
 
   Data({
@@ -89,6 +93,9 @@ class Data {
     this.isHost,
     this.sessionId,
     this.recordedUrl,
+    this.playbackOffset,
+    this.remainingSeconds,
+    this.isPlayable,
   }) {
     if (date != null) {
       dateTime = DateTime.tryParse(date!);
@@ -172,6 +179,9 @@ class Data {
     /// ✅ NEW FIELDS
     sessionId = json['session_id'] as int?;
     recordedUrl = json['recorded_url'] as String?;
+    playbackOffset = json['playback_offset'] as int?;
+    remainingSeconds = json['remaining_seconds'] as int?;
+    isPlayable = json['is_playable'] as bool?;
     
   }
 
@@ -197,6 +207,9 @@ class Data {
         /// ✅ NEW FIELDS
         'session_id': sessionId,
         'recorded_url': recordedUrl,
+        'playback_offset': playbackOffset,
+        'remaining_seconds': remainingSeconds,
+        'is_playable': isPlayable,
       };
       
 }

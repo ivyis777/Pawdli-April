@@ -41,112 +41,92 @@ class NetworkService {
     Get.dialog(
       PopScope(
         canPop: false,
-        child: AlertDialog(
+        child: Dialog(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: Colours.primarycolour,
+              width: 1.5,
+            ),
           ),
-          contentPadding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-
-              /// 📶 Offline Icon
-              Icon(
-                Icons.wifi_off_rounded,
-                size: 90,
-                color: Colors.grey.shade300,
-              ),
-
-              const SizedBox(height: 20),
-
-              /// Title
-              const Text(
-                "You're offline",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                /// Top Image
+                Image.asset(
+                  "assets/images/NoNetwork.png",
+                  height: 150,
+                  fit: BoxFit.contain,
                 ),
-              ),
 
-              const SizedBox(height: 12),
+                const SizedBox(height: 12),
 
-              /// Subtitle
-              const Text(
-                "Check your connection and try again.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey,
-                ),
-              ),
+                // /// Title
+                // const Text(
+                //   "You're offline",
+                //   textAlign: TextAlign.center,
+                //   style: TextStyle(
+                //     fontSize: 22,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
 
-              const SizedBox(height: 12),
+                const SizedBox(height: 10),
 
-              /// Network Status
-              // FutureBuilder<bool>(
-              //   future: InternetConnection().hasInternetAccess,
-              //   builder: (context, snapshot) {
-              //     final connected = snapshot.data ?? false;
-
-              //     return Row(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       children: [
-              //         Icon(
-              //           connected ? Icons.wifi : Icons.wifi_off,
-              //           color: connected ? Colors.green : Colors.red,
-              //           size: 20,
-              //         ),
-              //         const SizedBox(width: 6),
-              //         Text(
-              //           connected ? "Network Connected" : "No Network",
-              //           style: TextStyle(
-              //             color: connected ? Colors.green : Colors.red,
-              //             fontWeight: FontWeight.w600,
-              //           ),
-              //         ),
-              //       ],
-              //     );
-              //   },
-              // ),
-
-              // const SizedBox(height: 28),
-
-              /// Try Again Button
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colours.primarycolour,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
+                /// Message
+                const Text(
+                  "Check your connection and try again.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey,
                   ),
-                  onPressed: () async {
-                    bool hasInternet =
-                        await InternetConnection().hasInternetAccess;
+                ),
 
-                    if (hasInternet) {
-                      _hideOfflineDialog();
+                const SizedBox(height: 20),
 
-                      if (onRefreshCurrentPage != null) {
-                        onRefreshCurrentPage!();
+                /// Try Again Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colours.primarycolour,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () async {
+                      bool hasInternet =
+                          await InternetConnection().hasInternetAccess;
+
+                      if (hasInternet) {
+                        _hideOfflineDialog();
+
+                        if (onRefreshCurrentPage != null) {
+                          onRefreshCurrentPage!();
+                        }
                       }
-                    }
-                  },
-                  child: const Text(
-                    "Try again",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                    },
+                    child: const Text(
+                      "Try again",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

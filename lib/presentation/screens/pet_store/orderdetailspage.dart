@@ -149,62 +149,187 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   void _showCancelDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          title:  Text("Cancel Order".tr),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-               Text("Please provide reason for cancellation".tr),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _reasonController,
-                maxLines: 3,
-                decoration:  InputDecoration(
-                  hintText: "Enter reason".tr,
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ],
+        return Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: Colours.primarycolour,
+              width: 1.5,
+            ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child:  Text("Close".tr),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    "assets/images/CancelOrder.png",
+                    height: 140,
+                    fit: BoxFit.contain,
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // Text(
+                  //   "Cancel Order".tr,
+                  //   textAlign: TextAlign.center,
+                  //   style: const TextStyle(
+                  //     fontSize: 22,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
+                    "Please provide reason for cancellation".tr,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  TextField(
+                    controller: _reasonController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      hintText: "Enter reason".tr,
+                      filled: true,
+                      fillColor: Colors.grey.shade50,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Colours.primarycolour.withOpacity(0.3),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Colours.primarycolour,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                              color: Colours.primarycolour,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 14,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "Close".tr,
+                            style: TextStyle(
+                              color: Colours.primarycolour,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 10),
+
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colours.primarycolour,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 14,
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_reasonController.text.trim().isEmpty) {
+                              Get.snackbar(
+                                "Error",
+                                "Reason is required".tr,
+                              );
+                              return;
+                            }
+
+                            setState(() => isLoading = true);
+
+                            bool success =
+                                await StoreCheckoutService.cancelOrder(
+                              orderId:
+                                  widget.order.orderId.toString(),
+                              reason:
+                                  _reasonController.text.trim(),
+                            );
+
+                            setState(() => isLoading = false);
+
+                            if (success) {
+                              Navigator.pop(context);
+
+                              setState(() {
+                                currentStatus =
+                                    "Order Cancelled";
+                              });
+
+                              Get.snackbar(
+                                "Success",
+                                "Order cancelled successfully".tr,
+                              );
+                            } else {
+                              Get.snackbar(
+                                "Error",
+                                "Failed to cancel order".tr,
+                              );
+                            }
+                          },
+                          child: isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child:
+                                      CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Text(
+                                  "Confirm".tr,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                if (_reasonController.text.trim().isEmpty) {
-                  Get.snackbar("Error", "Reason is required".tr);
-                  return;
-                }
-
-                setState(() => isLoading = true);
-
-                bool success = await StoreCheckoutService.cancelOrder(
-                  orderId: widget.order.orderId.toString(),
-                  reason: _reasonController.text.trim(),
-                );
-
-                setState(() => isLoading = false);
-
-                if (success) {
-                  Navigator.pop(context);
-
-                  setState(() {
-                    currentStatus = "Order Cancelled";
-                  });
-
-                  Get.snackbar("Success", "Order cancelled successfully".tr);
-                }else {
-                  Get.snackbar("Error", "Failed to cancel order".tr);
-                }
-              },
-              child: isLoading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  :  Text("Confirm".tr),
-            ),
-          ],
+          ),
         );
       },
     );

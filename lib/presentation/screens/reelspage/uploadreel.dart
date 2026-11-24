@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
+import 'package:pawlli/data/controller/myreelscontroller.dart';
 import 'package:pawlli/data/controller/reelUploadcontroller.dart';
 import 'package:pawlli/data/controller/reelitemcontroller.dart';
 import 'package:pawlli/gen/assests.gen.dart';
@@ -239,7 +240,15 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
                         );
 
                         if (ok) {
-                          Get.find<ReelsController>().fetchReels();
+                          // 🔄 Refresh public reels
+                          if (Get.isRegistered<ReelsController>()) {
+                            Get.find<ReelsController>().fetchReels();
+                          }
+
+                          // 🔄 Refresh My Reels
+                          if (Get.isRegistered<MyReelsController>()) {
+                            Get.find<MyReelsController>().fetchMyReels();
+                          }
 
                           showDialog(
                             context: context,
@@ -247,35 +256,68 @@ class _AddDetailsPageState extends State<AddDetailsPage> {
                             builder: (dialogContext) {
                               Future.delayed(const Duration(seconds: 2), () {
                                 if (dialogContext.mounted) {
-                                  Navigator.of(dialogContext).pop(); // Close dialog
+                                  Navigator.of(dialogContext).pop();
                                 }
 
                                 if (context.mounted) {
-                                  Navigator.of(context).pop(); // Back to previous page
+                                  Navigator.of(context).pop();
                                 }
                               });
 
-                              return AlertDialog(
+                              return Dialog(
+                                backgroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(
+                                    color: Colours.primarycolour,
+                                    width: 1.5,
+                                  ),
                                 ),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.check_circle,
-                                      color: Colours.primarycolour,
-                                      size: 60,
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      "Uploaded Successfully",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/ReelUploaded.png",
+                                        height: 150,
+                                        fit: BoxFit.contain,
                                       ),
-                                    ),
-                                  ],
+
+                                      const SizedBox(height: 12),
+
+                                      // Text(
+                                      //   "Uploaded Successfully",
+                                      //   textAlign: TextAlign.center,
+                                      //   style: TextStyle(
+                                      //     fontSize: 22,
+                                      //     fontWeight: FontWeight.w700,
+                                      //     color: Colours.primarycolour,
+                                      //   ),
+                                      // ),
+
+                                      const SizedBox(height: 10),
+
+                                      const Text(
+                                        "Your file has been uploaded successfully.",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 20),
+
+                                      SizedBox(
+                                        width: 35,
+                                        height: 35,
+                                        child: CircularProgressIndicator(
+                                          color: Colours.primarycolour,
+                                          strokeWidth: 3,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },

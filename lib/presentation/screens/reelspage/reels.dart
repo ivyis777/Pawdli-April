@@ -1,9 +1,15 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
+import 'package:pawlli/data/controller/reelitemcontroller.dart';
+import 'package:pawlli/presentation/screens/loginpage/loginpage.dart';
 import 'package:pawlli/presentation/screens/reelspage/createreelscamera.dart';
 import 'package:pawlli/presentation/screens/reelspage/myreelspage.dart';
 import 'package:pawlli/presentation/screens/reelspage/uploadreel.dart';
@@ -36,6 +42,7 @@ class _ReelsPageState extends State<ReelsPage> {
   late PageController pageController;
   int currentPage = 0;
 
+
   bool showSearchBar = false;
   String searchQuery = "";
   List<ReelItem> filteredReels = [];
@@ -56,17 +63,41 @@ class _ReelsPageState extends State<ReelsPage> {
         widget.reels.length, (_) => GlobalKey<_ReelPlayerState>());
   }
 
+  Future<void> _loadNextReels() async {
+    final controller = Get.find<ReelsController>();
+
+    if (controller.isLoading.value || !controller.hasMore.value) {
+      return;
+    }
+
+    await controller.loadMoreReels();
+
+    if (!mounted) return;
+
+    setState(() {
+      filteredReels = widget.reels;
+      regenerateKeysFor(filteredReels);
+    });
+  }
+
   void regenerateKeysFor(List<ReelItem> list) {
     pageKeys = List.generate(list.length, (_) => GlobalKey<_ReelPlayerState>());
   }
 
   void pauseCurrentReel() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      if (currentPage < pageKeys.length) {
-        pageKeys[currentPage].currentState?.pauseVideo();
-      }
-    });
+    if (!mounted) return;
+
+    if (currentPage >= 0 && currentPage < pageKeys.length) {
+      pageKeys[currentPage].currentState?.pauseVideo();
+    }
+  }
+
+  void resumeCurrentReel() {
+    if (!mounted) return;
+
+    if (currentPage >= 0 && currentPage < pageKeys.length) {
+      pageKeys[currentPage].currentState?.resumeVideo();
+    }
   }
 
   void _searchReels(String query) async {
@@ -184,13 +215,16 @@ class _ReelsPageState extends State<ReelsPage> {
 
                   if (!mounted || pickedFile == null) return;
 
-                  Navigator.push(
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) =>
-                          AddDetailsPage(videoFile: File(pickedFile.path)),
+                      builder: (_) => AddDetailsPage(videoFile: File(pickedFile.path)),
                     ),
                   );
+
+                  if (mounted) {
+                    resumeCurrentReel();
+                  }
                 },
               ),
 
@@ -217,12 +251,16 @@ class _ReelsPageState extends State<ReelsPage> {
 
                   if (!mounted || recordedVideo == null) return;
 
-                  Navigator.push(
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => AddDetailsPage(videoFile: recordedVideo),
                     ),
                   );
+
+                  if (mounted) {
+                    resumeCurrentReel();
+                  }
                 },
               ),
 
@@ -298,7 +336,13 @@ class _ReelsPageState extends State<ReelsPage> {
               itemCount: reelsToShow.length,
               onPageChanged: (i) {
                 pauseCurrentReel();
+
                 setState(() => currentPage = i);
+
+                // LOAD NEXT REELS WHEN NEAR THE END
+                if (!showSearchBar && i >= reelsToShow.length - 3) {
+                  _loadNextReels();
+                }
               },
               itemBuilder: (context, index) {
                 return ReelPlayer(
@@ -366,7 +410,121 @@ class _ReelsPageState extends State<ReelsPage> {
                         color: Colours.primarycolour, size: 32),
                   ),
                   GestureDetector(
-                    onTap: _showAddReelOptions, // 👈 POPUP HERE
+                    onTap: () {
+                      // ✅ GUEST CHECK
+                      if (LocalStorage.isGuest()) {
+                        Get.dialog(
+                          Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(
+                                color: Colours.primarycolour,
+                                width: 2,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Image.asset(
+                                    "assets/images/LoginRequired.png", // Your image
+                                    height: 140,
+                                    fit: BoxFit.contain,
+                                  ),
+
+                                  const SizedBox(height: 15),
+
+                                  // Text(
+                                  //   "Login Required".tr,
+                                  //   textAlign: TextAlign.center,
+                                  //   style: const TextStyle(
+                                  //     fontSize: 22,
+                                  //     fontWeight: FontWeight.bold,
+                                  //   ),
+                                  // ),
+
+                                  const SizedBox(height: 10),
+
+                                  Text(
+                                    "Please login to continue.".tr,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 20),
+
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: OutlinedButton(
+                                          style: OutlinedButton.styleFrom(
+                                            side: BorderSide(
+                                              color: Colours.primarycolour,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 14,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          child: Text(
+                                            "Cancel".tr,
+                                            style: TextStyle(
+                                              color: Colours.primarycolour,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      const SizedBox(width: 10),
+
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colours.primarycolour,
+                                            foregroundColor: Colors.white,
+                                            elevation: 0,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 14,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Get.back();
+                                            Get.offAll(() => LoginPage());
+                                          },
+                                          child: Text(
+                                            "Login".tr,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
+                      // ✅ EXISTING FUNCTION
+                      _showAddReelOptions();
+                    },
                     child: Container(
                       padding: const EdgeInsets.all(13),
                       decoration: BoxDecoration(
@@ -426,6 +584,7 @@ class _ReelPlayerState extends State<ReelPlayer> {
   bool isLongPressing = false;
   bool isCaptionExpanded = false;
   bool isCaptionOverflowing = false;
+  bool _pausedForNavigation = false;
 
 // bool _doesTextOverflow(String text, TextStyle style, double maxWidth) {
 //   final textPainter = TextPainter(
@@ -497,19 +656,36 @@ class _ReelPlayerState extends State<ReelPlayer> {
     _video = VideoPlayerController.network(widget.reel.videoUrl)
       ..initialize().then((_) {
         if (!mounted) return;
+
         _video.setVolume(isMuted ? 0 : 1);
-        if (widget.isActive) _video.play();
         _video.setLooping(true);
+
+        if (widget.isActive && !_pausedForNavigation) {
+          _video.play();
+        } else {
+          _video.pause();
+        }
 
         setState(() {});
       });
   }
 
   void pauseVideo() {
-    if (_video.value.isPlaying) {
+    _pausedForNavigation = true;
+
+    if (_video.value.isInitialized && _video.value.isPlaying) {
       _video.pause();
     }
-    // setState(() {});
+  }
+
+  void resumeVideo() {
+    _pausedForNavigation = false;
+
+    if (mounted &&
+        _video.value.isInitialized &&
+        widget.isActive) {
+      _video.play();
+    }
   }
 
   void showLikeAnimation() {
@@ -602,15 +778,15 @@ class _ReelPlayerState extends State<ReelPlayer> {
   void didUpdateWidget(covariant ReelPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (_video.value.isInitialized) {
-      if (widget.isActive) {
-        _video.play();
-      } else {
-        _video.pause();
-      }
+    if (!_video.value.isInitialized) return;
+
+    if (widget.isActive && !oldWidget.isActive) {
+      _pausedForNavigation = false;
+      _video.play();
+    } else if (!widget.isActive) {
+      _video.pause();
     }
   }
-
   @override
   void dispose() {
     _video.dispose();
@@ -692,6 +868,8 @@ class _ReelPlayerState extends State<ReelPlayer> {
           )
         else
           const Center(child: CircularProgressIndicator(color: Colors.white)),
+                  /// shimmer effect
+          // const Positioned.fill(child: ReelsFullScreenSkeleton()),
 
         // RIGHT ICONS
         Positioned(
@@ -727,7 +905,7 @@ class _ReelPlayerState extends State<ReelPlayer> {
               ),
               const SizedBox(height: 20),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
                   String message;
 
                   if (Platform.isIOS) {
@@ -742,7 +920,15 @@ class _ReelPlayerState extends State<ReelPlayer> {
                         "https://apps.apple.com/in/app/pawdli/id6747665709";
                   }
 
-                  Share.share(message, subject: "Pawdli App Download");
+                  final RenderBox box =
+                      context.findRenderObject() as RenderBox;
+
+                  await Share.share(
+                    message,
+                    subject: "Pawdli App Download",
+                    sharePositionOrigin:
+                        box.localToGlobal(Offset.zero) & box.size,
+                  );
 
                   print("Running on: ${Platform.operatingSystem}");
                   print("isIOS: ${Platform.isIOS}");

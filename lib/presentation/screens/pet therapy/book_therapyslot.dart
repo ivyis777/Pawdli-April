@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/api%20service.dart';
@@ -12,8 +12,8 @@ import 'package:pawlli/data/model/ordercraetionmodel.dart';
 import 'package:pawlli/data/model/paymentverificationmodel.dart';
 import 'package:pawlli/data/model/paythroughwallet.dart';
 import 'package:pawlli/data/model/therapyslot.dart';
-import 'package:pawlli/presentation/screens/pet%20therapy/TherapyBookingListPage.dart';
-import 'package:pawlli/presentation/screens/pet%20therapy/pet_therapy.dart';
+// import 'package:pawlli/presentation/screens/pet%20therapy/TherapyBookingListPage.dart';
+// import 'package:pawlli/presentation/screens/pet%20therapy/pet_therapy.dart';
 import 'package:pawlli/presentation/screens/therapypaymentverification/therapysuccess.dart';
 import 'package:pawlli/presentation/screens/therapypaymentverification/therapyfailure.dart';
 import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
@@ -1577,17 +1577,80 @@ class _pettherapyslotPageState extends State<pettherapyslotPage> {
                                   if (widget.petid == null) {
                                     showDialog(
                                       context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: Text("Not Available".tr),
-                                        content: Text(
-                                            "Sorry, pets are not available for this pincode.".tr),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                            child: Text("OK".tr),
+                                      barrierDismissible: false,
+                                      builder: (context) => Dialog(
+                                        backgroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20),
+                                          side: BorderSide(
+                                            color: Colours.primarycolour,
+                                            width: 1.5,
                                           ),
-                                        ],
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/NotAvailable.png",
+                                                height: 150,
+                                                fit: BoxFit.contain,
+                                              ),
+
+                                              const SizedBox(height: 12),
+
+                                              // Text(
+                                              //   "Not Available".tr,
+                                              //   textAlign: TextAlign.center,
+                                              //   style: const TextStyle(
+                                              //     fontSize: 22,
+                                              //     fontWeight: FontWeight.bold,
+                                              //   ),
+                                              // ),
+
+                                              const SizedBox(height: 10),
+
+                                              Text(
+                                                "Sorry, pets are not available for this pincode.".tr,
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+
+                                              const SizedBox(height: 20),
+
+                                              SizedBox(
+                                                width: double.infinity,
+                                                child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: Colours.primarycolour,
+                                                    foregroundColor: Colors.white,
+                                                    elevation: 0,
+                                                    padding: const EdgeInsets.symmetric(
+                                                      vertical: 14,
+                                                    ),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text(
+                                                    "OK".tr,
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     );
                                     return; // Stop further execution

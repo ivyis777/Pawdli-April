@@ -16,6 +16,7 @@ class MyReelsController extends GetxController {
     try {
       isLoading(true);
       final result = await ApiService.fetchMyReels();
+      print("REELS RECEIVED => ${result.length}");
       myReels.assignAll(result);
     } catch (e) {
       print("❌ Error loading reels: $e");

@@ -10,16 +10,22 @@ import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'dart:convert';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
+import 'package:pawlli/data/api%20service.dart';
 import 'package:pawlli/data/app%20url.dart';
 import 'package:pawlli/data/controller/ConsultationController.dart';
 import 'package:pawlli/data/controller/DoctorconsultationController.dart';
+import 'package:pawlli/data/controller/QuickConsultationController.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/homepage/homepage.dart';
+import 'package:pawlli/presentation/screens/loginpage/loginpage.dart';
+import 'package:pawlli/presentation/screens/meet%20a%20vet/ConsultationCallPage.dart';
+import 'package:pawlli/presentation/screens/meet%20a%20vet/DoctorConnectingPage.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/meetvetdoctor.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/quick_appointment.dart/DoctorConsultationDetailsPage.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/quick_appointment.dart/DoctorLiveConsultationPage.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/quick_appointment.dart/PrescriptionPage.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/quick_appointment.dart/UserConsultationDetailsPage.dart';
+import 'package:pawlli/presentation/screens/meet%20a%20vet/quick_appointment.dart/confirmslot.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/quick_appointment.dart/petdetailspage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -87,6 +93,65 @@ class _AppointmentPageState extends State<AppointmentPage>
         Get.put(
           ConsultationController(),
         );
+
+  final QuickConsultationController
+    quickController =
+    Get.put(
+      QuickConsultationController(),
+      permanent: true,
+    );
+
+  List get filteredUserConsultations {
+    final consultationData =
+        consultationController.consultations;
+
+    switch (selectedFilter) {
+      case "pending":
+        return consultationData
+            .where((e) =>
+                e.consultationStatus?.toLowerCase() ==
+                "pending")
+            .toList();
+
+      case "completed":
+        return consultationData
+            .where((e) =>
+                e.consultationStatus?.toLowerCase() ==
+                "completed")
+            .toList();
+
+      case "cancelled":
+        return consultationData
+            .where((e) =>
+                e.consultationStatus?.toLowerCase() ==
+                "cancelled")
+            .toList();
+
+      case "failed":
+        return consultationData
+            .where((e) =>
+                e.consultationStatus?.toLowerCase() ==
+                    "failed" ||
+                e.consultationStatus?.toLowerCase() ==
+                    "no_doctor_found")
+            .toList();
+
+      case "quick":
+        return consultationData
+            .where((e) =>
+                e.consultationType == 1)
+            .toList();
+
+      case "schedule":
+        return consultationData
+            .where((e) =>
+                e.consultationType == 2)
+            .toList();
+
+      default:
+        return consultationData;
+    }
+  }
 
 
   @override
@@ -454,15 +519,17 @@ class _AppointmentPageState extends State<AppointmentPage>
 
         if (response.statusCode == 200) {
 
-          final data =
-              jsonDecode(response.body);
+          await getConsultationList();
 
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => DoctorLiveConsultationPage(),
+              builder: (context) =>
+                  DoctorLiveConsultationPage(),
             ),
-          );
+          ).then((_) {
+            getConsultationList();
+          });
         }
 
       } catch (e) {
@@ -483,63 +550,36 @@ class _AppointmentPageState extends State<AppointmentPage>
       return [];
     }
 
-    List pending = consultations
-        .where(
-          (e) =>
-              e["consultation_status"] ==
-              "pending",
-        )
-        .toList();
-
-    List completed = consultations
-        .where(
-          (e) =>
-              e["consultation_status"] ==
-              "completed",
-        )
-        .toList();
-
-    List sortedList = [
-      ...pending,
-      ...completed,
-    ];
+    List sortedList = List.from(consultations);
 
     if (selectedFilter == "pending") {
-      return sortedList
-          .where(
-            (e) =>
-                e["consultation_status"] ==
-                "pending",
-          )
-          .toList();
+      return sortedList.where(
+        (e) => e["consultation_status"] == "pending",
+      ).toList();
     }
 
     if (selectedFilter == "completed") {
-      return sortedList
-          .where(
-            (e) =>
-                e["consultation_status"] ==
-                "completed",
-          )
-          .toList();
+      return sortedList.where(
+        (e) => e["consultation_status"] == "completed",
+      ).toList();
+    }
+
+    if (selectedFilter == "ongoing") {
+      return sortedList.where(
+        (e) => e["consultation_status"] == "ongoing",
+      ).toList();
     }
 
     if (selectedFilter == "quick") {
-      return sortedList
-          .where(
-            (e) =>
-                e["consultation_type"] == 1,
-          )
-          .toList();
+      return sortedList.where(
+        (e) => e["consultation_type"] == 1,
+      ).toList();
     }
 
     if (selectedFilter == "schedule") {
-      return sortedList
-          .where(
-            (e) =>
-                e["consultation_type"] == 2,
-          )
-          .toList();
+      return sortedList.where(
+        (e) => e["consultation_type"] == 2,
+      ).toList();
     }
 
     return sortedList;
@@ -726,6 +766,11 @@ class _AppointmentPageState extends State<AppointmentPage>
                                         ),
 
                                         const PopupMenuItem(
+                                          value: "ongoing",
+                                          child: Text("Ongoing"),
+                                        ),
+
+                                        const PopupMenuItem(
                                           value:
                                               "completed",
                                           child: Text(
@@ -800,6 +845,15 @@ class _AppointmentPageState extends State<AppointmentPage>
                                       appointment[
                                           "consultation_status"] ==
                                       "pending";
+
+
+                                    bool canRejoin =
+                                      appointment["consultation_status"] ==
+                                          "ongoing" &&
+                                      appointment["can_rejoin"] == true;
+                                      print("STATUS => ${appointment["consultation_status"]}");
+                                      print("CAN REJOIN => ${appointment["can_rejoin"]}");
+                                      print("FULL APPOINTMENT => $appointment");
 
                                     return GestureDetector(
 
@@ -909,103 +963,125 @@ class _AppointmentPageState extends State<AppointmentPage>
                                                   ),
                                                 ),
 
+                                                const SizedBox(
+                                                    height:
+                                                        8),
+
+                                                // Text(
+                                                //   "Payment Status : ${appointment["payment_status"]}",
+                                                //   style:
+                                                //       TextStyle(
+                                                //     color:
+                                                //         isPending
+                                                //             ? Colors.orange
+                                                //             : Colors.black,
+
+                                                //     fontWeight:
+                                                //         FontWeight.bold,
+                                                //   ),
+                                                // ),
+
                                                 const SizedBox(height: 20),
 
                                                   Align(
                                                     alignment: Alignment.center,
                                                     child: isPending
+                                                      ? ElevatedButton(
+                                                          onPressed: () async {
+                                                            await doctorAcceptConsultation(
+                                                              appointment["consultation_request_id"],
+                                                            );
+                                                          },
+                                                          child: const Text("Join"),
+                                                      )
 
-                                                        ? ElevatedButton(
+                                                      : canRejoin
 
-                                                            style:
-                                                                ElevatedButton.styleFrom(
+                                                      ? ElevatedButton(
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: Colours.brownColour,
+                                                          foregroundColor: Colors.white,
+                                                        ),
+                                                          onPressed: () async {
 
-                                                              backgroundColor:
-                                                                  Colours.primarycolour,
+                                                            final response =
+                                                                await ApiService.rejoinConsultation(
+                                                              appointment["consultation_request_id"],
+                                                            );
 
-                                                              foregroundColor:
-                                                                  Colors.white,
-                                                            ),
-
-                                                            onPressed: () async {
-
-                                                              await doctorAcceptConsultation(
-
-                                                                appointment[
-                                                                  "consultation_request_id"
-                                                                ],
+                                                            if (response == null) {
+                                                              Get.snackbar(
+                                                                "Error",
+                                                                "Unable to rejoin consultation",
                                                               );
-                                                            },
+                                                              return;
+                                                            }
 
-                                                            child: const Text(
-                                                              "Join",
-                                                            ),
-                                                          )
+                                                            Get.to(
+                                                              () => ConsultationCallPage(
+                                                                roomId:
+                                                                    response.consultationRoomId ?? "",
+                                                                websocketUrl:
+                                                                    response.websocketUrl ?? "",
+                                                                consultationRequestId:
+                                                                    response.consultationRequestId ?? 0,
+                                                                isDoctor: true,
+                                                                receiverId: "",
+                                                              ),
+                                                            );
+                                                          },
+                                                          child: const Text("Rejoin Call"),
+                                                      )
 
-                                                        : appointment["prescription"] == null
+                                                      : appointment["consultation_status"] == "completed" &&
+                                                              appointment["prescription"] == null
 
-                                                            ? ElevatedButton(
+                                                      ? ElevatedButton(
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: Colours.primarycolour,
+                                                          foregroundColor: Colors.white,
+                                                        ),
+                                                          onPressed: () async {
 
-                                                                style:
-                                                                    ElevatedButton.styleFrom(
-
-                                                                  backgroundColor:
-                                                                      Colours.primarycolour,
-
-                                                                  foregroundColor:
-                                                                      Colors.white,
-                                                                ),
-
-                                                                onPressed: () async {
-
-                                                                  final result = await Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                      builder: (context) => PrescriptionPage(
-                                                                        consultationRequestId:
-                                                                            appointment["consultation_request_id"],
-                                                                      ),
-                                                                    ),
-                                                                  );
-
-                                                                  if (result == true) {
-                                                                    getConsultationList();
-                                                                  }
-                                                                },
-
-                                                                child: const Text(
-                                                                  "Add Prescription",
-                                                                ),
-                                                              )
-
-                                                            : ElevatedButton(
-
-                                                                style:
-                                                                    ElevatedButton.styleFrom(
-
-                                                                  backgroundColor:
-                                                                      Colours.primarycolour,
-
-                                                                  foregroundColor:
-                                                                      Colors.white,
-                                                                ),
-
-                                                                onPressed: () {
-
-                                                                  Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                      builder: (context) => ConsultationDetailsPage(
-                                                                        consultationData: appointment,
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                },
-
-                                                                child: const Text(
-                                                                  "View Details",
+                                                            final result =
+                                                                await Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) =>
+                                                                    PrescriptionPage(
+                                                                  consultationRequestId:
+                                                                      appointment[
+                                                                          "consultation_request_id"],
                                                                 ),
                                                               ),
+                                                            );
+
+                                                            if (result == true) {
+                                                              getConsultationList();
+                                                            }
+                                                          },
+                                                          child: const Text(
+                                                            "Add Prescription",
+                                                          ),
+                                                      )
+
+                                                      : ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) =>
+                                                                    ConsultationDetailsPage(
+                                                                  consultationData:
+                                                                      appointment,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                          child: const Text(
+                                                            "View Details",
+                                                          ),
+                                                      )
                                                   ),
                                         ],
                                       ),
@@ -1203,7 +1279,118 @@ class _AppointmentPageState extends State<AppointmentPage>
                                     ),
                                   ),
                                   onPressed: () {
+                                    // ✅ GUEST CHECK
+                                    if (LocalStorage.isGuest()) {
+                                      Get.dialog(
+                                        Dialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(20),
+                                            side: BorderSide(
+                                              color: Colours.primarycolour,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(20),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Image.asset(
+                                                  "assets/images/LoginRequired.png", // Your image
+                                                  height: 140,
+                                                  fit: BoxFit.contain,
+                                                ),
 
+                                                const SizedBox(height: 15),
+
+                                                // Text(
+                                                //   "Login Required".tr,
+                                                //   textAlign: TextAlign.center,
+                                                //   style: const TextStyle(
+                                                //     fontSize: 22,
+                                                //     fontWeight: FontWeight.bold,
+                                                //   ),
+                                                // ),
+
+                                                const SizedBox(height: 10),
+
+                                                Text(
+                                                  "Please login to continue.".tr,
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+
+                                                const SizedBox(height: 20),
+
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: OutlinedButton(
+                                                        style: OutlinedButton.styleFrom(
+                                                          side: BorderSide(
+                                                            color: Colours.primarycolour,
+                                                          ),
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(12),
+                                                          ),
+                                                          padding: const EdgeInsets.symmetric(
+                                                            vertical: 14,
+                                                          ),
+                                                        ),
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: Text(
+                                                          "Cancel".tr,
+                                                          style: TextStyle(
+                                                            color: Colours.primarycolour,
+                                                            fontWeight: FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+
+                                                    const SizedBox(width: 10),
+
+                                                    Expanded(
+                                                      child: ElevatedButton(
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: Colours.primarycolour,
+                                                          foregroundColor: Colors.white,
+                                                          elevation: 0,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(12),
+                                                          ),
+                                                          padding: const EdgeInsets.symmetric(
+                                                            vertical: 14,
+                                                          ),
+                                                        ),
+                                                        onPressed: () {
+                                                          Get.back();
+                                                          Get.offAll(() => LoginPage());
+                                                        },
+                                                        child: Text(
+                                                          "Login".tr,
+                                                          style: const TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                      return;
+                                    }
+
+                                    // ✅ EXISTING CODE
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -1245,35 +1432,20 @@ class _AppointmentPageState extends State<AppointmentPage>
                                   //   );
                                   // },
                                   onPressed: () {
-                                    showDialog(
+                                    showGeneralDialog(
                                       context: context,
-                                      barrierDismissible: false,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(16),
-                                          ),
-                                          title: const Text(
-                                            "Coming Soon",
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          content: const Text(
-                                            "Schedule Appointment feature is coming soon.",
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          actionsAlignment: MainAxisAlignment.center,
-                                          actions: [
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colours.primarycolour,
-                                                foregroundColor: Colors.white,
-                                              ),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text("OK"),
+                                      barrierDismissible: true,
+                                      barrierLabel: "",
+                                      barrierColor: Colors.black54,
+                                      pageBuilder: (context, animation, secondaryAnimation) {
+                                        return Center(
+                                          child: GestureDetector(
+                                            onTap: () => Navigator.pop(context),
+                                            child: Image.asset(
+                                              "assets/images/ComingSoon.png",
+                                              fit: BoxFit.contain,
                                             ),
-                                          ],
+                                          ),
                                         );
                                       },
                                     );
@@ -1309,227 +1481,489 @@ class _AppointmentPageState extends State<AppointmentPage>
                           }
 
                           if (consultationData.isEmpty) {
-
-                            return const Center(
-                              child: Text(
-                                "No Consultations Found",
+                            return SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.6,
+                              width: double.infinity,
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/images/NoConsultations.png',
+                                  width: MediaQuery.of(context).size.width * 0.9,
+                                  height: MediaQuery.of(context).size.height * 0.5,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                             );
                           }
 
-                          return ListView.builder(
+                          return Column(
+                            children: [
 
-                            padding: const EdgeInsets.all(14),
-
-                            itemCount: consultationData.length,
-
-                            itemBuilder: (context, index) {
-
-                              final item =
-                                  consultationData[index];
-
-                              final consultationDate =
-                                  item.createdAt != null
-                                      ? DateTime.parse(
-                                          item.createdAt!,
-                                        ).toLocal()
-                                      : DateTime.now();
-
-                              final scheduleDate =
-                                  DateFormat(
-                                    "dd-MM-yyyy",
-                                  ).format(
-                                    consultationDate,
-                                  );
-
-                              final scheduleTime =
-                                  DateFormat(
-                                    "hh:mm a",
-                                  ).format(
-                                    consultationDate,
-                                  );
-
-                              bool isPending =
-                                  item.consultationStatus ==
-                                  "pending";
-
-                              return Container(
-
-                                margin: const EdgeInsets.only(bottom: 16),
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:BorderRadius.circular(20),
-                                  border: Border.all(
-                                    color: Colours.brownColour,
-                                    width: 1,
-                                  ),
-                                  // boxShadow: [
-                                  //   BoxShadow(
-                                  //     blurRadius: 8,
-                                  //     color: Colors.black12,
-                                  //   ),
-                                  // ],
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 12,
+                                  right: 14,
                                 ),
-
-                                child: Column(
-
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.end,
                                   children: [
 
-                                    Text(
-                                      "Appointment ID : ${item.consultationRequestId}",
-                                    ),
-
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-
-                                    Text(
-                                      "Appointment Type : ${item.consultationType == 1 ? "Quick Consultation" : "Scheduled Consultation"}",
-                                    ),
-
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-
-                                    Text(
-                                      "Pet Name : ${item.petName ?? ""}",
-                                    ),
-
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-
-                                    Text(
-                                      "Doctor : ${item.doctorName ?? ""}",
-                                    ),
-
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-
-                                    Text(
-                                      "Consultation Date : $scheduleDate",
-                                    ),
-
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-
-                                    Text(
-                                      "Consultation Time : $scheduleTime",
-                                    ),
-
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-
-                                    Text(
-                                      "Call Status : ${item.consultationStatus}",
-                                      style: TextStyle(
-                                        color: isPending
-                                            ? Colors.orange
-                                            : Colors.black,
-                                        fontWeight:
-                                            FontWeight.bold,
+                                    PopupMenuButton<String>(
+                                      icon: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: const Icon(
+                                          Icons.filter_list,
+                                        ),
                                       ),
-                                    ),
 
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
+                                      onSelected: (value) {
+                                        setState(() {
+                                          selectedFilter = value;
+                                        });
+                                      },
 
-                                    Row(
+                                      itemBuilder: (context) => [
 
-                                      children: [
-
-                                        // Prescription Button
-
-                                        Expanded(
-
-                                          child: ElevatedButton.icon(
-
-                                            style:
-                                                ElevatedButton.styleFrom(
-
-                                              backgroundColor:
-                                                  Colors.green,
-
-                                              foregroundColor:
-                                                  Colors.white,
-                                            ),
-
-                                            onPressed:
-                                              item.prescriptionDownloadUrl == null
-
-                                                  ? null
-
-                                                  : () async {
-
-                                                      await downloadPrescription(
-
-                                                        item.prescriptionDownloadUrl!,
-                                                      );
-                                                    },
-
-                                            icon: const Icon(
-                                              Icons.picture_as_pdf,
-                                              color: Colors.white,
-                                            ),
-
-                                            label: const Text(
-                                              "Prescription",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
+                                        const PopupMenuItem(
+                                          value: "all",
+                                          child: Text("All"),
                                         ),
 
-                                        const SizedBox(width: 10),
+                                        const PopupMenuItem(
+                                          value: "Pending",
+                                          child: Text("Pending"),
+                                        ),
 
-                                        // View Details Button
+                                        const PopupMenuItem(
+                                          value: "cancelled",
+                                          child: Text("Cancelled"),
+                                        ),
 
-                                        Expanded(
+                                        const PopupMenuItem(
+                                          value: "failed",
+                                          child: Text("Failed"),
+                                        ),
 
-                                          child: ElevatedButton(
+                                        const PopupMenuItem(
+                                          value: "completed",
+                                          child: Text("Completed"),
+                                        ),
 
-                                            style:
-                                                ElevatedButton.styleFrom(
+                                        const PopupMenuItem(
+                                          value: "quick",
+                                          child: Text("Quick Consult"),
+                                        ),
 
-                                              backgroundColor:
-                                                  Colours.primarycolour,
-
-                                              foregroundColor:
-                                                  Colors.white,
-                                            ),
-
-                                            onPressed: () {
-
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => UserConsultationDetailsPage(
-                                                    consultationData: item.toJson(),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-
-                                            child: const Text(
-                                              "View Details",
-                                            ),
-                                          ),
+                                        const PopupMenuItem(
+                                          value: "schedule",
+                                          child: Text("Schedule Consult"),
                                         ),
                                       ],
                                     ),
                                   ],
                                 ),
-                              );
-                            },
+                              ),
+
+                          Expanded(
+                            child: ListView.builder(
+                            
+                              padding: const EdgeInsets.all(14),
+                            
+                              itemCount: filteredUserConsultations.length,
+                            
+                              itemBuilder: (context, index) {
+                            
+                                final item =
+                                  filteredUserConsultations[index];
+                            
+                                final consultationDate =
+                                    item.createdAt != null
+                                        ? DateTime.parse(
+                                            item.createdAt!,
+                                          ).toLocal()
+                                        : DateTime.now();
+                            
+                                final scheduleDate =
+                                    DateFormat(
+                                      "dd-MM-yyyy",
+                                    ).format(
+                                      consultationDate,
+                                    );
+                            
+                                final scheduleTime =
+                                    DateFormat(
+                                      "hh:mm a",
+                                    ).format(
+                                      consultationDate,
+                                    );
+                            
+                                bool isPending =
+                                    item.consultationStatus ==
+                                    "pending";
+                            
+                                return Container(
+                            
+                                  margin: const EdgeInsets.only(bottom: 16),
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius:BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: Colours.brownColour,
+                                      width: 1,
+                                    ),
+                                    // boxShadow: [
+                                    //   BoxShadow(
+                                    //     blurRadius: 8,
+                                    //     color: Colors.black12,
+                                    //   ),
+                                    // ],
+                                  ),
+                            
+                                  child: Column(
+                            
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                            
+                                    children: [
+                            
+                                      Text(
+                                        "Appointment ID : ${item.consultationRequestId}",
+                                      ),
+                            
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                            
+                                      Text(
+                                        "Appointment Type : ${item.consultationType == 1 ? "Quick Consultation" : "Scheduled Consultation"}",
+                                      ),
+                            
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                            
+                                      Text(
+                                        "Pet Name : ${item.petName ?? ""}",
+                                      ),
+                            
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                            
+                                      Text(
+                                        "Doctor : ${item.doctorName ?? ""}",
+                                      ),
+                            
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                            
+                                      Text(
+                                        "Consultation Date : $scheduleDate",
+                                      ),
+                            
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                            
+                                      Text(
+                                        "Consultation Time : $scheduleTime",
+                                      ),
+                            
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                            
+                                      Text(
+                                        "Call Status : ${item.consultationStatus}",
+                                        style: TextStyle(
+                                          color: isPending
+                                              ? Colors.orange
+                                              : Colors.black,
+                                          fontWeight:
+                                              FontWeight.bold,
+                                        ),
+                                      ),
+                            
+                                      const SizedBox(height: 20),
+                            
+                                      // ===============================
+                                      // PENDING
+                                      // ===============================
+                                      if (item.consultationStatus == "Pending")
+                                        Row(
+                                          children: [
+                            
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.green,
+                                                  foregroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => ReviewandpayPage(
+                                                        consultationId: item.consultationRequestId!,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                child: const Text("Pay & Proceed"),
+                                              ),
+                                            ),
+                            
+                                            const SizedBox(width: 10),
+                            
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colours.primarycolour,
+                                                  foregroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          UserConsultationDetailsPage(
+                                                        consultationData: item.toJson(),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                child: const Text("View Details"),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+
+
+                                        else if (
+                                            item.consultationStatus == "ongoing" &&
+                                            item.canRejoin == true
+                                        )
+                                          Row(
+                                            children: [
+
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: Colors.orange,
+                                                    foregroundColor: Colors.white,
+                                                  ),
+                                                  onPressed: () async {
+
+                                                    final response =
+                                                        await ApiService.rejoinConsultation(
+                                                      item.consultationRequestId!,
+                                                    );
+
+                                                    if (response == null) {
+
+                                                      Get.snackbar(
+                                                        "Error",
+                                                        "Unable to rejoin consultation",
+                                                      );
+
+                                                      return;
+                                                    }
+
+                                                    Get.to(
+                                                      () => ConsultationCallPage(
+                                                        roomId:
+                                                            response.consultationRoomId ?? "",
+
+                                                        websocketUrl:
+                                                            response.websocketUrl ?? "",
+
+                                                        consultationRequestId:
+                                                            response.consultationRequestId ?? 0,
+
+                                                        isDoctor: false,
+
+                                                        receiverId: "",
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: const Text(
+                                                    "Rejoin Call",
+                                                  ),
+                                                ),
+                                              ),
+
+                                              const SizedBox(width: 10),
+
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colours.primarycolour,
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            UserConsultationDetailsPage(
+                                                          consultationData:
+                                                              item.toJson(),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: const Text(
+                                                    "View Details",
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                            
+                                      // ===============================
+                                      // FAILED
+                                      // ===============================
+                                      else if (item.consultationStatus == "failed" || item.consultationStatus == "cancelled" || item.consultationStatus == "no_doctor_found")
+                                        Row(
+                                          children: [
+                            
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.orange,
+                                                  foregroundColor: Colors.white,
+                                                ),
+                                                onPressed: () async {
+
+                                                  bool success =
+                                                      await quickController
+                                                          .reconnectConsultation(
+                                                    item.consultationRequestId!,
+                                                  );
+
+                                                  if (!success) {
+
+                                                    Get.snackbar(
+                                                      "Error",
+                                                      "Reconnect failed",
+                                                    );
+
+                                                    return;
+                                                  }
+
+                                                  await Future.delayed(
+                                                    const Duration(seconds: 2),
+                                                  );
+
+                                                  Get.off(
+                                                    () => DoctorConnectingPage(
+                                                      consultationId:
+                                                          item.consultationRequestId!,
+                                                    ),
+                                                  );
+                                                },
+                                                child: const Text("Reconnect"),
+                                              ),
+                                            ),
+                            
+                                            const SizedBox(width: 10),
+                            
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colours.primarycolour,
+                                                  foregroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          UserConsultationDetailsPage(
+                                                        consultationData: item.toJson(),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                child: const Text("View Details"),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                            
+                                      // ===============================
+                                      // COMPLETED
+                                      // ===============================
+                                      else
+                                        Row(
+                                          children: [
+                            
+                                            Expanded(
+                                              child: ElevatedButton.icon(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.green,
+                                                  foregroundColor: Colors.white,
+                                                ),
+                                                onPressed: item.prescriptionDownloadUrl == null
+                                                    ? null
+                                                    : () async {
+                                                        await downloadPrescription(
+                                                          item.prescriptionDownloadUrl!,
+                                                        );
+                                                      },
+                                                icon: const Icon(
+                                                  Icons.picture_as_pdf,
+                                                  color: Colors.white,
+                                                ),
+                                                label: const Text(
+                                                  "Prescription",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                            
+                                            const SizedBox(width: 10),
+                            
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colours.primarycolour,
+                                                  foregroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          UserConsultationDetailsPage(
+                                                        consultationData: item.toJson(),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                child: const Text("View Details"),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                            ],
                           );
                         })
                       ],

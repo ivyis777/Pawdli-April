@@ -3,88 +3,106 @@ import 'package:pawlli/core/auth/authservice.dart';
 import 'package:pawlli/data/api service.dart';
 import 'package:pawlli/data/model/reelitemmodel.dart';
 
+
 class ReelsController extends GetxController {
-  // ---------------------- STATE ----------------------
   var reels = <ReelItem>[].obs;
   var isLoading = false.obs;
   var page = 1;
   var hasMore = true.obs;
 
-  // ---------------------- LIFECYCLE ----------------------
   @override
   void onReady() {
     super.onReady();
-    fetchReels();
+    fetchReels(limit: 15);
   }
 
-  // ---------------------- FETCH REELS ----------------------
-  Future<void> fetchReels({bool loadMore = false}) async {
-  if (isLoading.value || !hasMore.value) return;
+  Future<void> fetchReels({
+    bool loadMore = false,
+    int limit = 15,
+  }) async {
+    if (isLoading.value || !hasMore.value) return;
 
-  try {
-    isLoading.value = true;
+    try {
+      isLoading.value = true;
 
-    // 🔐 Ensure token is valid / refreshed
-    final ok = await AuthService.refreshTokenIfNeeded();
-    if (!ok) return;
+      final ok = await AuthService.refreshTokenIfNeeded();
+      if (!ok) return;
 
-    final newReels = await ApiService.fetchReels(
-      limit: 100,
-      page: page,
-    );
+      final newReels = await ApiService.fetchReels(
+        limit: limit,
+        page: page,
+      );
 
-    for (var reel in newReels) {
-      final profileData = await ApiService.getUserProfile(reel.userId);
+      // Fetch profile details in parallel instead of sequentially.
+      await Future.wait(
+        newReels.map((reel) async {
+          try {
+            final profileData =
+                await ApiService.getUserProfile(reel.userId);
 
-      if (profileData != null) {
-        final user = profileData["user"];
+            if (profileData != null) {
+              final user = profileData["user"];
 
-        reel.username = user["username"] ?? reel.username;
+              reel.username =
+                  user["username"] ?? reel.username;
 
-        final pic = user["profile_picture"] ?? "";
+              final pic = user["profile_picture"] ?? "";
 
-        reel.userProfilePic = pic.startsWith("http")
-            ? pic
-            : "https://app.pawdli.com$pic";
+              reel.userProfilePic = pic.startsWith("http")
+                  ? pic
+                  : "https://app.pawdli.com$pic";
+            }
+          } catch (e) {
+            print("Profile fetch error: $e");
+          }
+        }),
+      );
 
-        print("USERNAME: ${reel.username}");
-        print("PROFILE PIC: ${reel.userProfilePic}");
-      }
-    }
-
-    if (newReels.isEmpty) {
-      hasMore.value = false;
-    } else {
-      if (loadMore) {
-        reels.addAll(newReels);
+      if (newReels.isEmpty) {
+        hasMore.value = false;
       } else {
-        reels.assignAll(newReels);
+        if (loadMore) {
+          reels.addAll(newReels);
+        } else {
+          reels.assignAll(newReels);
+        }
+
+        page++;
+
+        // If API returned fewer records than requested,
+        // there may be no more pages.
+        if (newReels.length < limit) {
+          hasMore.value = false;
+        }
       }
-      print("🎥 FETCHED REELS COUNT: ${newReels.length}");
-      page++;
+
+      print("FETCHED REELS: ${newReels.length}");
+      print("TOTAL REELS: ${reels.length}");
+    } catch (e) {
+      print("FETCH REELS ERROR: $e");
+    } finally {
+      isLoading.value = false;
     }
-  } catch (e) {
-    print("❌ FETCH REELS ERROR: $e");
-  } finally {
-    isLoading.value = false;
   }
-}
 
-
-  // ------------------------------------------------------------------
-  // 🔴 REMOVE REEL LOCALLY (USED AFTER DELETE)
-  // ------------------------------------------------------------------
   void removeReelById(String videoId) {
     reels.removeWhere((e) => e.id == videoId);
   }
 
-  // ------------------------------------------------------------------
-  // 🔄 RESET & REFRESH (OPTIONAL USE)
-  // ------------------------------------------------------------------
   Future<void> refreshReels() async {
     page = 1;
     hasMore.value = true;
     reels.clear();
-    await fetchReels();
+
+    await fetchReels(limit: 15);
+  }
+
+  // Call this when the user opens the full Reels page.
+  Future<void> loadMoreReels() async {
+    await fetchReels(
+      loadMore: true,
+      limit: 20,
+    );
   }
 }
+

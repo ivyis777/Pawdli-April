@@ -12,7 +12,7 @@ class PrescriptionModel {
 
   String followUpAdvice;
 
-  String nextVisitDate;
+  String? nextVisitDate;
 
   List<MedicineModel> medicines;
 
@@ -22,7 +22,7 @@ class PrescriptionModel {
     required this.doctorNotes,
     required this.precautions,
     required this.followUpAdvice,
-    required this.nextVisitDate,
+    this.nextVisitDate,
     required this.medicines,
   });
 

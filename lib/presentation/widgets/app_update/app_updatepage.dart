@@ -35,70 +35,70 @@ class _UpdateWrapperState extends State<UpdateWrapper> {
       barrierDismissible: false,
       builder: (_) => PopScope(
         canPop: false,
-        child: AlertDialog(
+        child: Dialog(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: Colours.primarycolour,
+              width: 1.5,
+            ),
           ),
-          contentPadding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              /// Update Icon
-              Container(
-                width: 90,
-                height: 90,
-                decoration: BoxDecoration(
-                  color: Colours.primarycolour.withOpacity(0.1),
-                  shape: BoxShape.circle,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                /// Top Image
+                Image.asset(
+                  "assets/images/UpdateAvailable.png",
+                  height: 150,
+                  fit: BoxFit.contain,
                 ),
-                child: Icon(
-                  Icons.system_update_alt_rounded,
-                  size: 50,
-                  color: Colours.primarycolour,
+
+                const SizedBox(height: 12),
+
+                // /// Title
+                // const Text(
+                //   "Update Available",
+                //   textAlign: TextAlign.center,
+                //   style: TextStyle(
+                //     fontSize: 22,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
+
+                const SizedBox(height: 10),
+
+                /// Description
+                const Text(
+                  "A new version of Pawdli is available.\nPlease update the app for the best experience.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey,
+                    height: 1.5,
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 24),
+                const SizedBox(height: 20),
 
-              /// Title
-              const Text(
-                "Update Available",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              /// Description
-              const Text(
-                "A new version of Pawdli is available.\nPlease update the app for the best experience.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                  height: 1.5,
-                ),
-              ),
-
-              const SizedBox(height: 28),
-
-              /// Update Button
-              Row(
-                children: [
-                  /// Skip Button
-                  Expanded(
-                    child: SizedBox(
-                      height: 52,
+                /// Buttons
+                Row(
+                  children: [
+                    /// Skip Button
+                    Expanded(
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colours.primarycolour),
+                          side: BorderSide(
+                            color: Colours.primarycolour,
+                          ),
                           foregroundColor: Colours.primarycolour,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
                           ),
                         ),
                         onPressed: () {
@@ -108,27 +108,27 @@ class _UpdateWrapperState extends State<UpdateWrapper> {
                         child: const Text(
                           "Skip",
                           style: TextStyle(
-                            fontSize: 18,
                             fontWeight: FontWeight.w600,
+                            fontSize: 16,
                           ),
                         ),
                       ),
                     ),
-                  ),
 
-                  const SizedBox(width: 12),
+                    const SizedBox(width: 10),
 
-                  /// Update Button
-                  Expanded(
-                    child: SizedBox(
-                      height: 52,
+                    /// Update Button
+                    Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colours.primarycolour,
                           foregroundColor: Colors.white,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
                           ),
                         ),
                         onPressed: () {
@@ -138,16 +138,17 @@ class _UpdateWrapperState extends State<UpdateWrapper> {
                         child: const Text(
                           "Update",
                           style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

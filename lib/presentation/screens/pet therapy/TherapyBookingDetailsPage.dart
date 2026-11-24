@@ -8,6 +8,7 @@ import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/controller/TherapyBookingController.dart';
 
 import 'package:pawlli/data/model/TherapyBookingModel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TherapyBookingDetailsPage extends StatefulWidget {
 
@@ -207,42 +208,113 @@ class _TherapyBookingDetailsPageState
                       if (value == "cancel") {
 
                         final result = await showDialog<bool>(
-
                           context: context,
-
-                          builder: (dialogContext) => AlertDialog(
-
-                            title: const Text("Cancel Booking"),
-
-                            content: const Text(
-                              "Are you sure you want to cancel this booking?",
+                          barrierDismissible: false,
+                          builder: (dialogContext) => Dialog(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(
+                                color: Colours.primarycolour,
+                                width: 1.5,
+                              ),
                             ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Image.asset(
+                                    "assets/images/CancelBooking.png",
+                                    height: 150,
+                                    fit: BoxFit.contain,
+                                  ),
 
-                            actions: [
+                                  const SizedBox(height: 12),
 
-                              TextButton(
+                                  // const Text(
+                                  //   "Cancel Booking",
+                                  //   textAlign: TextAlign.center,
+                                  //   style: TextStyle(
+                                  //     fontSize: 22,
+                                  //     fontWeight: FontWeight.bold,
+                                  //   ),
+                                  // ),
 
-                                onPressed: () {
-                                  Navigator.pop(dialogContext, false);
-                                },
+                                  const SizedBox(height: 10),
 
-                                child: const Text("No"),
+                                  const Text(
+                                    "Are you sure you want to cancel this booking?",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 20),
+
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: OutlinedButton(
+                                          style: OutlinedButton.styleFrom(
+                                            side: BorderSide(
+                                              color: Colours.primarycolour,
+                                            ),
+                                            foregroundColor: Colours.primarycolour,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 14,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(dialogContext, false);
+                                          },
+                                          child: const Text(
+                                            "No",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      const SizedBox(width: 10),
+
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colours.primarycolour,
+                                            foregroundColor: Colors.white,
+                                            elevation: 0,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 14,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            print("STEP 1 : YES BUTTON CLICKED");
+                                            Navigator.pop(dialogContext, true);
+                                            print("STEP 2 : DIALOG CLOSED");
+                                          },
+                                          child: const Text(
+                                            "Yes",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-
-                              ElevatedButton(
-
-                                onPressed: () {
-                                  print("STEP 1 : YES BUTTON CLICKED");
-                                  Navigator.pop(dialogContext, true);
-                                  print("STEP 2 : DIALOG CLOSED");
-
-                                },
-
-                                child: const Text("Yes"),
-                              ),
-
-                            ],
-
+                            ),
                           ),
                         );
                           print("STEP 3 : Dialog Result = $result");
@@ -449,10 +521,7 @@ class _TherapyBookingDetailsPageState
               widget.booking.bookingStatus ?? "",
             ),
 
-            buildDetailCard(
-              "Location",
-              widget.booking.location ?? "",
-            ),
+            buildLocationCard(),
 
             buildDetailCard(
               "Landmark",
@@ -712,4 +781,88 @@ class _TherapyBookingDetailsPageState
     ),
   );
 }
+  Widget buildLocationCard() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Colours.brownColour,
+          width: 0.3,
+        ),
+      ),
+      child: Column(
+        children: [
+
+          /// LOCATION ROW
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+
+              const Expanded(
+                flex: 2,
+                child: Text(
+                  "Location",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+
+              Expanded(
+                flex: 3,
+                child: Text(
+                  widget.booking.location ?? "",
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 15),
+
+          /// NAVIGATION BUTTON
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: OutlinedButton.icon(
+              icon: const Icon(Icons.navigation, color: Colors.blue),
+              label: const Text(
+                "Navigate in Maps",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colours.primarycolour,
+                // backgroundColor: Colours.primarycolour,
+                side: BorderSide(
+                  color: Colours.primarycolour,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  
+                ),
+              ),
+              onPressed: () async {
+                print("MAP URL => ${widget.booking.googleMapLink}");
+                final url = widget.booking.googleMapLink ?? "";
+                print("OPENING => $url");
+
+                if (url.isNotEmpty) {
+                  await launchUrl(
+                    Uri.parse(url),
+                    mode: LaunchMode.externalApplication,
+                  );
+                  // print("LAUNCH RESULT => $success");
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

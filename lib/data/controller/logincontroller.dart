@@ -6,12 +6,16 @@ import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/api%20service.dart';
 import 'package:pawlli/data/controller/DoctorconsultationController.dart';
 import 'package:pawlli/data/controller/reelitemcontroller.dart';
-
+import 'package:pawlli/data/model/AppleLoginModel.dart';
+import 'package:pawlli/data/model/loginmodel.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:pawlli/presentation/screens/loginpage/AppleLoginPopUp.dart';
 class LoginController extends GetxController {
   final box = GetStorage();
   var isLoading = false.obs;
   var isNavigating = false.obs;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final appleAvailable = SignInWithApple.isAvailable();
 
   Future<({bool success, String message})> loginWithOtp({
     required String email,
@@ -67,9 +71,12 @@ class LoginController extends GetxController {
         box.write(LocalStorageConstants.access, user.tokens?.access ?? '');
         box.write(LocalStorageConstants.refresh, user.tokens?.refresh ?? '');
         box.write(LocalStorageConstants.name, user.name ?? '');
+        box.write(LocalStorageConstants.mobile, user.mobile ?? '');
         // box.write(LocalStorageConstants.isSuperUser, user.isSuperuser);
         box.write(LocalStorageConstants.isSuperUser, isSuper);
         box.write(LocalStorageConstants.isDoctor, isDoctor);
+        box.write(LocalStorageConstants.isGuest, false);
+        await restoreGuestCart();
 
         if (isDoctor) {
           Get.find<DoctorConsultationController>().startPolling();
@@ -157,7 +164,7 @@ class LoginController extends GetxController {
         return serverMessage ?? 'Login failed. Please try again.'.tr;
     }
   }
-
+  // Google Login
     Future<({bool success, String message, bool isNewUser})> loginWithGoogle() async {
 
       try {
@@ -194,10 +201,13 @@ class LoginController extends GetxController {
           box.write(LocalStorageConstants.userEmail, user.email);
           box.write(LocalStorageConstants.username, user.username ?? "");
           box.write(LocalStorageConstants.name, user.name ?? "");
+          box.write(LocalStorageConstants.mobile, user.mobile ?? '');
           box.write(LocalStorageConstants.access,user.tokens?.access ?? "");
           box.write(LocalStorageConstants.refresh,user.tokens?.refresh ?? "");
           box.write(LocalStorageConstants.isSuperUser,isSuper);
           box.write(LocalStorageConstants.isDoctor,isDoctor);
+          box.write(LocalStorageConstants.isGuest, false);
+          await restoreGuestCart();
 
           if (isDoctor) {
             Get.find<DoctorConsultationController>()
@@ -241,77 +251,175 @@ class LoginController extends GetxController {
       }
     }
 
-    // Future<({bool success, String message})> loginWithApple() async {
-    //   print("🍎 Apple login started");
-    //   try {
-    //     isLoading.value = true;
+    // Apple Login
+    Future<({
+      bool success,
+      bool emailRequired,
+      bool isNewUser,
+      String message,
+      String? identityToken,
+    })> loginWithApple() async {
 
-    //     final credential = await SignInWithApple.getAppleIDCredential(
-    //       scopes: [
-    //         AppleIDAuthorizationScopes.email,
-    //         AppleIDAuthorizationScopes.fullName,
-    //       ],
-    //     );
+  try {
 
-    //     print("🍎 credential.email: ${credential.email}");
-    //     print("🍎 credential.userIdentifier: ${credential.userIdentifier}");
-    //     print("🍎 stored email: ${box.read('apple_email')}");
+    final credential =
+        await SignInWithApple
+            .getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes
+            .email,
+        AppleIDAuthorizationScopes
+            .fullName,
+      ],
+    );
 
-    //     // ✅ Step 1: get email OR stored email
-    //     String? email = credential.email ?? box.read('apple_email');
+    final identityToken =
+        credential.identityToken;
 
-    //     // ✅ Step 2: fallback to Apple userIdentifier
-    //     if (email == null || email.isEmpty) {
-    //       final userId = credential.userIdentifier ?? "apple_user";
+    if (identityToken == null) {
+      return (
+        success: false,
+        emailRequired: false,
+        isNewUser: false,
+        identityToken: null,
+        message: "Apple token missing",
+      );
+    }
 
-    //       // ✅ safe substring (no crash)
-    //       final shortId = userId.length > 20 ? userId.substring(0, 20) : userId;
+    dynamic response =
+        await ApiService.appleLoginAPI(
+      identityToken: identityToken,
+    );
 
-    //       email = "$shortId@apple.com";
-    //     }
+    if (response is AppleEmailRequiredModel) {
 
-    //     // ✅ Save for next time
-    //     box.write('apple_email', email);
+      return (
+        success: false,
+        emailRequired: true,
+        isNewUser: false,
+        identityToken: null,
+        message: "Pawdli requires an email address to access our service, but the identity provider you signed in with did not provide one.",
+      );
+    }
 
-    //     final fcmToken = box.read('fcm_token') ?? "";
-    //     final apnsToken = box.read('apns_token') ?? "";
+    
+      if (response is! LoginModel) {
+        return (
+          success: false,
+          emailRequired: false,
+          isNewUser: false,
+          identityToken: identityToken,
+          message: "Invalid response",
+        );
+      }
 
-    //     final response = await ApiService.loginAPI(
-    //       email: email,
-    //       otp: "",
-    //       through_google: true, 
-    //       fcm_token: fcmToken,
-    //       apns_token: apnsToken,
-    //     );
+    /// LOGIN SUCCESS
 
-    //     if (response.status == true && response.data != null) {
+    final LoginModel loginResponse =
+        response;
 
-    //       final user = response.data!;
+    if (loginResponse.status ==
+            true &&
+        loginResponse.data != null) {
 
-    //       box.write(LocalStorageConstants.sessionManager, true);
-    //       box.write(LocalStorageConstants.userId, user.userId);
-    //       box.write(LocalStorageConstants.userEmail, user.email);
-    //       box.write(LocalStorageConstants.username, user.username ?? '');
-    //       box.write(LocalStorageConstants.access, user.tokens?.access ?? '');
-    //       box.write(LocalStorageConstants.refresh, user.tokens?.refresh ?? '');
+      final user =
+          loginResponse.data!;
 
-    //       try {
-    //         await FirebaseMessaging.instance.subscribeToTopic("all_users");
-    //         print("✅ Subscribed to topic: all_users");
-    //       } catch (e) {
-    //         print("⚠️ FCM subscribe skipped: $e");
-    //       }
-    //       print("🍎 APPLE LOGIN SUCCESS RETURNING TRUE");
-    //       return (success: true, message: "Login successful");
-    //     }
+      box.write(
+          LocalStorageConstants
+              .sessionManager,
+          true);
 
-    //     return (success: false, message: response.message ?? "Login failed");
+      box.write(
+          LocalStorageConstants
+              .userId,
+          user.userId);
 
-    //   } catch (e) {
-    //     print("❌ Apple login error: $e");
-    //     return (success: false, message: "Apple login failed");
-    //   } finally {
-    //     isLoading.value = false;
-    //   }
-    // }             
+      box.write(
+          LocalStorageConstants
+              .userEmail,
+          user.email);
+
+      box.write(
+          LocalStorageConstants
+              .access,
+          user.tokens
+                  ?.access ??
+              "");
+
+      box.write(
+          LocalStorageConstants
+              .refresh,
+          user.tokens
+                  ?.refresh ??
+              "");
+
+      box.write(
+        LocalStorageConstants.username,
+        user.username ?? '',
+      );
+
+      box.write(
+        LocalStorageConstants.name,
+        user.name ?? '',
+      );
+
+      box.write(
+        LocalStorageConstants.mobile,
+        user.mobile ?? '',
+      );
+      
+      box.write(LocalStorageConstants.isGuest, false);
+      await restoreGuestCart();
+
+      return (
+        success: true,
+        emailRequired: false,
+        isNewUser: false,
+        identityToken: null,
+        message: loginResponse.message ?? "",
+      );
+    }
+
+    return (
+      success: false,
+      emailRequired: false,
+      isNewUser: false,
+      identityToken: identityToken,
+      message: loginResponse.message ?? "",
+    );
+
+  } catch (e) {
+
+    return (
+      success: false,
+      emailRequired: false,
+      isNewUser: false,
+      identityToken: null,
+      message: e.toString(),
+    );
+  }
+}
+  Future<void> restoreGuestCart() async {
+    final backup = box.read(
+      LocalStorageConstants.guestCartBackup,
+    );
+
+    if (backup == null) return;
+
+    for (final item in backup) {
+      await ApiService.addToCart(
+        productId: item["productId"],
+        variantId: item["variantId"],
+        quantity: item["quantity"],
+        price: double.parse(
+          item["price"].toString(),
+        ),
+      );
+    }
+
+    box.remove(
+      LocalStorageConstants.guestCartBackup,
+    );
+  }
 }

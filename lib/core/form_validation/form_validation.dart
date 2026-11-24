@@ -1,4 +1,21 @@
 class FormValidation {
+
+  static bool isProfileComplete({
+    required dynamic userId,
+    required String? name,
+    required String? username,
+    required String? mobile,
+  }) {
+    return userId != null &&
+        userId.toString().trim().isNotEmpty &&
+        name != null &&
+        name.trim().isNotEmpty &&
+        username != null &&
+        username.trim().isNotEmpty &&
+        mobile != null &&
+        mobile.trim().isNotEmpty;
+  }
+
   static String? passwordValidation(String? text) {
     if (text == null || text.isEmpty) {
       return 'Please enter your password';

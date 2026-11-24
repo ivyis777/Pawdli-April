@@ -471,13 +471,15 @@ class _MyWalletPageState extends State<MyWalletPage> {
                                 [];
 
                             if (transactions.isEmpty) {
-                              return Center(
-                                  child: Text(
-                                    "No transactions found".tr,
-                                    style: TextStyle(
-                                      fontSize: getResponsiveFont(context, 14),
-                                    ),
-                                  ));
+                              return Container(
+                                width: double.infinity,
+                                height: MediaQuery.of(context).size.height * 0.25,
+                                alignment: Alignment.center,
+                                child: Image.asset(
+                                  'assets/images/NoTransactions.png',
+                                  fit: BoxFit.contain,
+                                ),
+                              );
                             }
 
                             return Card(

@@ -189,7 +189,11 @@ class _PetTherapyState extends State<PetTherapy>
 
           _petTherapyTab(),
 
-          TherapyBookingListPage(),
+          TherapyBookingListPage(
+            onSwitchToTherapyTab: () {
+              _tabController.animateTo(0);
+            },
+          ),
 
         ],
 
@@ -264,12 +268,18 @@ class _PetTherapyState extends State<PetTherapy>
                     }
 
                     if (controller.pets.isEmpty) {
-                      return  Center(child: Text(
-                        'No pets available'.tr,
-                        style: TextStyle(
-                          fontSize: getResponsiveFont(context, 14),
-                        ),
-                      ));
+                      return LayoutBuilder(
+                        builder: (context, constraints) {
+                          return Center(
+                            child: Image.asset(
+                              'assets/images/NoPetsTherapy.png',
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              height: MediaQuery.of(context).size.height * 0.6,
+                              fit: BoxFit.contain,
+                            ),
+                          );
+                        },
+                      );
                     }
 
                     return ListView.builder(

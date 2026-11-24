@@ -7,7 +7,6 @@ import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/api%20service.dart';
 import 'package:pawlli/data/controller/paymnetcontroller.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -218,13 +217,20 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                               ],
                             ),
                             SizedBox(height: screenSize.height * 0.02),
+
                             if (filteredPayments.isEmpty)
-                              Center(child: Text(
-                                "No payments found.".tr,
-                                style: TextStyle(
-                                  fontSize: getResponsiveFont(context, 14),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.6,
+                                width: double.infinity,
+                                child: Center(
+                                  child: Image.asset(
+                                    'assets/images/NoPayments.png',
+                                    width: MediaQuery.of(context).size.width * 0.9,
+                                    height: MediaQuery.of(context).size.height * 0.5,
+                                    fit: BoxFit.contain,
+                                  ),
                                 ),
-                              ))
+                              )
                             else
                               ...filteredPayments.map((payment) {
                                 final dateStr =
@@ -305,7 +311,9 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                             width: screenSize.width * 0.02),
                                         GestureDetector(
                                           onTap: () async {
-                                            if (payment.razorpayTransactionId.isEmpty) {
+                                            String invoiceId = payment.invoiceId;
+
+                                            if (invoiceId.isEmpty) {
                                               Get.snackbar(
                                                 "Info",
                                                 "Receipt not available for this payment",
@@ -314,7 +322,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                             }
 
                                             File? pdfFile = await ApiService.downloadPdfWithToken(
-                                              payment.razorpayTransactionId,
+                                              invoiceId,
                                             );
 
                                             if (pdfFile != null) {
@@ -330,7 +338,7 @@ class _MypaymentsPageState extends State<MypaymentsPage> {
                                             }
                                           },
 
-                                          child: payment.razorpayTransactionId.isNotEmpty
+                                          child: payment.invoiceId.isNotEmpty
                                               ? Image.network(
                                                   'https://app.pawdli.com/media/static/pdf.png',
                                                   width: 30,

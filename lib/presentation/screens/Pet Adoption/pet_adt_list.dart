@@ -97,12 +97,24 @@ class _AdoptionPetsState extends State<AdoptionPets> {
                       }
 
                       if (_controller.adoptionPets.isEmpty) {
-                        return  Center(child: Text(
-                          "No pets found.".tr,
-                          style: TextStyle(
-                            fontSize: getResponsiveFont(context, 14),
+                        return Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddPetAdoption(),
+                                ),
+                              );
+                            },
+                            child: Image.asset(
+                              'assets/images/NoPetsFound.png',
+                              width: MediaQuery.of(context).size.width * 0.95,
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              fit: BoxFit.contain,
+                            ),
                           ),
-                        ));
+                        );
                       }
 
                       final sortedPets = [..._controller.adoptionPets];
@@ -137,16 +149,16 @@ class _AdoptionPetsState extends State<AdoptionPets> {
               ),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddPetAdoption()),
-              );
-            },
-            backgroundColor: Colors.brown[600],
-            child: Icon(Icons.add, color: Colours.secondarycolour),
-          ),
+          // floatingActionButton: FloatingActionButton(
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => AddPetAdoption()),
+          //     );
+          //   },
+          //   backgroundColor: Colors.brown[600],
+          //   child: Icon(Icons.add, color: Colours.secondarycolour),
+          // ),
         ));
   }
 

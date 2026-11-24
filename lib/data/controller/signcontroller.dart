@@ -65,6 +65,7 @@ class SignupController extends GetxController {
         box.write(LocalStorageConstants.userEmail, response.data!.email);
         box.write(LocalStorageConstants.username, response.data!.username);
         box.write(LocalStorageConstants.name, response.data!.name ?? '');
+        box.write(LocalStorageConstants.isGuest, false);
 
         print("✅ Tokens saved");
 

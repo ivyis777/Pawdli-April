@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pawlli/core/appstate.dart';
+import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/core/translations/translation.dart';
 import 'package:pawlli/data/cart%20payment/paymentservice.dart';
@@ -35,18 +36,23 @@ import 'package:pawlli/presentation/widgets/fcm.dart';
 import 'package:pawlli/services/NetworkServices.dart';
 
 @pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  debugPrint('========== BACKGROUND FCM ==========');
-  debugPrint('Title: ${message.notification?.title}');
-  debugPrint("BODY => ${message.notification?.body}");
-  debugPrint('Data: ${message.data}');
+  Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    await Firebase.initializeApp();
 
-  await NotificationService.showDoctorRequestNotification(
-    title: message.notification?.title ?? "New Consultation",
-    body: message.notification?.body ?? "",
-  );
-}
+    debugPrint('========== BACKGROUND FCM ==========');
+    debugPrint('Title: ${message.notification?.title}');
+    debugPrint("BODY => ${message.notification?.body}");
+    debugPrint('Data: ${message.data}');
+
+    final type = message.data['type'];
+
+    if (type == "consultation_request") {
+      await NotificationService.showDoctorRequestNotification(
+        title: message.notification?.title ?? "New Consultation",
+        body: message.notification?.body ?? "",
+      );
+    }
+  }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -129,6 +135,7 @@ void main() async {
 
   FirebaseMessaging.onMessage.listen(
     (RemoteMessage message) async {
+
       print("📩 onMessage CALLED");
 
       print("================================");
@@ -143,8 +150,13 @@ void main() async {
             LocalStorageConstants.isDoctor,
           ) ?? false;
 
-      if (!isDoctor) {
-        print("NOT DOCTOR");
+      final type = message.data['type'];
+
+      print("NOTIFICATION TYPE => $type");
+
+      // Only consultation requests should play ringtone
+      if (!isDoctor || type != "consultation_request") {
+        print("NORMAL NOTIFICATION - NO CUSTOM RINGTONE");
         return;
       }
 
@@ -154,9 +166,7 @@ void main() async {
       await controller.fetchLiveConsultations();
 
       if (controller.liveConsultations.isEmpty) {
-
         print("NO LIVE CONSULTATIONS");
-
         return;
       }
 
@@ -173,7 +183,6 @@ void main() async {
           () => const IncomingConsultationRequestsPage(),
         );
       }
-
     },
   );
 
@@ -194,10 +203,8 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   Future<bool> _checkUserLoggedIn() async {
-    final box = GetStorage();
-    final token = box.read(LocalStorageConstants.sessionManager);
-    return token != null && token != "";
-  }
+  return LocalStorage.getAccessToken() != null;
+}
 
     Locale getSavedLocale() {
       final box = GetStorage();

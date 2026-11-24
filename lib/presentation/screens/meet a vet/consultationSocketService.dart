@@ -9,6 +9,8 @@ class ConsultationSocketService {
   IOWebSocketChannel? socket;
 
   VoidCallback? onCallEnded;
+  VoidCallback? onPeerLeft;
+  VoidCallback? onPeerRejoined;
 
   RTCPeerConnection? peerConnection;
 
@@ -80,10 +82,33 @@ class ConsultationSocketService {
     };
 
     peerConnection!.onIceConnectionState =
-        (state) {
+        (state) async {
 
-      print(
-          "ICE STATE : $state");
+      print("ICE STATE : $state");
+
+      if (state ==
+          RTCIceConnectionState
+              .RTCIceConnectionStateDisconnected) {
+
+        print("NETWORK LOST");
+
+        // DON'T END CALL HERE
+        // WAIT FOR RECONNECT
+      }
+
+      if (state ==
+          RTCIceConnectionState
+              .RTCIceConnectionStateFailed) {
+
+        print("ICE FAILED");
+      }
+
+      if (state ==
+          RTCIceConnectionState
+              .RTCIceConnectionStateConnected) {
+
+        print("RECONNECTED");
+      }
     };
 
     for (var track
@@ -146,19 +171,26 @@ class ConsultationSocketService {
   Future connect(
       String websocketUrl,
       bool isDoctor,
+      String userId,
       ) async {
 
       print("CONNECT METHOD ENTERED");
 
       print("================================");
       print("CONNECT METHOD CALLED");
-      print("WEBSOCKET URL : $websocketUrl");
+      print("NEW WEBSOCKET URL : $websocketUrl");
       print("IS DOCTOR : $isDoctor");
       print("================================");
 
-    socket =
-        IOWebSocketChannel.connect(
-      Uri.parse(websocketUrl),
+    final role = isDoctor ? "doctor" : "patient";
+
+    final finalWsUrl =
+        "$websocketUrl?user_id=$userId&role=$role";
+
+    print("FINAL WS URL => $finalWsUrl");
+
+    socket = IOWebSocketChannel.connect(
+      Uri.parse(finalWsUrl),
     );
 
     print("SOCKET CREATED");
@@ -323,15 +355,78 @@ class ConsultationSocketService {
 
             break;
 
+            case "peer_left":
+
+              print("================================");
+              print("PEER LEFT");
+              print(data);
+              print("CAN REJOIN => ${data["can_rejoin"]}");
+              print("================================");
+
+              if (data["can_rejoin"] == true) {
+                onPeerLeft?.call();
+              } else {
+                onCallEnded?.call();
+              }
+
+              break;
+
+            case "peer_rejoined":
+
+              print("================================");
+              print("PEER REJOINED");
+              print(data);
+              print("================================");
+
+              onPeerRejoined?.call();
+
+              if (isDoctor) {
+
+                print("DOCTOR CREATING REJOIN OFFER");
+
+                final offer =
+                    await peerConnection!.createOffer();
+
+                await peerConnection!
+                    .setLocalDescription(offer);
+
+                socket?.sink.add(
+                  jsonEncode({
+                    "type": "offer",
+                    "sdp": offer.sdp,
+                  }),
+                );
+
+                print("REJOIN OFFER SENT");
+              }
+
+              break;
+
             case "call_ended":
 
               print("CALL ENDED RECEIVED");
+              print("REASON => ${data["reason"]}");
 
               onCallEnded?.call();
 
               break;
         }
       },
+      onDone: () {
+
+        print("SOCKET CLOSED");
+
+        // DON'T CALL onCallEnded
+      },
+
+      onError: (e) {
+
+        print("SOCKET ERROR => $e");
+
+        // DON'T CALL onCallEnded
+      },
+
+      cancelOnError: false,
     );
 
     // if (isDoctor) {

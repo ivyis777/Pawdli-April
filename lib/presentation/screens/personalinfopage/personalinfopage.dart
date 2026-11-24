@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -15,7 +16,7 @@ import 'package:pawlli/data/controller/updateuserprofilecontroller.dart';
 import 'package:pawlli/data/model/updateprofilemodel.dart';
 // import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
-import 'package:pawlli/presentation/screens/homepage/homepage.dart';
+// import 'package:pawlli/presentation/screens/homepage/homepage.dart';
 import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 // import 'package:pawlli/presentation/screens/userprofile/userprofile.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -121,20 +122,41 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   }
 
   Future<File?> _compressImage(XFile image) async {
-    final filePath = image.path;
-    final lastIndex = filePath.lastIndexOf(RegExp(r'.jp')); // .jpg or .jpeg
-    final split = filePath.substring(0, lastIndex);
-    final outPath = "${split}_compressed.jpg";
+    try {
+      final filePath = image.path;
+      final lastIndex = filePath.lastIndexOf('.');
 
-    final compressedXFile = await FlutterImageCompress.compressAndGetFile(
-      filePath,
-      outPath,
-      quality: 70,
-    );
+      final split = lastIndex != -1
+          ? filePath.substring(0, lastIndex)
+          : filePath;
 
-    if (compressedXFile == null) return null;
+      final outPath = "${split}_compressed.jpg";
 
-    return File(compressedXFile.path); // ✅ return File, not XFile
+      debugPrint('📸 Original image: $filePath');
+
+      final compressedXFile =
+          await FlutterImageCompress.compressAndGetFile(
+        filePath,
+        outPath,
+        quality: 70,
+      );
+
+      if (compressedXFile == null) {
+        debugPrint('❌ Compression returned null');
+        return null;
+      }
+
+      final compressedFile = File(compressedXFile.path);
+
+      debugPrint('✅ Compressed image: ${compressedFile.path}');
+      debugPrint('✅ File exists: ${compressedFile.existsSync()}');
+
+      return compressedFile;
+    } catch (e, stackTrace) {
+      debugPrint('❌ PROFILE IMAGE COMPRESSION ERROR: $e');
+      debugPrint('$stackTrace');
+      return null;
+    }
   }
 
   Future<void> fetchUserDetails() async {
@@ -239,58 +261,114 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   }
 
   Future<void> _pickImage() async {
-    final ImagePicker picker = ImagePicker();
+    List<CameraDescription> cameras = [];
+
+    // Check whether a camera is available on this device
+    try {
+      cameras = await availableCameras();
+    } catch (e) {
+      debugPrint('Camera availability check failed: $e');
+    }
+
+    final bool cameraAvailable = cameras.isNotEmpty;
+
+    if (!mounted) return;
 
     showModalBottomSheet(
       context: context,
-      builder: (context) {
+      builder: (sheetContext) {
         return Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                leading: const Icon(Icons.camera_alt),
-                title: Text('Take a Picture'.tr),
-                onTap: () async {
-                  final XFile? image =
-                      await picker.pickImage(source: ImageSource.camera);
+              // Show camera option ONLY if camera is available
+              if (cameraAvailable)
+                ListTile(
+                  leading: const Icon(Icons.camera_alt),
+                  title: Text('Take a Picture'.tr),
+                  onTap: () async {
+                    Navigator.pop(sheetContext);
 
-                  if (image != null) {
-                    final compressed = await _compressImage(image);
-                    if (compressed != null) {
-                      final cropped = await _cropImage(compressed);
-                      if (cropped != null) {
-                        setState(() {
-                          _profileImage = cropped; // ✅ SAVE CROPPED IMAGE
-                        });
+                    try {
+                      debugPrint('📸 Opening profile camera...');
+
+                      final XFile? image = await _picker.pickImage(
+                        source: ImageSource.camera,
+                      );
+
+                      if (image == null) {
+                        debugPrint('⚠️ Camera capture cancelled');
+                        return;
+                      }
+
+                      debugPrint('✅ Photo captured: ${image.path}');
+
+                      final File? compressed =
+                          await _compressImage(image);
+
+                      if (compressed == null) {
+                        debugPrint('❌ Profile image compression failed');
+                        return;
+                      }
+
+                      debugPrint('✅ Compression successful');
+
+                      // ⚠️ Bypass ImageCropper on iOS
+                      if (!mounted) return;
+
+                      setState(() {
+                        _profileImage = compressed;
+                      });
+
+                      debugPrint(
+                        '🟢 Profile image displayed successfully',
+                      );
+                    } catch (e, stackTrace) {
+                      debugPrint('❌ PROFILE CAMERA ERROR: $e');
+                      debugPrint('$stackTrace');
+
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Unable to process photo: $e'),
+                          ),
+                        );
                       }
                     }
-                  }
-                  Navigator.pop(context);
-                },
-              ),
+                  },
+                ),
+
+              // Gallery option is always available
               ListTile(
                 leading: const Icon(Icons.image),
                 title: Text('Upload from Gallery'.tr),
                 onTap: () async {
-                  final XFile? image =
-                      await picker.pickImage(source: ImageSource.gallery);
+                  try {
+                    final XFile? image = await _picker.pickImage(
+                      source: ImageSource.gallery,
+                    );
 
-                  if (image != null) {
-                    final File? compressed = await _compressImage(image);
+                    if (image != null) {
+                      final File? compressed = await _compressImage(image);
 
-                    if (compressed != null) {
-                      final File? cropped = await _cropImage(compressed);
+                      if (compressed != null) {
+                        final File? cropped = await _cropImage(compressed);
 
-                      if (cropped != null) {
-                        setState(() {
-                          _profileImage = cropped; // ✅ NO RED LINE
-                        });
+                        if (cropped != null && mounted) {
+                          setState(() {
+                            _profileImage = cropped;
+                          });
+                        }
                       }
                     }
+                  } catch (e) {
+                    debugPrint('Gallery error: $e');
                   }
-                  Navigator.pop(context);
+
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
                 },
               ),
             ],
@@ -420,7 +498,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             // User Name Field
                             TextFormField(
                               controller: _usernameController,
-                              textInputAction: TextInputAction.next,
+                              // textInputAction: TextInputAction.next,
                                 decoration: InputDecoration(
                                 labelText: 'User Name'.tr,
                                 hintText: "Enter unique username",
@@ -720,12 +798,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your address'.tr;
-                                }
-                                return null;
-                              },
+                              validator: (value) => null,
+                              // validator: (value) {
+                              //   if (value == null || value.isEmpty) {
+                              //     return 'Please enter your address'.tr;
+                              //   }
+                              //   return null;
+                              // },
                             ),
                             SizedBox(height: 15),
                             TextFormField(
@@ -750,12 +829,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your city'.tr;
-                                }
-                                return null;
-                              },
+                              validator: (value) => null,
+                              // validator: (value) {
+                              //   if (value == null || value.isEmpty) {
+                              //     return 'Please enter your city'.tr;
+                              //   }
+                              //   return null;
+                              // },
                             ),
                             SizedBox(height: 15),
 
@@ -782,12 +862,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your state'.tr;
-                                }
-                                return null;
-                              },
+                              validator: (value) => null,
+                              // validator: (value) {
+                              //   if (value == null || value.isEmpty) {
+                              //     return 'Please enter your state'.tr;
+                              //   }
+                              //   return null;
+                              // },
                             ),
                             SizedBox(height: 15),
 
@@ -814,12 +895,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your country'.tr;
-                                }
-                                return null;
-                              },
+                              validator: (value) => null,
+                              // validator: (value) {
+                              //   if (value == null || value.isEmpty) {
+                              //     return 'Please enter your country'.tr;
+                              //   }
+                              //   return null;
+                              // },
                             ),
                             SizedBox(height: 15),
 
@@ -846,59 +928,68 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 ),
                               ),
                               keyboardType: TextInputType.number,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your pincode'.tr;
-                                }
-                                return null;
-                              },
+                              validator: (value) => null,
+                              // validator: (value) {
+                              //   if (value == null || value.isEmpty) {
+                              //     return 'Please enter your pincode'.tr;
+                              //   }
+                              //   return null;
+                              // },
                             ),
 
                             SizedBox(height: 20),
                             Obx(
-                              () => updateProfileController.isLoading.value
-                                  ? CircularProgressIndicator()
-                                  : Center(
-                                      child: ElevatedButton(
-                                        onPressed: () async {
+                              () => Center(
+                                child: ElevatedButton(
+                                  onPressed: updateProfileController.isLoading.value
+                                      ? null
+                                      : () async {
                                           if (!_isPhoneNumberValid) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
+                                            ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(
                                                 content: Text(
-                                                    'Please enter a valid phone number'.tr),
+                                                  'Please enter a valid phone number'.tr,
+                                                ),
                                                 backgroundColor: Colors.black,
                                               ),
                                             );
                                             return;
                                           }
 
-                                          if (_formKey.currentState!
-                                              .validate()) {
+                                          if (_formKey.currentState!.validate()) {
                                             await _updateProfile();
                                             Get.offAll(() => MainLayout());
                                           }
                                         },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Colours.primarycolour,
-                                          fixedSize: Size(
-                                            screenWidth * 0.8,
-                                            50, // fixed height better for all devices
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colours.primarycolour,
+                                    fixedSize: Size(
+                                      screenWidth * 0.8,
+                                      50,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
+                                  child: updateProfileController.isLoading.value
+                                      ? const SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2.5,
                                           ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
+                                        )
+                                      : Text(
+                                          'Update'.tr,
+                                          style: TextStyle(
+                                            fontSize: getResponsiveFont(context, 16),
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
                                           ),
                                         ),
-                                        child: Text('Update'.tr,
-                                            style: TextStyle(
-                                              fontSize: getResponsiveFont(context, 16),
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            )),
-                                      ),
-                                    ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -915,29 +1006,50 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   Future<void> _updateProfile() async {
     final model = UpdateProfileModel(
       id: userId,
+
+      // Only these five fields will be updated
       username: _usernameController.text.trim(),
       name: _nameController.text.trim(),
-      email: _emailController.text.trim(),
-      mobile: _phoneNumber?.phoneNumber?.trim() ?? _phoneController.text.trim(),
       age: int.tryParse(_ageController.text.trim()),
-      gender: _selectedGenderIndex == 0
-          ? 'Male'
-          : _selectedGenderIndex == 1
-              ? 'Female'
-              : 'Other',
-      address: _address1Controller.text.trim(),
-      city: _cityController.text.trim(),
-      state: _stateController.text.trim(),
-      country: _countryController.text.trim(),
-      pincode: int.tryParse(_pincodeController.text.trim()),
+      email: _emailController.text.trim(),
+      mobile: _phoneNumber.phoneNumber?.trim() ??
+          _phoneController.text.trim(),
+
+      // All remaining fields are intentionally null
+      password: null,
+      lastLogin: null,
+      gender: null,
+      address: null,
+      dob: null,
+      pincode: null,
+      bio: null,
       profilePicture: _profileImage?.path,
+      registeredat: null,
+      lastlogin: null,
+      city: null,
+      country: null,
+      state: null,
+      throughGoogle: null,
+      fcmToken: null,
+      isActive: null,
+      updatedAt: null,
+      updatedBy: null,
+      currencyPreference: null,
+      agoraUid: null,
+      onlineStatus: null,
     );
+
+    print("======= PROFILE UPDATE REQUEST =======");
+    print("Username: ${model.username}");
+    print("Name: ${model.name}");
+    print("Age: ${model.age}");
+    print("Email: ${model.email}");
+    print("Mobile: ${model.mobile}");
+    print("Other fields: null");
+    print("======================================");
 
     await updateProfileController.updateUserProfile(model);
 
-    // Reload user details and update UI state
     await fetchUserDetails();
-
-    // Optionally show a success message here
   }
 }

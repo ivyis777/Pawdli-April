@@ -3,6 +3,7 @@ class ConsultationModel {
   int? consultationRequestId;
   String? petName;
   String? petBreed;
+  String? petType;
   String? consultationStatus;
   int? consultationType;
   String? createdAt;
@@ -24,6 +25,13 @@ class ConsultationModel {
 
   String? sessionStartTime;
   String? sessionEndTime;
+  bool? canRejoin;
+
+  String? consultationRoomId;
+
+  String? websocketUrl;
+
+  String? doctorId;
 
   Map<String, dynamic>? paymentDetails;
 
@@ -33,6 +41,7 @@ class ConsultationModel {
     this.consultationRequestId,
     this.petName,
     this.petBreed,
+    this.petType,
     this.consultationStatus,
     this.consultationType,
     this.createdAt,
@@ -49,6 +58,10 @@ class ConsultationModel {
     this.otherSymptom,
     this.sessionStartTime,
     this.sessionEndTime,
+    this.canRejoin,
+    this.consultationRoomId,
+    this.websocketUrl,
+    this.doctorId,
     this.paymentDetails,
     this.issueImages,
   });
@@ -71,6 +84,9 @@ class ConsultationModel {
 
       petBreed:
           json["pet_breed"],
+
+      petType:
+          json["pet_type"],
 
       consultationStatus:
           json["consultation_status"],
@@ -110,6 +126,14 @@ class ConsultationModel {
           json["session_start_time"],
       sessionEndTime:
           json["session_end_time"],
+      canRejoin:
+          json["can_rejoin"],
+      consultationRoomId:
+          json["consultation_room_id"],
+      websocketUrl:
+          json["websocket_url"],
+      doctorId:
+          json["doctor_id"],
       paymentDetails:
           json["payment_details"],
       issueImages:
@@ -125,6 +149,8 @@ class ConsultationModel {
           petName,
       "pet_breed":
           petBreed,
+      "pet_type":
+          petType,
       "consultation_status":
           consultationStatus,
       "consultation_type":
@@ -157,6 +183,14 @@ class ConsultationModel {
           sessionStartTime,
       "session_end_time":
           sessionEndTime,
+      "can_rejoin":
+          canRejoin,
+      "consultation_room_id":
+          consultationRoomId,
+      "websocket_url":
+          websocketUrl,
+      "doctor_id":
+          doctorId,
       "payment_details":
           paymentDetails,
       "issue_images":

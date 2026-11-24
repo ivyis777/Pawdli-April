@@ -829,15 +829,15 @@ Widget build(BuildContext context) {
 
               onPressed: () async {
 
-                if (nextVisitDate == null) {
+                // if (nextVisitDate == null) {
 
-                  Get.snackbar(
-                    "Error",
-                    "Select Next Consultation Date",
-                  );
+                //   Get.snackbar(
+                //     "Error",
+                //     "Select Next Consultation Date",
+                //   );
 
-                  return;
-                }
+                //   return;
+                // }
 
                 List<MedicineModel>
                     medicineList = [];
@@ -959,12 +959,9 @@ Widget build(BuildContext context) {
                   followUpAdvice:
                       followUpController.text,
 
-                  nextVisitDate:
-                      DateFormat(
-                        "yyyy-MM-dd",
-                      ).format(
-                        nextVisitDate!,
-                      ),
+                  nextVisitDate: nextVisitDate != null
+                    ? DateFormat("yyyy-MM-dd").format(nextVisitDate!)
+                    : null,
 
                   medicines:
                       medicineList,

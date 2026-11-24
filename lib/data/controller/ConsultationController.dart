@@ -19,8 +19,7 @@ class ConsultationController
     fetchConsultations();
   }
 
-  Future<void>
-      fetchConsultations() async {
+  Future<void>fetchConsultations() async {
 
     try {
 
@@ -35,4 +34,5 @@ class ConsultationController
       isLoading.value = false;
     }
   }
+
 }

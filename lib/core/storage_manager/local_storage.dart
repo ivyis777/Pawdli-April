@@ -13,6 +13,7 @@ class LocalStorageConstants {
   static const String isSuperUser = "is_superuser";
   static const String isDoctor = "is_doctor";
   static const String profileImage = "profile_image";
-  
+  static const String isGuest = "is_guest";
+  static const String guestCartBackup = "guest_cart_backup";
 
 }

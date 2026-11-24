@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
+import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/controller/myreelscontroller.dart';
 import 'package:pawlli/data/api service.dart';
 import 'package:pawlli/presentation/screens/reelspage/followerslist.dart';
 import 'package:pawlli/presentation/screens/reelspage/followingflist.dart';
 import 'package:pawlli/presentation/screens/reelspage/reels.dart';
+import 'package:pawlli/presentation/screens/reelspage/uploadreel.dart';
 
 class MyReelsPage extends StatefulWidget {
   const MyReelsPage({super.key});
@@ -29,6 +34,7 @@ class _MyReelsPageState extends State<MyReelsPage> {
   @override
   void initState() {
     super.initState();
+    controller.fetchMyReels();
     fetchProfileData();
   }
 
@@ -128,8 +134,31 @@ class _MyReelsPageState extends State<MyReelsPage> {
         }
 
         if (controller.myReels.isEmpty) {
-          return Center(
-            child: Text("No reels found".tr),
+          return GestureDetector(
+            onTap: () async {
+              final picker = ImagePicker();
+              final pickedFile =
+                  await picker.pickVideo(source: ImageSource.gallery);
+
+              if (pickedFile == null) return;
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      AddDetailsPage(videoFile: File(pickedFile.path)),
+                ),
+              );
+            },
+            child: SizedBox.expand(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Image.asset(
+                  'assets/images/NoReels.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
           );
         }
 
@@ -153,7 +182,7 @@ class _MyReelsPageState extends State<MyReelsPage> {
               child: Row(
                 children: [
 
-                  /// PROFILE IMAGE
+                  /// PROFILE 
                   CircleAvatar(
                     radius: 40,
                     backgroundColor: Colors.transparent,
@@ -332,30 +361,102 @@ class _MyReelsPageState extends State<MyReelsPage> {
                                   /// CONFIRM DIALOG
                                   final confirm = await showDialog(
                                     context: context,
-                                    builder: (_) => AlertDialog(
-                                      title: const Text("Delete Reel"),
-                                      content: const Text(
-                                        "Are you sure you want to delete this reel?",
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context, false);
-                                          },
-                                          child: const Text("Cancel"),
-                                        ),
-
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context, true);
-                                          },
-                                          child: const Text(
-                                            "Delete",
-                                            style: TextStyle(color: Colors.red),
+                                    barrierDismissible: false,
+                                    builder: (context) {
+                                      return Dialog(
+                                        backgroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20),
+                                          side: BorderSide(
+                                            color: Colours.primarycolour,
+                                            width: 1.5,
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/DeleteReel.png", // Your delete image
+                                                height: 140,
+                                                fit: BoxFit.contain,
+                                              ),
+
+                                              const SizedBox(height: 15),
+
+                                              Text(
+                                                "Are you sure you want to delete this reel?".tr,
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+
+                                              const SizedBox(height: 20),
+
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: OutlinedButton(
+                                                      style: OutlinedButton.styleFrom(
+                                                        side: BorderSide(
+                                                          color: Colours.primarycolour,
+                                                        ),
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        padding: const EdgeInsets.symmetric(
+                                                          vertical: 14,
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.pop(context, false);
+                                                      },
+                                                      child: Text(
+                                                        "Close".tr,
+                                                        style: TextStyle(
+                                                          color: Colours.primarycolour,
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  const SizedBox(width: 10),
+
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: Colours.primarycolour,
+                                                        foregroundColor: Colors.white,
+                                                        elevation: 0,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        padding: const EdgeInsets.symmetric(
+                                                          vertical: 14,
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.pop(context, true);
+                                                      },
+                                                      child: Text(
+                                                        "Delete".tr,
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   );
 
                                   if (confirm == true) {

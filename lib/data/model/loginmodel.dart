@@ -68,7 +68,11 @@ class Data {
     email = json['email'];
     username = json['username'];
     name = json['name'];
-    mobile = json['mobile'];
+    mobile = (
+      json['mobile'] ??
+      json['mobile_number'] ??
+      json['phone_number']
+    )?.toString();
     profilePicture = json['profile_picture'];
     isSuperuser = json['is_superuser'];
     isStaff = json['is_staff'];

@@ -12,6 +12,9 @@ class PaymentModel {
   final String status;
   final DateTime createdAt;
   final int user;
+  final String paymentGateway;
+  final String paymentType;
+  final String paymentTransactionId;
 
   PaymentModel({
     required this.id,
@@ -27,7 +30,23 @@ class PaymentModel {
     required this.status,
     required this.createdAt,
     required this.user,
+    required this.paymentGateway,
+    required this.paymentType,
+    required this.paymentTransactionId,
   });
+
+  // 👇 ADD THIS HERE
+    String get invoiceId {
+      if (paymentTransactionId.isNotEmpty) {
+        return paymentTransactionId;
+      }
+
+      if (razorpayTransactionId.isNotEmpty) {
+        return razorpayTransactionId;
+      }
+
+      return id;
+    }
 
   factory PaymentModel.fromJson(Map<String, dynamic> json) {
     // Old payment API
@@ -39,6 +58,15 @@ class PaymentModel {
 
       razorpayTransactionId:
           json['razorpay_transaction_id']?.toString() ?? "",
+
+      paymentTransactionId:
+        json['payment_transaction_id']?.toString() ?? "",
+
+      paymentGateway:
+          json['payment_gateway']?.toString() ?? "",
+
+      paymentType:
+          json['payment_type']?.toString() ?? "",
 
       razorpayPaymentId:
           json['razorpay_payment_id']?.toString(),

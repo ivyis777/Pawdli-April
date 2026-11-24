@@ -40,7 +40,7 @@ class Data {
 
   final int? storeProductVariant;
   final String? variantName;
-  final int? quantity;
+  int? quantity;
   final String? priceAtAdded;
   final String? appliedDiscount;
   final String? subtotal;

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/api%20service.dart';
 import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 
@@ -52,32 +53,79 @@ class GoodByeBuddyController extends GetxController {
   // 🔹 Show success popup
   WidgetsBinding.instance.addPostFrameCallback((_) {
     Get.dialog(
-      AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        title: const Text(
-          "Thank You 🙏",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        content: const Text(
-          "Thank for your concern.\nOur team will reach out soon.",
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              // 🔹 Close popup
-              Get.back();
-
-              // 🔹 Navigate to Home page
-              Get.offAll(() => MainLayout());
-            },
-            child: const Text("OK"),
+      Dialog(
+        backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: Colours.primarycolour,
+              width: 1.5,
+            ),
           ),
-        ],
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                "assets/images/ThankYou.png",
+                height: 150,
+                fit: BoxFit.contain,
+              ),
+
+              const SizedBox(height: 10),
+
+              // const Text(
+              //   "Thank You 🙏",
+              //   style: TextStyle(
+              //     fontSize: 22,
+              //     fontWeight: FontWeight.bold,
+              //   ),
+              // ),
+
+              // const SizedBox(height: 10),
+
+              const Text(
+                "Thanks for your concern.\nOur team will reach out soon.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colours.primarycolour,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    Get.back();
+                    Get.offAll(() => MainLayout());
+                  },
+                  child: const Text(
+                    "OK",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-      barrierDismissible: false, // user must tap OK
+      barrierDismissible: false,
     );
   });
 } else {

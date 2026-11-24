@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/api%20service.dart';
@@ -16,6 +17,7 @@ import 'package:pawlli/data/model/paymentverificationmodel.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/agora/videocallpage.dart';
 import 'package:pawlli/presentation/screens/homepage/homepage.dart';
+import 'package:pawlli/presentation/screens/loginpage/loginpage.dart';
 import 'package:pawlli/presentation/screens/pawlli%20radio/streamvideopage.dart';
 import 'package:pawlli/presentation/screens/slots/slots_and_time.dart';
 import 'package:pawlli/presentation/slotpaymentverificationpage/paymentfailure.dart';
@@ -217,33 +219,81 @@ class _PawlliRadioState extends State<PawlliRadio> {
   void showStartTimePopup(String startTime, String date) {
     showDialog(
       context: context,
-      barrierDismissible:
-          false, // Prevent dismiss on outside tap or back button
+      barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          title: Text(
-            "Session Not Started".tr,
-            style: TextStyle(
-              fontSize: 22, // Bigger font for title
-              fontWeight: FontWeight.bold,
+        return Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: Colours.primarycolour,
+              width: 1.5,
             ),
           ),
-          content: Text(
-            "The session starts at $startTime on $date.".tr,
-            style: TextStyle(
-              fontSize: getResponsiveFont(context, 16), // Bigger font for content
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  "assets/images/NotStarted.png",
+                  height: 150,
+                  fit: BoxFit.contain,
+                ),
+
+                const SizedBox(height: 12),
+
+                // Text(
+                //   "Session Not Started".tr,
+                //   textAlign: TextAlign.center,
+                //   style: const TextStyle(
+                //     fontSize: 22,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
+
+                const SizedBox(height: 10),
+
+                Text(
+                  "The session starts at $startTime on $date.".tr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 16),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colours.primarycolour,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "OK".tr,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: getResponsiveFont(context, 16),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(), // Only closes dialog on OK tap
-              child: Text(
-                "OK".tr,
-                style: TextStyle(fontSize: getResponsiveFont(context, 16)),
-              ),
-            ),
-          ],
         );
       },
     );
@@ -780,12 +830,126 @@ class _PawlliRadioState extends State<PawlliRadio> {
                                   ),
                                 ),
                                 onPressed: () {
+                                  // ✅ GUEST CHECK
+                                  if (LocalStorage.isGuest()) {
+                                    Get.dialog(
+                                      Dialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20),
+                                          side: BorderSide(
+                                            color: Colours.primarycolour,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/LoginRequired.png", // Your image
+                                                height: 140,
+                                                fit: BoxFit.contain,
+                                              ),
+
+                                              const SizedBox(height: 15),
+
+                                              // Text(
+                                              //   "Login Required".tr,
+                                              //   textAlign: TextAlign.center,
+                                              //   style: const TextStyle(
+                                              //     fontSize: 22,
+                                              //     fontWeight: FontWeight.bold,
+                                              //   ),
+                                              // ),
+
+                                              const SizedBox(height: 10),
+
+                                              Text(
+                                                "Please login to continue.".tr,
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+
+                                              const SizedBox(height: 20),
+
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: OutlinedButton(
+                                                      style: OutlinedButton.styleFrom(
+                                                        side: BorderSide(
+                                                          color: Colours.primarycolour,
+                                                        ),
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        padding: const EdgeInsets.symmetric(
+                                                          vertical: 14,
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        Get.back();
+                                                      },
+                                                      child: Text(
+                                                        "Cancel".tr,
+                                                        style: TextStyle(
+                                                          color: Colours.primarycolour,
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  const SizedBox(width: 10),
+
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: Colours.primarycolour,
+                                                        foregroundColor: Colors.white,
+                                                        elevation: 0,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        padding: const EdgeInsets.symmetric(
+                                                          vertical: 14,
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        Get.back();
+                                                        Get.offAll(() => LoginPage());
+                                                      },
+                                                      child: Text(
+                                                        "Login".tr,
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  // ✅ EXISTING CODE
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => TimeSlotPage(
-                                            radioid: widget.radioid,
-                                            radioname: widget.radioname)),
+                                      builder: (context) => TimeSlotPage(
+                                        radioid: widget.radioid,
+                                        radioname: widget.radioname,
+                                      ),
+                                    ),
                                   );
                                 },
                                 child: Text(
@@ -855,14 +1019,12 @@ class _PawlliRadioState extends State<PawlliRadio> {
                     final programList =
                         programController.programList.value?.data;
                     if (programList == null || programList.isEmpty) {
-                      return Center(
-                        child: Text(
-                          "No programs available for selected date".tr,
-                          style: TextStyle(
-                            color: Colours.black,
-                            fontSize: getResponsiveFont(context, 14),
-                            fontWeight: FontWeight.w500,
-                            fontFamily: FontFamily.Cairo,
+                      return SizedBox.expand(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Image.asset(
+                            'assets/images/NoPrograms.png',
+                            fit: BoxFit.contain,
                           ),
                         ),
                       );
@@ -1208,52 +1370,140 @@ class _PawlliRadioState extends State<PawlliRadio> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Session Failed'.tr),
-          content: Text('Would you like to rejoin the session?'.tr),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'.tr),
-              onPressed: () {
-                setState(() {
-                  _isDialogShowing = false;
-                });
-                Navigator.of(context).pop();
-              },
+        return Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: Colours.primarycolour,
+              width: 1.5,
             ),
-            TextButton(
-              child: Text('Rejoin'.tr),
-              onPressed: () async {
-                setState(() {
-                  _isDialogShowing = false;
-                });
-                Navigator.of(context).pop();
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  "assets/images/SessionFailed.png",
+                  height: 150,
+                  fit: BoxFit.contain,
+                ),
 
-                if (!mounted) return;
+                const SizedBox(height: 12),
 
-                await Future.delayed(Duration(milliseconds: 300));
+                // Text(
+                //   'Session Failed'.tr,
+                //   textAlign: TextAlign.center,
+                //   style: const TextStyle(
+                //     fontSize: 22,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
 
-                Navigator.of(context, rootNavigator: true).push(
-                  MaterialPageRoute(
-                    fullscreenDialog: true,
-                    builder: (_) => VideoCallPage(
-                      userId: userId,
-                        // channelName: data['channel_name'],
-                        // token: data['token'],
-                        // uid: data['agora_uid'],
-                        // appId: "daed82b7feea4990bf7fb43d9addd091",
-                      
-                      programType: programType,
-                      isCaller: true,
-                      sessionId: data['session_id'] ?? 0,
-                      websocketUrl: data['websocket_url'],
-                      bookingId: bookingId,
-                    ),
+                const SizedBox(height: 10),
+
+                Text(
+                  'Would you like to rejoin the session?'.tr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 16),
                   ),
-                );
-              },
+                ),
+
+                const SizedBox(height: 20),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            color: Colours.primarycolour,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isDialogShowing = false;
+                          });
+
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Cancel'.tr,
+                          style: TextStyle(
+                            color: Colours.primarycolour,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colours.primarycolour,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                          ),
+                        ),
+                        onPressed: () async {
+                          setState(() {
+                            _isDialogShowing = false;
+                          });
+
+                          Navigator.of(context).pop();
+
+                          if (!mounted) return;
+
+                          await Future.delayed(
+                            const Duration(milliseconds: 300),
+                          );
+
+                          Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).push(
+                            MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (_) => VideoCallPage(
+                                userId: userId,
+                                programType: programType,
+                                isCaller: true,
+                                sessionId: data['session_id'] ?? 0,
+                                websocketUrl: data['websocket_url'],
+                                bookingId: bookingId,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Rejoin'.tr,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     ).then((_) {
@@ -1530,6 +1780,9 @@ class _PawlliRadioState extends State<PawlliRadio> {
       () => StreamVideoPage(
         streamUrl: url,
         isRecorded: true,
+        playbackOffset: program.playbackOffset ?? 0,
+        remainingSeconds: program.remainingSeconds ?? 0,
+        isPlayable: program.isPlayable ?? true,
       ),
     );
   }

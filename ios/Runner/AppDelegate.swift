@@ -16,30 +16,28 @@ import UserNotifications
       FirebaseApp.configure()
 
     // ✅ AUDIO SESSION FOR WEBRTC
+    // ✅ DEFAULT AUDIO SESSION FOR MEDIA PLAYBACK
     do {
 
-      try AVAudioSession.sharedInstance().setCategory(
-        .playAndRecord,
-        mode: .videoChat,
-        options: [
-          .defaultToSpeaker,
-          .allowBluetooth,
-          .allowBluetoothA2DP
-        ]
+      let session = AVAudioSession.sharedInstance()
+
+      try session.setCategory(
+        .playback,
+        mode: .default
       )
 
-      try AVAudioSession.sharedInstance().setActive(true)
+      try session.setActive(true)
 
-      print("✅ AVAudioSession configured")
-
-      UNUserNotificationCenter.current().delegate = self
-
-      application.registerForRemoteNotifications()
+      print("✅ AVAudioSession configured for playback")
 
     } catch {
 
       print("❌ AVAudioSession Error: \(error)")
     }
+
+    // Notifications
+    UNUserNotificationCenter.current().delegate = self
+    application.registerForRemoteNotifications()
 
     return super.application(
       application,

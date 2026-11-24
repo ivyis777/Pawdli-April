@@ -7,9 +7,21 @@ import 'package:pawlli/data/api service.dart';
 
 class StreamVideoPage extends StatefulWidget {
   final String streamUrl;
-  final bool isRecorded; 
+  final bool isRecorded;
 
-  const StreamVideoPage({Key? key, required this.streamUrl, this.isRecorded = false}) : super(key: key);
+  // Backend values
+  final int playbackOffset;
+  final int remainingSeconds;
+  final bool isPlayable;
+
+  const StreamVideoPage({
+    Key? key,
+    required this.streamUrl,
+    this.isRecorded = false,
+    this.playbackOffset = 0,
+    this.remainingSeconds = 0,
+    this.isPlayable = true,
+  }) : super(key: key);
 
   @override
   State<StreamVideoPage> createState() => _StreamVideoPageState();
@@ -21,7 +33,11 @@ class _StreamVideoPageState extends State<StreamVideoPage> {
   bool _error = false;
 
   Timer? _pollTimer;
+  Timer? _recordedStopTimer;
+
   String currentUrl = "";
+
+  bool _recordedStopping = false;
 
   @override
     void initState() {
@@ -70,43 +86,168 @@ class _StreamVideoPageState extends State<StreamVideoPage> {
     });
 
     try {
-      // ✅ FIX: Ensure full URL
       String finalUrl = currentUrl.startsWith("http")
           ? currentUrl
           : "https://pawlli-podcasts.s3.ap-south-1.amazonaws.com$currentUrl";
 
       debugPrint("🎬 FINAL PLAY URL: $finalUrl");
 
-      _controller = VideoPlayerController.networkUrl(Uri.parse(finalUrl));
+      _controller = VideoPlayerController.networkUrl(
+        Uri.parse(finalUrl),
+      );
 
       await _controller.initialize();
-      debugPrint("Initialized: ${_controller.value.isInitialized}");
-      debugPrint("Size: ${_controller.value.size}");
-      debugPrint("Aspect Ratio: ${_controller.value.aspectRatio}");
-      debugPrint("Error: ${_controller.value.errorDescription}");
+
+      debugPrint(
+        "🎬 Media duration: ${_controller.value.duration.inSeconds} sec",
+      );
+
+      // ==========================================================
+      // RECORDED PROGRAM ONLY
+      // ==========================================================
+      if (widget.isRecorded) {
+        if (!widget.isPlayable || widget.remainingSeconds <= 0) {
+          debugPrint("⛔ Recorded slot is not currently playable");
+
+          setState(() {
+            _loading = false;
+            _error = true;
+          });
+
+          return;
+        }
+
+        final int mediaDuration =
+            _controller.value.duration.inMilliseconds;
+
+        if (mediaDuration > 0) {
+          final int elapsedMs = widget.playbackOffset * 1000;
+
+          final int startPositionMs =
+              elapsedMs % mediaDuration;
+
+          debugPrint("📻 RECORDED PROGRAM");
+          debugPrint("Elapsed: ${widget.playbackOffset} sec");
+          debugPrint(
+            "Media Duration: ${_controller.value.duration.inSeconds} sec",
+          );
+          debugPrint(
+            "Start Position: ${(startPositionMs / 1000).toStringAsFixed(1)} sec",
+          );
+          debugPrint(
+            "Slot Remaining: ${widget.remainingSeconds} sec",
+          );
+
+          await _controller.seekTo(
+            Duration(milliseconds: startPositionMs),
+          );
+
+          _recordedStopping = false;
+
+          _controller.addListener(
+            _recordedPlaybackListener,
+          );
+
+          _recordedStopTimer?.cancel();
+
+          _recordedStopTimer = Timer(
+            Duration(
+              seconds: widget.remainingSeconds,
+            ),
+            () async {
+              if (!mounted) return;
+
+              debugPrint(
+                "⏰ SLOT ENDED - stopping recorded playback",
+              );
+
+              _recordedStopping = true;
+
+              await _controller.pause();
+              await _controller.seekTo(
+                Duration.zero,
+              );
+
+              if (mounted) {
+                setState(() {});
+              }
+            },
+          );
+        }
+      }
+
       await _controller.play();
+
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
 
       _controller.addListener(() {
         if (_controller.value.hasError) {
-          debugPrint("🔥 Player Error: ${_controller.value.errorDescription}");
-          setState(() => _error = true);
+          debugPrint(
+            "🔥 Player Error: ${_controller.value.errorDescription}",
+          );
+
+          if (mounted) {
+            setState(() {
+              _error = true;
+            });
+          }
         }
       });
-
-      setState(() => _loading = false);
     } catch (e) {
       debugPrint("🔥 Init Error: $e");
-      setState(() {
-        _error = true;
-        _loading = false;
-      });
+
+      if (mounted) {
+        setState(() {
+          _error = true;
+          _loading = false;
+        });
+      }
+    }
+  }
+
+  void _recordedPlaybackListener() async {
+    if (!widget.isRecorded) return;
+    if (_recordedStopping) return;
+    if (!_controller.value.isInitialized) return;
+
+    final duration = _controller.value.duration;
+    final position = _controller.value.position;
+
+    if (duration.inMilliseconds <= 0) return;
+
+    if (position >= duration) {
+      if (_recordedStopping) return;
+
+      debugPrint("🔁 Recording finished - restarting from 0:00");
+
+      await _controller.seekTo(Duration.zero);
+
+      if (mounted &&
+          !_recordedStopping &&
+          widget.remainingSeconds > 0) {
+        await _controller.play();
+      }
     }
   }
 
   @override
   void dispose() {
     _pollTimer?.cancel();
+    _recordedStopTimer?.cancel();
+
+    if (_controller.value.isInitialized &&
+        widget.isRecorded) {
+      _controller.removeListener(
+        _recordedPlaybackListener,
+      );
+    }
+
     _controller.dispose();
+
     super.dispose();
   }
 
@@ -155,61 +296,98 @@ class _StreamVideoPageState extends State<StreamVideoPage> {
 // ----------------------- AUDIO VISUALIZER -----------------------
 
 class AudioVisualizer extends StatefulWidget {
-  const AudioVisualizer({super.key});
+    const AudioVisualizer({super.key});
 
-  @override
-  _AudioVisualizerState createState() => _AudioVisualizerState();
-}
-
-class _AudioVisualizerState extends State<AudioVisualizer>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 700),
-    )..repeat(reverse: true);
+    @override
+    State<AudioVisualizer> createState() => _AudioVisualizerState();
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  class _AudioVisualizerState extends State<AudioVisualizer>
+      with SingleTickerProviderStateMixin {
+    late AnimationController _controller;
 
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _bar(25),
-            const SizedBox(width: 6),
-            _bar(45),
-            const SizedBox(width: 6),
-            _bar(35),
-            const SizedBox(width: 6),
-            _bar(55),
-          ],
-        );
-      },
-    );
-  }
+    @override
+    void initState() {
+      super.initState();
 
-  Widget _bar(double height) {
-    return Container(
-      width: 10,
-      height: height * (_controller.value + 0.4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-      ),
-    );
-  }
+      _controller = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 700),
+      )..repeat(reverse: true);
+    }
+
+    @override
+    void dispose() {
+      _controller.dispose();
+      super.dispose();
+    }
+
+    Widget _bar(double height) {
+      return Container(
+        width: 25,
+        height: height * (_controller.value + 3),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(25),
+        ),
+      );
+    }
+
+    @override
+    Widget build(BuildContext context) {
+      return Stack(
+        children: [
+
+          /// Background Image
+          Positioned.fill(
+            child: Image.asset(
+              "assets/images/Audio player.png",
+              fit: BoxFit.contain,
+            ),
+          ),
+
+          /// Dark Overlay
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.5),
+            ),
+          ),
+
+          // /// Visualizer
+          // Center(
+          //   child: AnimatedBuilder(
+          //     animation: _controller,
+          //     builder: (context, child) {
+          //       return Row(
+          //         mainAxisAlignment: MainAxisAlignment.center,
+          //         children: [
+          //           _bar(25),
+          //           const SizedBox(width: 9),
+          //           _bar(70),
+          //           const SizedBox(width: 9),
+          //           _bar(110),
+          //           const SizedBox(width: 9),
+          //           _bar(70),
+          //           const SizedBox(width: 9),
+          //           _bar(25),
+          //         ],
+          //       );
+          //     },
+          //   ),
+          // ),
+        ],
+      );
+    }
+
+
+  // Widget _bar(double height) {
+  //   return Container(
+  //     width: 25,
+  //     height: height * (_controller.value + 3),
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       borderRadius: BorderRadius.circular(25),
+  //     ),
+  //   );
+  // }
 }

@@ -13,14 +13,12 @@ import 'package:latlong2/latlong.dart' as latLng;
 import 'package:http/http.dart' as http;
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
-import 'package:pawlli/data/Donation/donationpaymentservice.dart';
 import 'package:pawlli/data/app%20url.dart';
 import 'package:pawlli/data/controller/goodbyebuddycontroller.dart';
 import 'package:get/get.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/good%20bye%20buddy/superuserdetailspage.dart';
 import 'package:pawlli/presentation/screens/good%20bye%20buddy/userdetailspage.dart';
-// import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
   double screenWidth = MediaQuery.of(context).size.width;
@@ -50,11 +48,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
   TextEditingController locationController = TextEditingController();
   final GoodByeBuddyController goodByeBuddyController =
       Get.put(GoodByeBuddyController());
-  final TextEditingController donationAmountController =
-      TextEditingController();
-  TextEditingController donationMessageController = TextEditingController();
-  final DonationPaymentService donationPaymentService =
-      Get.put(DonationPaymentService());
+
   late TabController _tabController;
   String pageTitle = "GoodByeBuddy";
 
@@ -87,10 +81,9 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
   void initState() {
     super.initState();
 
-    donationPaymentService.init();
 
     _tabController = TabController(
-      length: 3, // GoodByeBuddy + Donation
+      length: 2, // GoodByeBuddy, requests
       vsync: this,
     );
 
@@ -99,11 +92,8 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
         setState(() {
           pageTitle = "GoodByeBuddy";
         });
+  
       } else if (_tabController.index == 1) {
-        setState(() {
-          pageTitle = "Donation";
-        });
-      } else if (_tabController.index == 2) {
         setState(() {
           pageTitle = "Requests";
         });
@@ -477,29 +467,79 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
           });
 
           Get.dialog(
-            AlertDialog(
+            Dialog(
+              backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              title: const Text(
-                "Service Not Available",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                borderRadius: BorderRadius.circular(20),
+                side: BorderSide(
+                  color: Colours.primarycolour,
+                  width: 1.5,
                 ),
               ),
-              content: const Text(
-                "We are not servicing in this location.\nWe will start soon as possible.",
-                textAlign: TextAlign.center,
-              ),
-              actions: [
-                ElevatedButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  child: const Text("OK"),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      "assets/images/NotAvailable.png", // Change if you have a better image
+                      height: 150,
+                      fit: BoxFit.contain,
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // const Text(
+                    //   "Service Not Available",
+                    //   textAlign: TextAlign.center,
+                    //   style: TextStyle(
+                    //     fontSize: 22,
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
+
+                    const SizedBox(height: 10),
+
+                    const Text(
+                      "We are not servicing in this location.\nWe will start as soon as possible.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colours.primarycolour,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          Get.back();
+                        },
+                        child: const Text(
+                          "OK",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
+            barrierDismissible: false,
           );
 
           return;
@@ -796,9 +836,6 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
   @override
   void dispose() {
     _tabController.dispose();
-    donationAmountController.dispose();
-    donationMessageController.dispose();
-    donationPaymentService.disposeService();
     super.dispose();
   }
 
@@ -856,14 +893,7 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                 ),
               ),
             ),
-            Tab(
-              child: Text(
-                "Donation".tr,
-                style: TextStyle(
-                  fontSize: getResponsiveFont(context, 12),
-                ),
-              ),
-            ),
+
             Tab(
               child: Text(
                 "Requests".tr,
@@ -1177,106 +1207,22 @@ class _GoodbyebudddyState extends State<Goodbyebudddy>
                     ),
 
                     // ==================================================
-                    // 🟢 TAB 2 — DONATION (ONLY 3 THINGS)
-                    // ==================================================
-                    SingleChildScrollView(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 30),
-                          Text(
-                            "Support Paw ❤️".tr,
-                            style: TextStyle(
-                              fontSize: getResponsiveFont(context, 16),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          SizedBox(height: 12),
-                          Text(
-                            "Your donation helps rescue, treat, and care for animals in need. "
-                            "Every contribution supports food, medical care, and shelter.".tr,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: getResponsiveFont(context, 13),
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          TextField(
-                            controller: donationAmountController,
-                            style: TextStyle(
-                              fontSize: getResponsiveFont(context, 14),
-                            ),
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              hintText: "Enter Amount (₹)".tr,
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          SizedBox(height: 16),
-                          TextField(
-                            controller: donationMessageController,
-                            style: TextStyle(
-                              fontSize: getResponsiveFont(context, 14),
-                            ),
-                            maxLines: 4,
-                            decoration: InputDecoration(
-                              hintText: "Word of support for the Pets".tr,
-                              contentPadding: EdgeInsets.all(16),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(
-                                    color: Colours.primarycolour, width: 2),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () async {
-                              final amount = double.tryParse(
-                                donationAmountController.text
-                                    .replaceAll(RegExp(r'[^\d.]'), ''),
-                              );
-
-                              if (amount == null || amount <= 0) {
-                                safeSnackbar("Error".tr, "Enter valid amount".tr);
-                                return;
-                              }
-
-                              await donationPaymentService.startDonation(
-                                  amount: amount);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colours.primarycolour,
-                              fixedSize: Size(screenWidth * 0.8, 50),
-                            ),
-                            child: Text(
-                              "Donate".tr,
-                              style: TextStyle(
-                                fontSize: getResponsiveFont(context, 16),
-                                color: Colors.white, // ✅ white text
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // ==================================================
-                    // 🟢 TAB 3 — REQUEST LIST
+                    // 🟢 TAB 2 — REQUEST LIST
                     // ==================================================
 
                     isLoadingRequests
-                        ? Center(child: CircularProgressIndicator())
-                        : ListView.builder(
+                        ? const Center(child: CircularProgressIndicator())
+                        : requests.isEmpty
+                            ? SizedBox.expand(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Image.asset(
+                                    'assets/images/NoRequestFound.png',
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              )
+                            : ListView.builder(
                             padding: EdgeInsets.all(16),
                             itemCount: requests.length,
                             itemBuilder: (context, index) {

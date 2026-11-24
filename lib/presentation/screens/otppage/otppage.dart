@@ -329,7 +329,7 @@ class _OTPPageState extends State<OTPPage> {
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
-            maxLength: 1,
+            maxLength: 4,
 
             onChanged: (value) {
               // 🔥 HANDLE FULL OTP PASTE (MAIN FIX)

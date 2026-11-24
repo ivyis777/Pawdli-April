@@ -20,7 +20,8 @@ class LocalStorage {
   }
 
   static bool hasTokens() {
-    return getAccessToken() != null && getRefreshToken() != null;
+    return getAccessToken() != null &&
+        getRefreshToken() != null;
   }
 
   static void clearTokens() {
@@ -28,7 +29,48 @@ class LocalStorage {
     _box.remove(LocalStorageConstants.refresh);
   }
 
-  // ================= USER DATA (OPTIONAL) =================
+  // ================= SAVE PROFILE DETAILS =================
+
+  static Future<void> saveProfileDetails({
+    required int userId,
+    required String name,
+    required String username,
+    required String mobile,
+  }) async {
+    await _box.write(LocalStorageConstants.userId, userId);
+    await _box.write(LocalStorageConstants.name, name);
+    await _box.write(LocalStorageConstants.username, username);
+    await _box.write(LocalStorageConstants.mobile, mobile);
+
+    print("========== PROFILE SAVED ==========");
+    print("User ID: ${getUserId()}");
+    print("Name: ${getName()}");
+    print("Username: ${getUserName()}");
+    print("Mobile: ${getMobile()}");
+    print("===================================");
+  }
+
+  // ================= GUEST USER =================
+
+  static void saveGuestStatus(bool isGuest) {
+    _box.write(
+      LocalStorageConstants.isGuest,
+      isGuest,
+    );
+  }
+
+  static bool isGuest() {
+    return _box.read(
+          LocalStorageConstants.isGuest,
+        ) ??
+        false;
+  }
+
+  static void clearGuestStatus() {
+    _box.remove(LocalStorageConstants.isGuest);
+  }
+
+  // ================= USER DATA =================
 
   static void saveUserId(int id) {
     _box.write(LocalStorageConstants.userId, id);
@@ -45,35 +87,83 @@ class LocalStorage {
     _box.remove(LocalStorageConstants.mobile);
   }
 
-      /// ================= USERNAME =================
+   // ================= GUEST USER ID =================
 
-    static void saveUserName(String name) {
-      _box.write(LocalStorageConstants.username, name);
-    }
+  static void saveGuestUserId(int id) {
+    _box.write(
+      LocalStorageConstants.guestCartBackup,
+      id,
+    );
+  }
 
-    static String? getUserName() {
-      return _box.read(LocalStorageConstants.username);
-    }
+  static int? getGuestUserId() {
+    return _box.read(
+      LocalStorageConstants.guestCartBackup,
+    );
+  }
 
-  /// ================= PROFILE IMAGE =================
+  static void clearGuestUserId() {
+    _box.remove(
+      LocalStorageConstants.guestCartBackup,
+    );
+  }
 
-    static void saveProfileImage(String imageUrl) {
-      _box.write(LocalStorageConstants.profileImage, imageUrl);
-    }
+  // ================= USERNAME =================
 
-    static String? getProfileImage() {
-      return _box.read(LocalStorageConstants.profileImage);
-    }
+  static void saveUserName(String name) {
+    _box.write(LocalStorageConstants.username, name);
+  }
 
-    static void clearProfileImage() {
-      _box.remove(LocalStorageConstants.profileImage);
-    }
-    
+  static String? getUserName() {
+    return _box.read(LocalStorageConstants.username);
+  }
+
+  // ================= NAME =================
+
+  static void saveName(String name) {
+    _box.write(LocalStorageConstants.name, name);
+  }
+
+  static String? getName() {
+    return _box.read(LocalStorageConstants.name);
+  }
+
+  // ================= MOBILE =================
+
+  static void saveMobile(String mobile) {
+    _box.write(LocalStorageConstants.mobile, mobile);
+  }
+
+  static String? getMobile() {
+    return _box.read(LocalStorageConstants.mobile);
+  }
+
+  // ================= PROFILE IMAGE =================
+
+  static void saveProfileImage(String imageUrl) {
+    _box.write(
+      LocalStorageConstants.profileImage,
+      imageUrl,
+    );
+  }
+
+  static String? getProfileImage() {
+    return _box.read(
+      LocalStorageConstants.profileImage,
+    );
+  }
+
+  static void clearProfileImage() {
+    _box.remove(
+      LocalStorageConstants.profileImage,
+    );
+  }
 
   // ================= FULL LOGOUT =================
 
   static void clearAll() {
     clearTokens();
     clearUserData();
+    clearGuestStatus();
   }
 }

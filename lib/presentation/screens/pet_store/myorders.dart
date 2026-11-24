@@ -4,6 +4,7 @@ import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/controller/myordercontroller.dart';
 import 'package:pawlli/data/model/ordermodel.dart';
 import 'package:pawlli/presentation/screens/pet_store/orderdetailspage.dart';
+import 'package:pawlli/presentation/screens/pet_store/pet_storemain.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
   double screenWidth = MediaQuery.of(context).size.width;
@@ -93,12 +94,28 @@ class OrdersPage extends StatelessWidget {
       }
 
       if (controller.filteredOrders.isEmpty) {
-        return  Center(child: Text(
-          "No Orders Found".tr,
-          style: TextStyle(
-            fontSize: getResponsiveFont(context, 14),
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6,
+          width: double.infinity,
+          child: Center(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PetstorePage(),
+                  ),
+                );
+              },
+              child: Image.asset(
+                'assets/images/NoOrders.png',
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: MediaQuery.of(context).size.height * 0.9,
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
-        ));
+        );
       }
 
       return RefreshIndicator(

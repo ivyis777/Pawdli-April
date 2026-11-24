@@ -112,10 +112,22 @@ class _MyPetsState extends State<MyPets> {
                       );
                     }
                     if (petsController.userPets.isEmpty) {
-                      return  Center(
-                        child: Text(
-                          "No pets found".tr,
-                          style: TextStyle(fontSize: getResponsiveFont(context, 15), color: Colors.grey),
+                      return Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddPetPage(),
+                              ),
+                            );
+                          },
+                          child: Image.asset(
+                            'assets/images/NoPetsFound.png',
+                            width: MediaQuery.of(context).size.width * 0.95,
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       );
                     }
@@ -177,16 +189,16 @@ class _MyPetsState extends State<MyPets> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddPetPage()),
-            );
-          },
-          backgroundColor: Colors.brown[600],
-          child: Icon(Icons.add, color: Colours.secondarycolour),
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: (context) => AddPetPage()),
+        //     );
+        //   },
+        //   backgroundColor: Colors.brown[600],
+        //   child: Icon(Icons.add, color: Colours.secondarycolour),
+        // ),
       ),
     );
   }

@@ -46,7 +46,7 @@ print("ALL PETS COUNT: ${allPets.length}");
       } else {
         singleCategories.clear();
         filteredCategories.clear();
-        errorMessage.value = 'No Friends available';
+        errorMessage.value = 'No Friends';
       }
     } catch (_) {
       errorMessage.value = 'Failed to fetch pets';

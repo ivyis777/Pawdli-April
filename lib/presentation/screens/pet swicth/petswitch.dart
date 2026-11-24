@@ -6,6 +6,7 @@ import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 
 import 'package:pawlli/data/controller/petslistcontroller.dart';
+import 'package:pawlli/presentation/screens/add%20pet/addpet.dart';
 import 'package:pawlli/presentation/screens/chat1to1/chatui.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
@@ -109,9 +110,21 @@ class _PetswitchState extends State<Petswitch> {
                   }
                   if (petsController.userPets.isEmpty) {
                     return Center(
-                      child: Text(
-                        "No pets found".tr,
-                        style: TextStyle(fontSize: getResponsiveFont(context, 14), color: Colors.grey),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddPetPage(),
+                            ),
+                          );
+                        },
+                        child: Image.asset(
+                          'assets/images/NoPetsFound.png',
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     );
                   }

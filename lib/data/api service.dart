@@ -17,15 +17,28 @@ import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/api_logger.dart';
 import 'package:pawlli/data/app%20url.dart';
 import 'package:pawlli/data/controller/cartviewcontroller.dart';
+import 'package:pawlli/data/model/AppleLoginModel.dart';
 import 'package:pawlli/data/model/ConsultationDetailsModel.dart';
 import 'package:pawlli/data/model/ConsultationModel.dart';
+import 'package:pawlli/data/model/ConsultationRejoinModel.dart';
 import 'package:pawlli/data/model/ConsultationRequestModel.dart';
 import 'package:pawlli/data/model/DoctorAcceptModel.dart';
 import 'package:pawlli/data/model/DoctorProfileModel.dart';
 import 'package:pawlli/data/model/DoctorToggleModel.dart';
+import 'package:pawlli/data/model/GroomingBookingsmodel.dart';
+import 'package:pawlli/data/model/GroomingCartRemoveModel.dart';
+import 'package:pawlli/data/model/GroomingCartUpdateModel.dart';
+import 'package:pawlli/data/model/GroomingOneTimeServiceModel.dart';
+import 'package:pawlli/data/model/GroomingPaymentModel.dart';
+import 'package:pawlli/data/model/GroomingPlansListModel.dart';
+import 'package:pawlli/data/model/GroomingPriceModel.dart';
+import 'package:pawlli/data/model/GroomingServicePlansModel.dart';
 import 'package:pawlli/data/model/LiveConsultationModel.dart';
 import 'package:pawlli/data/model/PetStoreCategariesModel.dart' hide Data;
 import 'package:pawlli/data/model/PrescriptionModel.dart';
+import 'package:pawlli/data/model/ServiceCartModel.dart';
+import 'package:pawlli/data/model/ServiceCheckoutModel.dart';
+import 'package:pawlli/data/model/ServiceSlotsModel.dart';
 import 'package:pawlli/data/model/SymptomModel.dart';
 import 'package:pawlli/data/model/TherapyBookingModel.dart';
 import 'package:pawlli/data/model/TransactionnsModel.dart';
@@ -44,6 +57,7 @@ import 'package:pawlli/data/model/editadoptionmodel.dart';
 import 'package:pawlli/data/model/getpetprofile.dart';
 import 'package:pawlli/data/model/getuserprofilemodel.dart';
 import 'package:pawlli/data/model/goodbyebuddylistmodel.dart';
+import 'package:pawlli/data/model/guestLoginModel.dart';
 import 'package:pawlli/data/model/languagemodel.dart';
 import 'package:pawlli/data/model/mysubscriptionmodel.dart';
 import 'package:pawlli/data/model/notificationmodel.dart';
@@ -481,6 +495,127 @@ static Future<LoginModel> googleLoginAPI({
         message: "Something went wrong.",
         statusCode: 500,
       );
+    }
+  }
+
+  static Future<dynamic> appleLoginAPI({
+    required String identityToken,
+  }) async {
+
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    final body = jsonEncode({
+      "identity_token": identityToken,
+    });
+    
+
+    try {
+
+      print("APPLE LOGIN REQUEST");
+      print(body);
+
+      final response = await http.post(
+        Uri.parse(AppUrl.AppleLoginURL),
+        headers: headers,
+        body: body,
+      );
+
+      print("Status Code : ${response.statusCode}");
+      print("Response : ${response.body}");
+      print(response.runtimeType);
+
+      final json = jsonDecode(response.body);
+
+      if (response.statusCode < 200 ||
+          response.statusCode >= 300) {
+
+        throw ApiException(
+          message:
+              json["message"] ??
+                  "Apple Login Failed",
+          statusCode:
+              response.statusCode,
+        );
+      }
+
+      print("APPLE LOGIN JSON => $json");
+      print("APPLE LOGIN CODE => ${json["code"]}");
+
+      if (json["code"] == "APPLE_EMAIL_REQUIRED") {
+        return AppleEmailRequiredModel.fromJson(json);
+      }
+
+      return LoginModel.fromJson(json);
+
+    } catch (e) {
+
+      if (e is ApiException) {
+        rethrow;
+      }
+
+      throw ApiException(
+        message:
+            "Something went wrong.",
+        statusCode: 500,
+      );
+    }
+  }
+
+  static Future<LoginModel> appleCompleteAPI({
+    required String identityToken,
+    required String email,
+    required String otp,
+  }) async {
+
+    final response = await http.post(
+      Uri.parse(
+        AppUrl.AppleCompleteURL,
+      ),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        "identity_token": identityToken,
+        "email": email,
+        "otp": otp,
+      }),
+    );
+
+    print("APPLE COMPLETE STATUS : ${response.statusCode}");
+    print("APPLE COMPLETE RESPONSE : ${response.body}");
+
+    final json =
+        jsonDecode(response.body);
+
+    return LoginModel.fromJson(json);
+  }
+
+
+  static Future<GuestLoginModel?> guestLogin() async {
+    try {
+      final response = await http.post(
+        Uri.parse(AppUrl.guestLoginUrl),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      );
+
+      print("GUEST LOGIN STATUS => ${response.statusCode}");
+      print("GUEST LOGIN BODY => ${response.body}");
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 201) {
+        return GuestLoginModel.fromJson(
+          jsonDecode(response.body),
+        );
+      }
+
+      return null;
+    } catch (e) {
+      print("GUEST LOGIN ERROR => $e");
+      return null;
     }
   }
 
@@ -1549,29 +1684,31 @@ static Future<UpdateProfileModel?> updateUserProfile(UpdateProfileModel model, S
   print('Constructed URL: $url');
 
     // Add fields
-    request.fields.addAll({
-      'id': userId,
-      if (model.password != null) 'password': model.password!,
-      if (model.username != null) 'username': model.username!,
-      if (model.name != null) 'name': model.name!,
-      if (model.gender != null) 'gender': model.gender!,
-      if (model.address != null) 'address': model.address!,
-      if (model.age != null) 'age': model.age.toString(),
-      if (model.dob != null) 'dob': model.dob!,
-      if (model.mobile != null) 'mobile': model.mobile!,
-      if (model.email != null) 'email': model.email!,
-      if (model.pincode != null) 'pincode': model.pincode.toString(),
-      if (model.bio != null) 'bio': model.bio!,
-      if (model.registeredat != null) 'registeredat': model.registeredat!,
-      if (model.city != null) 'city': model.city!,
-      if (model.country != null) 'country': model.country!,
-      if (model.state != null) 'state': model.state!,
-      if (model.throughGoogle != null) 'through_google': model.throughGoogle.toString(),
-      if (model.fcmToken != null) 'fcm_token': model.fcmToken!,
-      if (model.isActive != null) 'is_active': model.isActive.toString(),
-      if (model.updatedAt != null) 'updated_at': model.updatedAt!,
-      if (model.currencyPreference != null) 'currency_preference': model.currencyPreference!,
-    });
+  request.fields.addAll({
+    'id': userId,
+
+    if (model.username != null)
+      'username': model.username!,
+
+    if (model.name != null)
+      'name': model.name!,
+
+    if (model.age != null)
+      'age': model.age.toString(),
+
+    if (model.email != null)
+      'email': model.email!,
+
+    if (model.mobile != null)
+      'mobile': model.mobile!,
+  });
+
+  print("======= FIELDS SENDING TO API =======");
+  request.fields.forEach((key, value) {
+    print("$key : $value");
+  });
+  print("=====================================");
+
 
     // Handle profile picture
     if (model.profilePicture != null && model.profilePicture!.isNotEmpty) {
@@ -1612,6 +1749,7 @@ static Future<UpdateProfileModel?> updateUserProfile(UpdateProfileModel model, S
     return null;
   }
 }
+
 static Future<CreatePetModel> createPet(Map<String, dynamic> petData) async {
   final String url = AppUrl.CreatePetUrl;
 
@@ -2792,11 +2930,12 @@ static Future<PayThroughWalletModel> initiatePayment({
   required String date,
   required String programType,
   required String userId,
+  Map<String, dynamic>? extraData,
 }) async {
   final url = Uri.parse('${AppUrl.paythroughwalletUrl}');
   print(url);
 
-  final body = jsonEncode({
+  final Map<String, dynamic> bodyMap = {
     "amount": amount,
     "currency": currency,
     "booking_id": bookingId,
@@ -2808,7 +2947,15 @@ static Future<PayThroughWalletModel> initiatePayment({
     "date": date,
     "program_type": programType,
     "user_id": userId,
-  });
+  };
+
+  if (extraData != null) {
+    bodyMap.addAll(extraData);
+  }
+
+  final body = jsonEncode(bodyMap);
+
+  print("FINAL PAYMENT BODY => $body");
   print(body);
 
   try {
@@ -2854,6 +3001,7 @@ static Future<PayThroughWalletModel> initiatePayment({
           date: date,
           programType: programType,
           userId: userId,
+          extraData: extraData,
         );
       } else {
         throw Exception("Failed to refresh token. User must re-login.");
@@ -4928,6 +5076,9 @@ static Future<List<ReelItem>> fetchMyReels() async {
     Uri.parse(AppUrl.MyreelsUrl),
     headers: {"Authorization": "Bearer $token"},
   );
+  print("STATUS CODE => ${res.statusCode}");
+  print("RAW RESPONSE => ${res.body}");
+
 
   if (res.statusCode == 200) {
     final body = jsonDecode(res.body);
@@ -5477,56 +5628,61 @@ static Future<List<CompetitionModel>> fetchCompetitionButton() async {
       return false;
     }
 
-    /// REJOIN CONSULTATION
-    static Future<DoctorAcceptModel?>
-    rejoinConsultation(
-        int consultationRequestId) async {
-
+    static Future<DoctorAcceptModel?> rejoinConsultation(
+      int consultationRequestId,
+    ) async {
       try {
 
         String? accessToken =
-        await getAccessToken();
+            await getAccessToken();
 
-        final response =
-        await http.post(
-
+        final response = await http.post(
           Uri.parse(
             "${AppUrl.mainURL}/user/rejoin-consultation/",
           ),
-
           headers: {
-
             "Authorization":
-            "Bearer $accessToken",
-
+                "Bearer $accessToken",
             "Content-Type":
-            "application/json",
+                "application/json",
           },
-
           body: jsonEncode({
-
             "consultation_request_id":
-            consultationRequestId,
+                consultationRequestId,
           }),
         );
 
-        print(
-            "REJOIN RESPONSE : ${response.body}");
+        print("================================");
+        print("REJOIN STATUS : ${response.statusCode}");
+        print("REJOIN BODY : ${response.body}");
+        print("================================");
 
         if (response.statusCode == 200) {
 
-          return DoctorAcceptModel.fromJson(
+          final model =
+              DoctorAcceptModel.fromJson(
             jsonDecode(response.body),
           );
+          print("MODEL STATUS => ${model.status}");
+          print("ROOM => ${model.consultationRoomId}");
+          print("WS => ${model.websocketUrl}");
+          print("DOCTOR => ${model.doctor}");
+
+          if (model.status == true) {
+            return model;
+          }
         }
+
+        return null;
 
       } catch (e) {
 
         print(
-            "REJOIN ERROR : $e");
-      }
+          "REJOIN ERROR : $e",
+        );
 
-      return null;
+        return null;
+      }
     }
 
     /// END CONSULTATION
@@ -5719,6 +5875,85 @@ static Future<List<CompetitionModel>> fetchCompetitionButton() async {
       }
       return null;
     }
+
+    static Future<Map<String, dynamic>?> reconnectConsultation(
+        int consultationId) async {
+      try {
+        final token = await LocalStorage.getAccessToken();
+
+        final response = await http.post(
+          Uri.parse(
+            "${AppUrl.mainURL}/user/reconnect-consultation/$consultationId/",
+          ),
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json",
+          },
+        );
+
+        print("RECONNECT STATUS => ${response.statusCode}");
+        print("RECONNECT BODY => ${response.body}");
+
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body);
+        }
+
+        return null;
+      } catch (e) {
+        print("RECONNECT ERROR => $e");
+        return null;
+      }
+    }
+
+    // static Future<RejoinConsultationModel?> rejoinConsultation(
+    //     int consultationId,
+    //   ) async {
+    //     try {
+
+    //       String? token =
+    //           await LocalStorage.getAccessToken();
+
+    //       final response = await http.post(
+    //         Uri.parse(
+    //           "${AppUrl.mainURL}/user/rejoin-consultation/",
+    //         ),
+    //         headers: {
+    //           "Authorization": "Bearer $token",
+    //           "Content-Type": "application/json",
+    //         },
+    //         body: jsonEncode({
+    //           "consultation_request_id":
+    //               consultationId,
+    //         }),
+    //       );
+
+    //       print(
+    //         "REJOIN STATUS : ${response.statusCode}",
+    //       );
+
+    //       print(
+    //         "REJOIN BODY : ${response.body}",
+    //       );
+
+    //       if (response.statusCode == 200) {
+
+    //         return RejoinConsultationModel
+    //             .fromJson(
+    //           jsonDecode(response.body),
+    //         );
+    //       }
+
+    //       return null;
+
+    //     } catch (e) {
+
+    //       print(
+    //         "REJOIN API ERROR : $e",
+    //       );
+
+    //       return null;
+    //     }
+    //   }
 
     static Future<bool> cancelConsultationRequest({
       required int consultationRequestId,
@@ -6320,6 +6555,1016 @@ static Future<List<CompetitionModel>> fetchCompetitionButton() async {
 
   //   return false;
   // }
+
+
+
+    static Future<GroomingServiceModel> fetchGroomingServiceDetails(
+      int serviceId,
+    ) async {
+      try {
+        String? accessToken = await getAccessToken();
+
+        if (accessToken == null) {
+          throw Exception(
+            "Authorization failed: No valid access token",
+          );
+        }
+
+        final response = await http.get(
+          Uri.parse(
+            '${AppUrl.GroomingServices}$serviceId/',
+          ),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        );
+
+        print('Grooming Response Status Code: ${response.statusCode}');
+        print('Grooming Response Body: ${response.body}');
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> responseBody =
+              json.decode(response.body);
+
+          if (responseBody['status'] == true &&
+              responseBody['data'] != null &&
+              responseBody['data'] is Map) {
+            return GroomingServiceModel.fromJson(
+              Map<String, dynamic>.from(responseBody['data']),
+            );
+          } else {
+            throw Exception(
+              responseBody['message'] ??
+                  'Invalid grooming service response',
+            );
+          }
+        } else if (response.statusCode == 401) {
+          print('Access token expired. Refreshing...');
+
+          accessToken = await refreshToken();
+
+          if (accessToken != null) {
+            // Retry with the refreshed token.
+            final retryResponse = await http.get(
+              Uri.parse(
+                '${AppUrl.GroomingServices}$serviceId/',
+              ),
+              headers: {
+                'Authorization': 'Bearer $accessToken',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+              },
+            );
+
+            print(
+              'Grooming Retry Status Code: '
+              '${retryResponse.statusCode}',
+            );
+            print('Grooming Retry Body: ${retryResponse.body}');
+
+            if (retryResponse.statusCode == 200) {
+              final Map<String, dynamic> retryBody =
+                  json.decode(retryResponse.body);
+
+              if (retryBody['status'] == true &&
+                  retryBody['data'] != null &&
+                  retryBody['data'] is Map) {
+                return GroomingServiceModel.fromJson(
+                  Map<String, dynamic>.from(retryBody['data']),
+                );
+              }
+
+              throw Exception(
+                retryBody['message'] ??
+                    'Invalid grooming service response after refresh',
+              );
+            }
+
+            throw Exception(
+              'Failed to fetch grooming service after token refresh. '
+              'Status code: ${retryResponse.statusCode}',
+            );
+          } else {
+            throw Exception(
+              'Failed to refresh token. User must re-login.',
+            );
+          }
+        } else {
+          throw Exception(
+            'Failed to load grooming service. '
+            'Status code: ${response.statusCode}',
+          );
+        }
+      } catch (e) {
+        throw Exception('Error fetching grooming service: $e');
+      }
+    }
+
+  static Future<List<GroomingMainServiceModel>>
+      fetchAllGroomingServices() async {
+    try {
+      String? accessToken = await getAccessToken();
+
+      if (accessToken == null) {
+        throw Exception('No valid access token');
+      }
+
+      Future<http.Response> getServices(String token) {
+        return http.get(
+          Uri.parse(AppUrl.GroomingServiceList),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        );
+      }
+
+      var response = await getServices(accessToken);
+
+      // Refresh the token and retry once if unauthorized.
+      if (response.statusCode == 401) {
+        print('Access token expired. Refreshing...');
+
+        accessToken = await refreshToken();
+
+        if (accessToken == null) {
+          throw Exception(
+            'Failed to refresh token. Please log in again.',
+          );
+        }
+
+        response = await getServices(accessToken);
+      }
+
+      print('Grooming status: ${response.statusCode}');
+      print('Grooming response: ${response.body}');
+
+      if (response.statusCode != 200) {
+        throw Exception(
+          'Failed to fetch grooming services: '
+          '${response.statusCode}',
+        );
+      }
+
+      final Map<String, dynamic> body =
+          json.decode(response.body);
+
+      if (body['status'] != true || body['data'] is! List) {
+        throw Exception(
+          body['message'] ?? 'Invalid grooming services response',
+        );
+      }
+
+      final services = (body['data'] as List)
+          .whereType<Map>()
+          .map(
+            (item) => GroomingMainServiceModel.fromJson(
+              Map<String, dynamic>.from(item),
+            ),
+          )
+          .where(
+            (service) => service.id > 0 && service.isActive,
+          )
+          .toList();
+
+      // The single endpoint already returns the combined services.
+      return services;
+    } catch (e) {
+      throw Exception('Error fetching grooming services: $e');
+    }
+  }
+
+  static Future<List<OneTimeGroomingServiceModel>>
+      fetchOneTimeGroomingServices() async {
+    final url = Uri.parse(AppUrl.GroomingOneTimeServicePlan);
+    final token = await getAccessToken();
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print('One-time grooming status: ${response.statusCode}');
+    print('One-time grooming response: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody =
+          jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (responseBody['status'] == true) {
+        final List<dynamic> data =
+            responseBody['data'] as List<dynamic>? ?? [];
+
+        return data
+            .map(
+              (item) => OneTimeGroomingServiceModel.fromJson(
+                item as Map<String, dynamic>,
+              ),
+            )
+            .where((service) => service.isActive)
+            .toList();
+      }
+
+      throw Exception(
+        responseBody['message']?.toString() ??
+            'Failed to fetch grooming services',
+      );
+    }
+
+    throw Exception(
+      'Failed to fetch grooming services. '
+      'Status code: ${response.statusCode}',
+    );
+  }
+
+  static Future<AvailableServiceSlotsResponse>
+      fetchAvailableServiceSlots({
+    required int mainServiceId,
+    required String month,
+  }) async {
+    try {
+      String? accessToken = await getAccessToken();
+
+      if (accessToken == null) {
+        throw Exception(
+          'Authorization failed: No valid access token',
+        );
+      }
+
+      final uri = Uri.parse(
+        AppUrl.AvailableServiceSlots,
+      ).replace(
+        queryParameters: {
+          'main_service': mainServiceId.toString(),
+          'month': month,
+        },
+      );
+
+      Future<http.Response> sendRequest(String token) {
+        return http.get(
+          uri,
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        );
+      }
+
+      var response = await sendRequest(accessToken);
+
+      print('Available Slots URL: $uri');
+      print('Available Slots Status Code: ${response.statusCode}');
+      print('Available Slots Response: ${response.body}');
+
+      if (response.statusCode == 401) {
+        accessToken = await refreshToken();
+
+        if (accessToken == null) {
+          throw Exception(
+            'Failed to refresh token. User must re-login.',
+          );
+        }
+
+        response = await sendRequest(accessToken);
+
+        print('Retry Status Code: ${response.statusCode}');
+        print('Retry Response: ${response.body}');
+      }
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody =
+            json.decode(response.body);
+
+        if (responseBody['status'] == true &&
+            responseBody['data'] is Map) {
+          return AvailableServiceSlotsResponse.fromJson(
+            Map<String, dynamic>.from(responseBody['data']),
+          );
+        }
+
+        throw Exception(
+          responseBody['message'] ??
+              'Invalid available slots response',
+        );
+      }
+
+      throw Exception(
+        'Failed to load available slots. '
+        'Status code: ${response.statusCode}',
+      );
+    } catch (e) {
+      throw Exception(
+        'Error fetching available service slots: $e',
+      );
+    }
+  }
+
+
+  static Future<GroomingAddToCartResponse> addGroomingToCart({
+    required GroomingAddToCartRequest request,
+  }) async {
+    final token = await getAccessToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Please log in to add a grooming booking.');
+    }
+
+    debugPrint('GROOMING CART REQUEST: ${jsonEncode(request.toJson())}');
+
+    final response = await http.post(
+      Uri.parse(AppUrl.ServiceAddToCart),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(request.toJson()),
+    );
+
+    debugPrint('GROOMING CART STATUS: ${response.statusCode}');
+    debugPrint('GROOMING CART RESPONSE: ${response.body}');
+
+    Map<String, dynamic> json;
+
+    try {
+      final decoded = jsonDecode(response.body);
+
+      if (decoded is! Map) {
+        throw const FormatException('Invalid response format');
+      }
+
+      json = Map<String, dynamic>.from(decoded);
+    } catch (_) {
+      throw Exception(
+        'Invalid server response (HTTP ${response.statusCode})',
+      );
+    }
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        json['status'] == true) {
+      return GroomingAddToCartResponse.fromJson(json);
+    }
+
+    throw Exception(
+      json['message']?.toString() ??
+          'Unable to add grooming booking to cart.',
+    );
+  }
+
+  static Future<GroomingAddToCartResponse>
+      addOneTimeGroomingToCart({
+    required OneTimeGroomingAddToCartRequest request,
+  }) async {
+    final token = await getAccessToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Please log in to add a grooming booking.');
+    }
+
+    debugPrint(
+      'ONE-TIME GROOMING REQUEST: '
+      '${jsonEncode(request.toJson())}',
+    );
+
+    final response = await http.post(
+      Uri.parse(AppUrl.ServiceAddToCart),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(request.toJson()),
+    );
+
+    debugPrint(
+      'ONE-TIME GROOMING STATUS: ${response.statusCode}',
+    );
+    debugPrint(
+      'ONE-TIME GROOMING RESPONSE: ${response.body}',
+    );
+
+    Map<String, dynamic> json;
+
+    try {
+      final decoded = jsonDecode(response.body);
+
+      if (decoded is! Map) {
+        throw const FormatException('Invalid response format');
+      }
+
+      json = Map<String, dynamic>.from(decoded);
+    } catch (_) {
+      throw Exception(
+        'Invalid server response (HTTP ${response.statusCode})',
+      );
+    }
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        json['status'] == true) {
+      return GroomingAddToCartResponse.fromJson(json);
+    }
+
+    throw Exception(
+      json['message']?.toString() ??
+          'Unable to add One-Time grooming booking.',
+    );
+  }
+
+
+  
+  static Future<GroomingAddToCartResponse> fetchGroomingCart() async {
+    final token = await LocalStorage.getAccessToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Please log in to view your cart.');
+    }
+
+    final response = await http.get(
+      Uri.parse(AppUrl.ServiceCartList),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    );
+
+    Map<String, dynamic> json;
+
+    try {
+      final decoded = jsonDecode(response.body);
+
+      if (decoded is! Map) {
+        throw const FormatException('Invalid response format');
+      }
+
+      json = Map<String, dynamic>.from(decoded);
+    } catch (_) {
+      throw Exception(
+        'Invalid server response (HTTP ${response.statusCode})',
+      );
+    }
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        json['status'] == true) {
+      return GroomingAddToCartResponse.fromJson(json);
+    }
+
+    throw Exception(
+      json['message']?.toString() ??
+          'Unable to fetch grooming cart.',
+    );
+  }
+
+
+  
+static Future<GroomingPlanPriceModel> fetchGroomingPlanPrice({
+  required int serviceId,
+  required int petId,
+  required int sessionsPerMonth,
+  required int numberOfMonths,
+}) async {
+  Future<http.Response> sendRequest(String token) {
+    return http.get(
+      Uri.https(
+        'app.pawdli.com',
+        '/user/grooming/build-plan/price/',
+        {
+          'service_id': serviceId.toString(),
+          'pet_id': petId.toString(),
+          'sessions_per_month': sessionsPerMonth.toString(),
+          'number_of_months': numberOfMonths.toString(),
+        },
+      ),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    );
+  }
+
+  var token = await getAccessToken();
+
+  if (token == null) {
+    throw Exception('Authorization failed: No valid access token');
+  }
+
+  var response = await sendRequest(token);
+
+  if (response.statusCode == 401) {
+    token = await refreshToken();
+
+    if (token == null) {
+      throw Exception('Session expired. Please log in again.');
+    }
+
+    response = await sendRequest(token);
+  }
+
+  print('GROOMING PLAN PRICE STATUS: ${response.statusCode}');
+  print('GROOMING PLAN PRICE RESPONSE: ${response.body}');
+
+  final Map<String, dynamic> body =
+      json.decode(response.body) as Map<String, dynamic>;
+
+  if (response.statusCode >= 200 &&
+      response.statusCode < 300 &&
+      body['status'] == true &&
+      body['data'] is Map) {
+    return GroomingPlanPriceModel.fromJson(
+      Map<String, dynamic>.from(body['data'] as Map),
+    );
+  }
+
+  throw Exception(
+    body['message']?.toString() ?? 'Failed to fetch grooming plan price',
+  );
+}
+
+
+  static Future<GroomingCartUpdateResponse?> updateGroomingCart(
+    GroomingCartUpdateRequest model,
+  ) async {
+    try {
+      String? accessToken = await getAccessToken();
+
+      if (accessToken == null) {
+        throw Exception("No valid access token found.");
+      }
+
+      final url = Uri.parse(AppUrl.UpdateGroomingCartUrl);
+
+      print('🔗 Grooming update URL: $url');
+
+      final requestBody = model.toJson();
+
+      print('📤 Grooming update request: ${jsonEncode(requestBody)}');
+
+      final response = await http.put(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      print('✅ Grooming update status: ${response.statusCode}');
+      print('📨 Grooming update response: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = json.decode(response.body);
+        return GroomingCartUpdateResponse.fromJson(
+          Map<String, dynamic>.from(data),
+        );
+      } else if (response.statusCode == 401) {
+        print('🔁 Token expired, attempting refresh...');
+
+        final newToken = await refreshToken();
+
+        if (newToken != null) {
+          return updateGroomingCart(model);
+        }
+
+        throw Exception('Token refresh failed. Please login again.');
+      } else {
+        String errorMessage = 'Failed to update grooming cart.';
+
+        try {
+          final errorResponse = json.decode(response.body);
+
+          if (errorResponse is Map<String, dynamic>) {
+            errorMessage =
+                errorResponse['message']?.toString() ??
+                errorResponse['detail']?.toString() ??
+                errorMessage;
+          }
+        } catch (_) {
+          // Keep the fallback error message.
+        }
+
+        print(
+          '❗ Grooming update error ${response.statusCode}: '
+          '$errorMessage',
+        );
+
+        Get.snackbar(
+          'Update Failed',
+          errorMessage,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colours.primarycolour,
+          colorText: Colours.secondarycolour,
+          duration: const Duration(seconds: 4),
+        );
+
+        return null;
+      }
+    } catch (e) {
+      print('❌ Exception in updateGroomingCart: $e');
+      return null;
+    }
+  }
+
+  static Future<bool> removeOneTimeServices({
+    required int cartItemId,
+  }) async {
+    try {
+      final accessToken = await getAccessToken();
+
+      if (accessToken == null) {
+        throw Exception('No valid access token found.');
+      }
+
+      final url = Uri.parse(AppUrl.UpdateGroomingCartUrl);
+
+      final requestBody = {
+        'action': 'REMOVE_ONE_TIME',
+        'cart_item_id': cartItemId,
+      };
+
+      debugPrint(
+        'ONE-TIME REMOVE BODY: ${jsonEncode(requestBody)}',
+      );
+
+      final response = await http.put(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      debugPrint('REMOVE STATUS: ${response.statusCode}');
+      debugPrint('REMOVE RESPONSE: ${response.body}');
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 201) {
+        final responseData =
+            jsonDecode(response.body) as Map<String, dynamic>;
+
+        return responseData['status'] == true;
+      }
+
+      return false;
+    } catch (e) {
+      debugPrint('REMOVE ONE-TIME ERROR: $e');
+      return false;
+    }
+  }
+
+
+  static Future<GroomingCartRemoveModel> removeGroomingCartItem({
+    required int cartId,
+  }) async {
+    try {
+      String? accessToken = await getAccessToken();
+
+      if (accessToken == null) {
+        throw Exception('Authorization failed: access token missing');
+      }
+
+      final url = Uri.parse(
+        '${AppUrl.RemoveServiceCartItem}$cartId/',
+      );
+
+      Future<http.Response> sendRequest(String token) {
+        return http.delete(
+          url,
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        );
+      }
+
+      var response = await sendRequest(accessToken);
+
+      // Refresh the access token and retry once if unauthorized.
+      if (response.statusCode == 401 ||
+          response.statusCode == 403) {
+        final newToken = await refreshToken();
+
+        if (newToken == null) {
+          throw Exception('Token refresh failed');
+        }
+
+        response = await sendRequest(newToken);
+      }
+
+      print('🗑 Grooming DELETE URL: $url');
+      print('🗑 Grooming DELETE status: ${response.statusCode}');
+      print('🗑 Grooming DELETE response: ${response.body}');
+
+      final Map<String, dynamic> jsonResponse =
+          jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 200 &&
+          jsonResponse['status'] == true) {
+        return GroomingCartRemoveModel.fromJson(jsonResponse);
+      }
+
+      throw Exception(
+        jsonResponse['message']?.toString() ??
+            'Unable to remove grooming cart item',
+      );
+    } catch (e) {
+      print('❌ Remove grooming cart item error: $e');
+      rethrow;
+    }
+  }
+
+  static Future<GroomingCheckoutResponse?> fetchGroomingCheckoutDetails({
+    required List<int> cartIds,
+  }) async {
+    try {
+      if (cartIds.isEmpty) return null;
+
+      final token = await ApiService.getAccessToken();
+
+      final uri = Uri.parse(
+        '${AppUrl.mainURL}/user/grooming/checkout-details/',
+      ).replace(
+        queryParameters: {
+          'cart_ids': cartIds.join(','),
+        },
+      );
+
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      debugPrint('CHECKOUT STATUS: ${response.statusCode}');
+      debugPrint('CHECKOUT RESPONSE: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+
+        if (decoded['status'] == true) {
+          return GroomingCheckoutResponse.fromJson(decoded);
+        }
+      }
+
+      debugPrint('Checkout API failed: ${response.body}');
+      return null;
+    } catch (e) {
+      debugPrint('Checkout API exception: $e');
+      return null;
+    }
+  }
+
+
+  static Future<GroomingCouponResponse> applyGroomingCoupon({
+    required List<int> cartItems,
+    required String couponCode,
+  }) async {
+    final token = await getAccessToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Please log in to apply coupon.');
+    }
+
+    final body = {
+      'cart_items': cartItems,
+      'coupon_code': couponCode,
+    };
+
+    debugPrint('GROOMING COUPON REQUEST: ${jsonEncode(body)}');
+
+    final response = await http.post(
+      Uri.parse(AppUrl.GroomingVerifyCoupon),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+
+    debugPrint('GROOMING COUPON STATUS: ${response.statusCode}');
+    debugPrint('GROOMING COUPON RESPONSE: ${response.body}');
+
+    Map<String, dynamic> json;
+
+    try {
+      final decoded = jsonDecode(response.body);
+
+      if (decoded is! Map) {
+        throw const FormatException('Invalid response format');
+      }
+
+      json = Map<String, dynamic>.from(decoded);
+    } catch (_) {
+      throw Exception(
+        'Invalid server response (HTTP ${response.statusCode})',
+      );
+    }
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        json['success'] == true) {
+      return GroomingCouponResponse.fromJson(json);
+    }
+
+    throw Exception(
+      json['message']?.toString() ?? 'Unable to apply grooming coupon.',
+    );
+  }
+
+  static Future<GroomingReviewPaymentResponse> groomingReviewAndPay({
+    required List<int> cartItems,
+    required String paymentType,
+    String? couponCode,
+  }) async {
+    final token = await getAccessToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Please log in to continue payment.');
+    }
+
+    final body = {
+      'cart_items': cartItems,
+      'payment_type': paymentType,
+      if (couponCode != null && couponCode.isNotEmpty)
+        'coupon_code': couponCode,
+    };
+
+    debugPrint('GROOMING PAYMENT REQUEST: ${jsonEncode(body)}');
+
+    final response = await http.post(
+      Uri.parse(AppUrl.GroomingReviewAndPay),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+
+    debugPrint('GROOMING PAYMENT STATUS: ${response.statusCode}');
+    debugPrint('GROOMING PAYMENT RESPONSE: ${response.body}');
+
+    Map<String, dynamic> json;
+
+    try {
+      final decoded = jsonDecode(response.body);
+
+      if (decoded is! Map) {
+        throw const FormatException('Invalid response format');
+      }
+
+      json = Map<String, dynamic>.from(decoded);
+    } catch (_) {
+      throw Exception(
+        'Invalid server response (HTTP ${response.statusCode})',
+      );
+    }
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        json['status'] == true) {
+      return GroomingReviewPaymentResponse.fromJson(json);
+    }
+
+    throw Exception(
+      json['message']?.toString() ??
+          'Unable to create grooming payment transaction.',
+    );
+  }
+
+  static Future<GroomingVerifyPaymentResponse> verifyGroomingPayment({
+    required int paymentTransactionId,
+    String? razorpayOrderId,
+    String? razorpayPaymentId,
+    String? razorpaySignature,
+  }) async {
+    final token = await getAccessToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Please log in to verify payment.');
+    }
+
+    final body = {
+      'payment_transaction_id': paymentTransactionId,
+      if (razorpayOrderId != null && razorpayOrderId.isNotEmpty)
+        'razorpay_order_id': razorpayOrderId,
+      if (razorpayPaymentId != null && razorpayPaymentId.isNotEmpty)
+        'razorpay_payment_id': razorpayPaymentId,
+      if (razorpaySignature != null && razorpaySignature.isNotEmpty)
+        'razorpay_signature': razorpaySignature,
+    };
+
+    debugPrint('GROOMING VERIFY REQUEST: ${jsonEncode(body)}');
+
+    final response = await http.post(
+      Uri.parse(AppUrl.GroomingVerifyPayment),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+
+    debugPrint('GROOMING VERIFY STATUS: ${response.statusCode}');
+    debugPrint('GROOMING VERIFY RESPONSE: ${response.body}');
+
+    Map<String, dynamic> json;
+
+    try {
+      final decoded = jsonDecode(response.body);
+
+      if (decoded is! Map) {
+        throw const FormatException('Invalid response format');
+      }
+
+      json = Map<String, dynamic>.from(decoded);
+    } catch (_) {
+      throw Exception(
+        'Invalid server response (HTTP ${response.statusCode})',
+      );
+    }
+
+    if (response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        json['status'] == true) {
+      return GroomingVerifyPaymentResponse.fromJson(json);
+    }
+
+    throw Exception(
+      json['message']?.toString() ??
+          'Grooming payment verification failed.',
+    );
+  }
+
+  static Future<GroomingBookingResponse> fetchMyGroomingBookings({
+    String bookingFilter = 'paid',
+  }) async {
+    try {
+      final token = await getAccessToken();
+
+      if (token == null || token.isEmpty) {
+        throw Exception("Authentication token not found");
+      }
+
+      final uri = Uri.parse(AppUrl.GroomingBookings).replace(
+        queryParameters: {
+          'booking_filter': bookingFilter,
+        },
+      );
+
+      print("========== MY GROOMING BOOKINGS API ==========");
+      print("URL: $uri");
+      print("Filter: $bookingFilter");
+
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print("Status Code: ${response.statusCode}");
+      print("Response: ${response.body}");
+
+      final decoded = jsonDecode(response.body);
+
+      if (decoded is! Map<String, dynamic>) {
+        throw Exception("Invalid API response format");
+      }
+
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          decoded['status'] == true) {
+        return GroomingBookingResponse.fromJson(decoded);
+      }
+
+      throw Exception(
+        decoded['message'] ?? 'Failed to fetch grooming bookings',
+      );
+    } catch (e) {
+      print("Grooming Booking API Error: $e");
+      rethrow;
+    }
+  }
 
 }
 

@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/controller/descriptioncontroller.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:get/get.dart';
 import 'package:pawlli/presentation/screens/commonfullimage/fullimageview.dart';
+import 'package:pawlli/presentation/screens/loginpage/loginpage.dart';
 import 'package:pawlli/presentation/screens/pet%20swicth/petswitch.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
@@ -267,10 +269,130 @@ void initState() {
                               // **Connect Button**
                               Center(
                                 child: ElevatedButton(
-                             onPressed: () async { Navigator.push(
-                                      context,
-                                MaterialPageRoute(builder: (context) => Petswitch(receiverId:widget.petId,receiverImage:widget.petProfileImage,receiverName:pet.name.toString()), // Replace with your HomePage widget
-                              ));},
+                             onPressed: () async {
+                                // ✅ GUEST CHECK
+                                if (LocalStorage.isGuest()) {
+                                  Get.dialog(
+                                    Dialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                        side: BorderSide(
+                                          color: Colours.primarycolour,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Image.asset(
+                                              "assets/images/LoginRequired.png", // Your image
+                                              height: 140,
+                                              fit: BoxFit.contain,
+                                            ),
+
+                                            const SizedBox(height: 15),
+
+                                            // Text(
+                                            //   "Login Required".tr,
+                                            //   textAlign: TextAlign.center,
+                                            //   style: const TextStyle(
+                                            //     fontSize: 22,
+                                            //     fontWeight: FontWeight.bold,
+                                            //   ),
+                                            // ),
+
+                                            const SizedBox(height: 10),
+
+                                            Text(
+                                              "Please login to continue.".tr,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                fontSize: 15,
+                                              ),
+                                            ),
+
+                                            const SizedBox(height: 20),
+
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: OutlinedButton(
+                                                    style: OutlinedButton.styleFrom(
+                                                      side: BorderSide(
+                                                        color: Colours.primarycolour,
+                                                      ),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(12),
+                                                      ),
+                                                      padding: const EdgeInsets.symmetric(
+                                                        vertical: 14,
+                                                      ),
+                                                    ),
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    child: Text(
+                                                      "Cancel".tr,
+                                                      style: TextStyle(
+                                                        color: Colours.primarycolour,
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                const SizedBox(width: 10),
+
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Colours.primarycolour,
+                                                      foregroundColor: Colors.white,
+                                                      elevation: 0,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(12),
+                                                      ),
+                                                      padding: const EdgeInsets.symmetric(
+                                                        vertical: 14,
+                                                      ),
+                                                    ),
+                                                    onPressed: () {
+                                                      Get.back();
+                                                      Get.offAll(() => LoginPage());
+                                                    },
+                                                    child: Text(
+                                                      "Login".tr,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                // ✅ EXISTING CODE
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Petswitch(
+                                      receiverId: widget.petId,
+                                      receiverImage: widget.petProfileImage,
+                                      receiverName: pet.name.toString(),
+                                    ),
+                                  ),
+                                );
+                              },
 
                               // onPressed: () {
                               //     showDialog(

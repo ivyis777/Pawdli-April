@@ -61,7 +61,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs location to fetch address</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app needs microphone</string>
+	<string>Pawdli uses the microphone for audio and video radio programs and live veterinary consultations, enabling users to speak and interact during broadcasts and communicate with veterinarians during audio and video calls.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app needs permission to save photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>

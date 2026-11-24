@@ -1152,98 +1152,78 @@ class _ReviewandpayPageState
 
     showDialog(
       context: context,
-
+      barrierDismissible: false,
       builder: (context) {
-
         return Dialog(
-
-          shape:
-          RoundedRectangleBorder(
-            borderRadius:
-            BorderRadius.circular(
-                20),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: Colours.primarycolour,
+              width: 1.5,
+            ),
           ),
-
           child: Padding(
-            padding:
-            const EdgeInsets.all(
-                20),
-
+            padding: const EdgeInsets.all(20),
             child: Column(
-              mainAxisSize:
-              MainAxisSize.min,
-
+              mainAxisSize: MainAxisSize.min,
               children: [
-
-                CircleAvatar(
-                  radius: 50,
-
-                  backgroundColor:
-                  Colours.primarycolour,
-
-                  child: Icon(
-                    Icons.check,
-
-                    size: 50,
-
-                    color: Colours
-                        .secondarycolour,
-                  ),
+                Image.asset(
+                  "assets/images/PaymentSuccess.png",
+                  height: 150,
+                  fit: BoxFit.contain,
                 ),
 
-                const SizedBox(
-                    height: 20),
+                const SizedBox(height: 12),
 
-                Text(
-                  "Payment Successful!",
+                // Text(
+                //   "Payment Successful!",
+                //   textAlign: TextAlign.center,
+                //   style: TextStyle(
+                //     fontSize: getResponsiveFont(context, 18),
+                //     fontWeight: FontWeight.w700,
+                //     fontFamily: FontFamily.Cairo,
+                //   ),
+                // ),
 
+                const SizedBox(height: 10),
+
+                const Text(
+                  "Your payment has been completed successfully.",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize:
-                    getResponsiveFont(
-                        context,
-                        18),
-
-                    fontWeight:
-                    FontWeight.w700,
-
-                    fontFamily:
-                    FontFamily.Cairo,
+                    fontSize: 15,
                   ),
                 ),
 
-                const SizedBox(
-                    height: 20),
+                const SizedBox(height: 20),
 
                 SizedBox(
-                  width:
-                  double.infinity,
-
+                  width: double.infinity,
                   height: 50,
-
-                  child:
-                  ElevatedButton(
-
-                    style:
-                    ElevatedButton.styleFrom(
-                      backgroundColor:
-                      Colours.primarycolour,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colours.primarycolour,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Appointmentreviewpage(),
+                          builder: (context) =>
+                              Appointmentreviewpage(),
                         ),
                       );
                     },
-
-                    child: Text(
+                    child: const Text(
                       "Okay",
-
                       style: TextStyle(
-                        color: Colours
-                            .secondarycolour,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),

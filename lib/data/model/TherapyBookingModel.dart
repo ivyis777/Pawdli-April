@@ -49,6 +49,9 @@ class TherapyBookingData {
   final BookingSlot? slot;
 
   final String? location;
+  final String? googleMapLink;
+  final double? latitude;
+  final double? longitude;
   final String? landmark;
   final String? amount;
   final bool? isPaid;
@@ -74,6 +77,9 @@ class TherapyBookingData {
     this.bookingDate,
     this.bookingStatus,
     this.location,
+    this.googleMapLink,
+    this.latitude,
+    this.longitude,
     this.landmark,
     this.amount,
     this.isPaid,
@@ -112,6 +118,12 @@ class TherapyBookingData {
       bookingDate: json["slot"]?["date"],
 
       location: json["pettherapy"]?["location"],
+
+      googleMapLink: json["pettherapy"]?["google_map_link"],
+
+      latitude: (json["pettherapy"]?["latitude"] as num?)?.toDouble(),
+      
+      longitude: (json["pettherapy"]?["longitude"] as num?)?.toDouble(),
 
       landmark: json["pettherapy"]?["landmark"],
 

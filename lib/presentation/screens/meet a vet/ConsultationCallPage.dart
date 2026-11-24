@@ -5,10 +5,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/api%20service.dart';
-import 'package:pawlli/presentation/screens/homepage/homepage.dart';
-import 'package:pawlli/presentation/screens/meet%20a%20vet/appointment.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/consultationSocketService.dart';
-import 'package:pawlli/presentation/screens/meet%20a%20vet/quick_appointment.dart/PrescriptionPage.dart';
 import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -40,8 +37,9 @@ class ConsultationCallPage
   class _ConsultationCallPageState
       extends State<ConsultationCallPage> {
 
-        final socketService =
-          ConsultationSocketService();
+        final socketService = ConsultationSocketService();
+        bool peerDisconnected = false;
+        bool callEnded = false;
 
           bool isCameraOn = true;
           bool isMicOn = true;
@@ -148,6 +146,14 @@ class ConsultationCallPage
 
     Future startCall() async {
 
+      final box = GetStorage();
+
+      userId = int.parse(
+        box.read(LocalStorageConstants.userId)?.toString() ?? "0",
+      );
+
+      print("USER ID FROM STORAGE => $userId");
+
       print("================================");
       print("START CALL");
       print("ROLE : ${widget.isDoctor ? "DOCTOR" : "USER"}");
@@ -157,7 +163,31 @@ class ConsultationCallPage
       print("================================");
 
       try {
+         print("STEP 1");
         await socketService.initialize();
+        print("STEP 2");
+
+        socketService.onPeerLeft = () {
+
+          print("PEER DISCONNECTED");
+
+          if (mounted) {
+            setState(() {
+              peerDisconnected = true;
+            });
+          }
+        };
+
+        socketService.onPeerRejoined = () {
+
+          print("PEER REJOINED");
+
+          if (mounted) {
+            setState(() {
+              peerDisconnected = false;
+            });
+          }
+        };
         print("INITIALIZE SUCCESS");
       } catch (e) {
         print("INITIALIZE ERROR");
@@ -176,7 +206,9 @@ class ConsultationCallPage
         await socketService.connect(
           widget.websocketUrl,
           widget.isDoctor,
+          userId.toString(),
         );
+        print("STEP 3");
         print("SOCKET SUCCESS");
       } catch (e) {
         print("SOCKET ERROR");
@@ -186,9 +218,11 @@ class ConsultationCallPage
       try {
         await connectChatSocket();
         print("CHAT SUCCESS");
-      } catch (e) {
+      } catch (e, s) {
         print("CHAT ERROR");
         print(e);
+        print("START CALL ERROR => $e");
+        print(s);
       }
 
       socketService.onCallEnded = () {
@@ -422,8 +456,14 @@ class ConsultationCallPage
 
         _callEnded = true;
 
+        if (mounted) {
+          setState(() {
+            callEnded = true;
+          });
+        }
+
         Future.delayed(
-          const Duration(milliseconds: 300),
+          const Duration(seconds: 3),
           () async {
 
             try {
@@ -855,9 +895,77 @@ class ConsultationCallPage
                         RTCVideoViewObjectFit
                             .RTCVideoViewObjectFitCover,
                   ),
+                  
                 ),
               ),
             ),
+
+            if (peerDisconnected)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black54,
+                  child: const Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+
+                        CircularProgressIndicator(),
+
+                        SizedBox(height: 20),
+
+                        Text(
+                          "Reconnecting...",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              if (callEnded)
+                Positioned.fill(
+                  child: Container(
+                    color: Colors.black87,
+                    child: const Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+
+                          Icon(
+                            Icons.call_end,
+                            color: Colors.red,
+                            size: 80,
+                          ),
+
+                          SizedBox(height: 20),
+
+                          Text(
+                            "Call Ended",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          SizedBox(height: 10),
+
+                          Text(
+                            "Returning to Home...",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
 
             /// BOTTOM CONTROLS
             Positioned(
@@ -913,6 +1021,8 @@ class ConsultationCallPage
                       if (_callEnded) return;
 
                       _callEnded = true;
+
+                      print("DOCTOR END BUTTON CLICKED");
 
                       socketService.socket?.sink.add(
                         jsonEncode({
@@ -1032,6 +1142,7 @@ class ConsultationCallPage
             if (isChatVisible)
               buildChatUI(),
           ],
+          
         ),
       ),
     );

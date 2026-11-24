@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pawlli/core/form_validation/form_validation.dart';
+import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/controller/competition_controller.dart';
@@ -14,14 +16,17 @@ import 'package:pawlli/presentation/screens/Pet%20Adoption/pet_adt_view.dart';
 import 'package:pawlli/presentation/screens/add%20pet/addpet.dart';
 import 'package:pawlli/presentation/screens/good%20bye%20buddy/goodbyebudddy.dart';
 import 'package:pawlli/presentation/screens/homepage/countdownbutton.dart';
+import 'package:pawlli/presentation/screens/loginpage/loginpage.dart';
 import 'package:pawlli/presentation/screens/meet%20a%20vet/appointment.dart';
 import 'package:pawlli/presentation/screens/notification%20page/notificationpage.dart';
+import 'package:pawlli/presentation/screens/personalinfopage/personalinfopage.dart';
 import 'package:pawlli/presentation/screens/pet%20Radio/petradio.dart';
 import 'package:pawlli/presentation/screens/pet%20therapy/pet_therapy.dart';
 import 'package:pawlli/presentation/screens/pet_store/Store_Orders/orders_list.dart';
 import 'package:pawlli/presentation/screens/pet_store/pet_storemain.dart';
 import 'package:pawlli/presentation/screens/petprofile/editpetprofile.dart';
 import 'package:pawlli/presentation/screens/reelspage/reels.dart';
+import 'package:pawlli/presentation/screens/reelspage/Skeleton/reelsHomePageShimmer.dart';
 import 'package:pawlli/presentation/screens/types%20of%20categaries/typesofcategaries.dart';
 import 'package:pawlli/presentation/screens/userprofile/userprofile.dart';
 import 'package:pawlli/presentation/screens/walletpage/walletpage.dart';
@@ -225,6 +230,118 @@ class _HomePageState extends State<HomePage> {
                       // Profile Avatar
                       GestureDetector(
                         onTap: () {
+                          // ✅ GUEST CHECK
+                          if (LocalStorage.isGuest()) {
+                            Get.dialog(
+                              Dialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(
+                                    color: Colours.primarycolour,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/LoginRequired.png", // Your image
+                                        height: 140,
+                                        fit: BoxFit.contain,
+                                      ),
+
+                                      const SizedBox(height: 15),
+
+                                      // Text(
+                                      //   "Login Required".tr,
+                                      //   textAlign: TextAlign.center,
+                                      //   style: const TextStyle(
+                                      //     fontSize: 22,
+                                      //     fontWeight: FontWeight.bold,
+                                      //   ),
+                                      // ),
+
+                                      const SizedBox(height: 10),
+
+                                      Text(
+                                        "Please login to continue.".tr,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 20),
+
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: OutlinedButton(
+                                              style: OutlinedButton.styleFrom(
+                                                side: BorderSide(
+                                                  color: Colours.primarycolour,
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                ),
+                                                padding: const EdgeInsets.symmetric(
+                                                  vertical: 14,
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                Get.back();
+                                              },
+                                              child: Text(
+                                                "Cancel".tr,
+                                                style: TextStyle(
+                                                  color: Colours.primarycolour,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+
+                                          const SizedBox(width: 10),
+
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colours.primarycolour,
+                                                foregroundColor: Colors.white,
+                                                elevation: 0,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                ),
+                                                padding: const EdgeInsets.symmetric(
+                                                  vertical: 14,
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                Get.back();
+                                                Get.offAll(() => LoginPage());
+                                              },
+                                              child: Text(
+                                                "Login".tr,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          // ✅ EXISTING CODE
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -288,10 +405,123 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
+                            // ✅ GUEST CHECK
+                            if (LocalStorage.isGuest()) {
+                              Get.dialog(
+                                Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    side: BorderSide(
+                                      color: Colours.primarycolour,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Image.asset(
+                                          "assets/images/LoginRequired.png", // Your image
+                                          height: 140,
+                                          fit: BoxFit.contain,
+                                        ),
+
+                                        const SizedBox(height: 15),
+
+                                        // Text(
+                                        //   "Login Required".tr,
+                                        //   textAlign: TextAlign.center,
+                                        //   style: const TextStyle(
+                                        //     fontSize: 22,
+                                        //     fontWeight: FontWeight.bold,
+                                        //   ),
+                                        // ),
+
+                                        const SizedBox(height: 10),
+
+                                        Text(
+                                          "Please login to continue.".tr,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 20),
+
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: OutlinedButton(
+                                                style: OutlinedButton.styleFrom(
+                                                  side: BorderSide(
+                                                    color: Colours.primarycolour,
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                  ),
+                                                  padding: const EdgeInsets.symmetric(
+                                                    vertical: 14,
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  Get.back();
+                                                },
+                                                child: Text(
+                                                  "Cancel".tr,
+                                                  style: TextStyle(
+                                                    color: Colours.primarycolour,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+
+                                            const SizedBox(width: 10),
+
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colours.primarycolour,
+                                                  foregroundColor: Colors.white,
+                                                  elevation: 0,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                  ),
+                                                  padding: const EdgeInsets.symmetric(
+                                                    vertical: 14,
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  Get.back();
+                                                  Get.offAll(() => LoginPage());
+                                                },
+                                                child: Text(
+                                                  "Login".tr,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                              return;
+                            }
+
+                            // ✅ EXISTING CODE
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => MyWalletPage()),
+                                builder: (context) => MyWalletPage(),
+                              ),
                             );
                           },
                           child: Padding(
@@ -307,7 +537,6 @@ class _HomePageState extends State<HomePage> {
 
                       // SizedBox(width: 2),
 
-                      // Notification Icon (unchanged)
                       Material(
                         color: Colors.transparent,
                         child: InkWell(
@@ -443,10 +672,138 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           GestureDetector(
                             onTap: () {
+                              // ✅ GUEST CHECK
+                              if (LocalStorage.isGuest()) {
+                                Get.dialog(
+                                  Dialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      side: BorderSide(
+                                        color: Colours.primarycolour,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Image.asset(
+                                            "assets/images/LoginRequired.png", // Your image
+                                            height: 140,
+                                            fit: BoxFit.contain,
+                                          ),
+
+                                          const SizedBox(height: 15),
+
+                                          // Text(
+                                          //   "Login Required".tr,
+                                          //   textAlign: TextAlign.center,
+                                          //   style: const TextStyle(
+                                          //     fontSize: 22,
+                                          //     fontWeight: FontWeight.bold,
+                                          //   ),
+                                          // ),
+
+                                          const SizedBox(height: 10),
+
+                                          Text(
+                                            "Please login to continue.".tr,
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 20),
+
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: OutlinedButton(
+                                                  style: OutlinedButton.styleFrom(
+                                                    side: BorderSide(
+                                                      color: Colours.primarycolour,
+                                                    ),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                    ),
+                                                    padding: const EdgeInsets.symmetric(
+                                                      vertical: 14,
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    Get.back();
+                                                  },
+                                                  child: Text(
+                                                    "Cancel".tr,
+                                                    style: TextStyle(
+                                                      color: Colours.primarycolour,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+
+                                              const SizedBox(width: 10),
+
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: Colours.primarycolour,
+                                                    foregroundColor: Colors.white,
+                                                    elevation: 0,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                    ),
+                                                    padding: const EdgeInsets.symmetric(
+                                                      vertical: 14,
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    Get.back();
+                                                    Get.offAll(() => LoginPage());
+                                                  },
+                                                  child: Text(
+                                                    "Login".tr,
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              final isComplete = FormValidation.isProfileComplete(
+                                userId: LocalStorage.getUserId(),
+                                name: LocalStorage.getName(),
+                                username: LocalStorage.getUserName(),
+                                mobile: LocalStorage.getMobile(),
+                              );
+
+                              if (!isComplete) {
+                                Navigator.of(context, rootNavigator: true).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => PersonalInfoPage(), 
+                                  ),
+                                );
+                                return;
+                              }
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AddPetPage()),
+                                  builder: (context) => AddPetPage(),
+                                ),
                               );
                             },
                             child: Column(
@@ -646,14 +1003,58 @@ class _HomePageState extends State<HomePage> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          print("🔥🔥 SEE ALL CLICKED 🔥🔥");
+
+                          final isGuest = LocalStorage.isGuest();
+
+                          print("IS GUEST: $isGuest");
+
+                          final userId = LocalStorage.getUserId();
+                          final name = LocalStorage.getName();
+                          final username = LocalStorage.getUserName();
+                          final mobile = LocalStorage.getMobile();
+
+                          print("======= LOCAL STORAGE DATA =======");
+                          print("User ID: $userId");
+                          print("Name: $name");
+                          print("Username: $username");
+                          print("Mobile: $mobile");
+                          print("==================================");
+
+                          if (!isGuest) {
+                            final isComplete = FormValidation.isProfileComplete(
+                              userId: userId,
+                              name: name,
+                              username: username,
+                              mobile: mobile,
+                            );
+
+                            print("PROFILE COMPLETE: $isComplete");
+
+                            if (!isComplete) {
+                              print("❌ Navigating to PersonalInfoPage");
+
+                              Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(
+                                  builder: (_) => PersonalInfoPage(),
+                                ),
+                              );
+                              return;
+                            }
+
+                            print("✅ Profile complete. Opening reels.");
+                          }
+
                           final controller = Get.find<ReelsController>();
+
+                          print("REELS COUNT: ${controller.reels.length}");
 
                           if (controller.reels.isNotEmpty) {
                             Navigator.of(context, rootNavigator: true).push(
                               MaterialPageRoute(
                                 builder: (_) => ReelsPage(
                                   reels: controller.reels,
-                                  startIndex: 0, // open from first reel
+                                  startIndex: 0,
                                 ),
                               ),
                             );
@@ -682,33 +1083,56 @@ class _HomePageState extends State<HomePage> {
                   Obx(() {
                     final controller = Get.find<ReelsController>();
 
-                    if (controller.isLoading.value) {
-                      return const Center(child: CircularProgressIndicator());
+                    if (controller.isLoading.value && controller.reels.isEmpty) {
+                      return const ReelsSkeleton();
                     }
 
                     if (controller.reels.isEmpty) {
                       return const Text("Loading.......");
                     }
 
+                    // Show only the first 15 reels on Home page
+                    final homeReels = controller.reels.take(15).toList();
+
                     return SizedBox(
                       height: 200, // Increased size so thumbnails are visible
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
-                        itemCount: controller.reels.length,
+                        itemCount: homeReels.length,
                         separatorBuilder: (_, __) => const SizedBox(width: 12),
                         itemBuilder: (context, index) {
-                          final reel = controller.reels[index];
+                          final reel = homeReels[index];
 
                           return GestureDetector(
                             onTap: () {
-                              Navigator.of(context, rootNavigator: true).push(
-                                MaterialPageRoute(
-                                  builder: (_) => ReelsPage(
-                                    reels: controller.reels,
-                                    startIndex: index,
-                                  ),
-                                ),
+                              final userId = LocalStorage.getUserId();
+                              final name = LocalStorage.getName();
+                              final username = LocalStorage.getUserName();
+                              final mobile = LocalStorage.getMobile();
+
+                              final isComplete = FormValidation.isProfileComplete(
+                                userId: userId,
+                                name: name,
+                                username: username,
+                                mobile: mobile,
                               );
+
+                              if (isComplete) {
+                                Navigator.of(context, rootNavigator: true).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => ReelsPage(
+                                      reels: controller.reels,
+                                      startIndex: index,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                Navigator.of(context, rootNavigator: true).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => PersonalInfoPage(),
+                                  ),
+                                );
+                              }
                             },
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
@@ -726,19 +1150,22 @@ class _HomePageState extends State<HomePage> {
                                       color: Colors.black12,
                                       child: const Center(
                                         child: CircularProgressIndicator(
-                                            strokeWidth: 2),
+                                          strokeWidth: 2,
+                                        ),
                                       ),
                                     ),
                                     errorWidget: (_, __, ___) => Container(
                                       width: 120,
                                       height: 200,
                                       color: Colors.black26,
-                                      child: const Icon(Icons.error,
-                                          color: Colors.white),
+                                      child: const Icon(
+                                        Icons.error,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
 
-                                  // 🔥 GRADIENT (for readability)
+                                  // GRADIENT (for readability)
                                   Positioned(
                                     left: 0,
                                     right: 0,
@@ -758,16 +1185,15 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
 
-                                  // 👤 USERNAME (SCROLLING) + ❤️ LIKES (STATIC)
+                                  // USERNAME (SCROLLING) + ❤️ LIKES (STATIC)
                                   Positioned(
                                     left: 6,
                                     right: 6,
                                     bottom: 6,
                                     child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        // 🔄 USERNAME (SCROLLS ONLY)
+                                        // USERNAME (SCROLLS ONLY)
                                         Expanded(
                                           child: MarqueeText(
                                             text: reel.username.isNotEmpty
@@ -783,7 +1209,7 @@ class _HomePageState extends State<HomePage> {
 
                                         const SizedBox(width: 6),
 
-                                        // ❤️ LIKE COUNT (STATIC, NO SCROLL)
+                                        // LIKE COUNT (STATIC, NO SCROLL)
                                         if (reel.likesCount > 0)
                                           Row(
                                             mainAxisSize: MainAxisSize.min,
@@ -1079,15 +1505,40 @@ class _HomePageState extends State<HomePage> {
                   vertical: screenHeight * 0.01),
               child: GestureDetector(
                 onTap: () {
-                  // Navigate first
+                  if (!LocalStorage.isGuest()) {
+                    final box = GetStorage();
+
+                    final userId = box.read('user_id');
+                    final name = box.read('name')?.toString();
+                    final username = box.read('username')?.toString();
+                    final mobile = box.read('mobile')?.toString();
+
+                    final isComplete = FormValidation.isProfileComplete(
+                      userId: userId,
+                      name: name,
+                      username: username,
+                      mobile: mobile,
+                    );
+
+                    if (!isComplete) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PersonalInfoPage(),
+                        ),
+                      );
+                      return;
+                    }
+                  }
+
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Petradio()),
+                    MaterialPageRoute(
+                      builder: (context) => Petradio(),
+                    ),
                   ).then((_) {
-                    // Use addPostFrameCallback to perform actions after the frame is rendered
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      // Here you can perform updates like calling setState or modifying observables
-                      print('Card tapped');
+                      print('Pet Radio card tapped');
                     });
                   });
                 },
@@ -1163,15 +1614,39 @@ class _HomePageState extends State<HomePage> {
                   vertical: screenHeight * 0.01),
               child: GestureDetector(
                 onTap: () {
-                  // Navigate first
+
+                  if (!LocalStorage.isGuest()) {
+
+                    final userId = LocalStorage.getUserId();
+                    final name = LocalStorage.getName();
+                    final username = LocalStorage.getUserName();
+                    final mobile = LocalStorage.getMobile();
+
+                    final isComplete = FormValidation.isProfileComplete(
+                      userId: userId,
+                      name: name,
+                      username: username,
+                      mobile: mobile,
+                    );
+
+                    if (!isComplete) {
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                          builder: (_) => PersonalInfoPage(),
+                        ),
+                      );
+                      return;
+                    }
+                  }
+
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PetstorePage()),
+                    MaterialPageRoute(
+                      builder: (context) => PetstorePage(),
+                    ),
                   ).then((_) {
-                    // Use addPostFrameCallback to perform actions after the frame is rendered
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      // Here you can perform updates like calling setState or modifying observables
-                      print('Card tapped');
+                      print('Pet Store card tapped');
                     });
                   });
                 },
@@ -1274,15 +1749,37 @@ class _HomePageState extends State<HomePage> {
                     vertical: screenHeight * 0.01),
                 child: GestureDetector(
                   onTap: () {
-                    // Navigate first
+                    if (!LocalStorage.isGuest()) {
+                    final userId = LocalStorage.getUserId();
+                    final name = LocalStorage.getName();
+                    final username = LocalStorage.getUserName();
+                    final mobile = LocalStorage.getMobile();
+
+                    final isComplete = FormValidation.isProfileComplete(
+                      userId: userId,
+                      name: name,
+                      username: username,
+                      mobile: mobile,
+                    );
+
+                    if (!isComplete) {
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                          builder: (_) => PersonalInfoPage(),
+                        ),
+                      );
+                      return;
+                    }
+                  }
+
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => PetTherapy()),
+                      MaterialPageRoute(
+                        builder: (context) => PetTherapy(),
+                      ),
                     ).then((_) {
-                      // Use addPostFrameCallback to perform actions after the frame is rendered
                       WidgetsBinding.instance.addPostFrameCallback((_) {
-                        // Here you can perform updates like calling setState or modifying observables
-                        print('Card tapped');
+                        print('Pet Therapy card tapped');
                       });
                     });
                   },
@@ -1449,20 +1946,21 @@ class _HomePageState extends State<HomePage> {
                     horizontal: screenWidth * 0.001,
                     vertical: screenHeight * 0.01),
                 child: GestureDetector(
-                  onTap: () {
-                    showDialog(
+                 onTap: () {
+                    showGeneralDialog(
                       context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text("Coming Soon".tr),
-                          content: Text(
-                              "Pet Podcast feature will be available soon!".tr),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text("OK".tr),
+                      barrierDismissible: true,
+                      barrierLabel: "",
+                      barrierColor: Colors.black54,
+                      pageBuilder: (context, animation, secondaryAnimation) {
+                        return Center(
+                          child: GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: Image.asset(
+                              "assets/images/ComingSoon.png",
+                              fit: BoxFit.contain,
                             ),
-                          ],
+                          ),
                         );
                       },
                     );
@@ -1539,15 +2037,37 @@ class _HomePageState extends State<HomePage> {
                   vertical: screenHeight * 0.01),
               child: GestureDetector(
                 onTap: () {
-                  // Navigate first
+                  if (!LocalStorage.isGuest()) {
+                  final userId = LocalStorage.getUserId();
+                  final name = LocalStorage.getName();
+                  final username = LocalStorage.getUserName();
+                  final mobile = LocalStorage.getMobile();
+
+                  final isComplete = FormValidation.isProfileComplete(
+                    userId: userId,
+                    name: name,
+                    username: username,
+                    mobile: mobile,
+                  );
+
+                  if (!isComplete) {
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                        builder: (_) => PersonalInfoPage(), 
+                      ),
+                    );
+                    return;
+                  }
+                }
+
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AppointmentPage()),
+                    MaterialPageRoute(
+                      builder: (context) => AppointmentPage(),
+                    ),
                   ).then((_) {
-                    // Use addPostFrameCallback to perform actions after the frame is rendered
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      // Here you can perform updates like calling setState or modifying observables
-                      print('Card tapped');
+                      print('Appointment card tapped');
                     });
                   });
                 },
@@ -1620,6 +2140,121 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
+
+            // Pet Service Grooming and Walker
+            // Padding(
+            //   padding: EdgeInsets.symmetric(
+            //     horizontal: screenWidth * 0.001,
+            //     vertical: screenHeight * 0.01,
+            //   ),
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       if (!LocalStorage.isGuest()) {
+            //         final userId = LocalStorage.getUserId();
+            //         final name = LocalStorage.getName();
+            //         final username = LocalStorage.getUserName();
+            //         final mobile = LocalStorage.getMobile();
+
+            //         final isComplete = FormValidation.isProfileComplete(
+            //           userId: userId,
+            //           name: name,
+            //           username: username,
+            //           mobile: mobile,
+            //         );
+
+            //         debugPrint("========== PET SERVICES ==========");
+            //         debugPrint("Is Guest: ${LocalStorage.isGuest()}");
+            //         debugPrint("User ID: $userId");
+            //         debugPrint("Name: $name");
+            //         debugPrint("Username: $username");
+            //         debugPrint("Mobile: $mobile");
+            //         debugPrint("Profile Complete: $isComplete");
+            //         debugPrint("==================================");
+
+            //         if (!isComplete) {
+            //           Navigator.of(context, rootNavigator: true).push(
+            //             MaterialPageRoute(
+            //               builder: (_) => PersonalInfoPage(),
+            //             ),
+            //           );
+            //           return;
+            //         }
+            //       }
+
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) => PetServicesPage(),
+            //         ),
+            //       ).then((_) {
+            //         WidgetsBinding.instance.addPostFrameCallback((_) {
+            //           print('Pet Service card tapped');
+            //         });
+            //       });
+            //     },
+            //     child: Stack(
+            //       clipBehavior: Clip.none,
+            //       children: [
+            //         // Background image
+            //         SizedBox(
+            //           width: screenWidth,
+            //           height: screenHeight * 0.2,
+            //           child: CachedNetworkImage(
+            //             imageUrl:
+            //                 'https://app.pawdli.com/media/static/yellowcard.png',
+            //             fit: BoxFit.contain,
+            //           ),
+            //         ),
+
+            //         // Text content on the left
+            //         Positioned(
+            //           left: screenWidth * 0.05,
+            //           top: screenHeight * 0.02,
+            //           child: Column(
+            //             crossAxisAlignment: CrossAxisAlignment.start,
+            //             children: [
+            //               Text(
+            //                 "Pet Services".tr,
+            //                 style: TextStyle(
+            //                   color: Colours.black,
+            //                   fontFamily: FontFamily.Cairo,
+            //                   fontSize: getResponsiveFont(context, 18),
+            //                   fontWeight: FontWeight.w600,
+            //                 ),
+            //               ),
+            //               const SizedBox(height: 8),
+            //               Text(
+            //                 "Pet grooming and walking \nservices for a healthy, happy pet".tr,
+            //                 style: TextStyle(
+            //                   color: Colours.black,
+            //                   fontFamily: FontFamily.Cairo,
+            //                   fontSize: getResponsiveFont(context, 14),
+            //                   fontWeight: FontWeight.w400,
+            //                 ),
+            //               ),
+            //             ],
+            //           ),
+            //         ),
+
+            //         // Grooming image - corrected positioning
+            //         Positioned(
+            //           right: screenWidth * -0.12,
+            //           bottom: screenHeight * -0.03,
+            //           child: Image.asset(
+            //             'assets/images/PetServiceGrooming.png',
+            //             width: screenWidth * 0.58,
+            //             height: screenHeight * 0.25,
+            //             fit: BoxFit.contain,
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+
+
+            // Adoption
+
             Padding(
               padding: EdgeInsets.symmetric(
                   horizontal: screenWidth * 0.010), // Adjust for side padding
@@ -1639,14 +2274,37 @@ class _HomePageState extends State<HomePage> {
                           height: screenHeight * 0.2, // Adjusted height
                           child: GestureDetector(
                             onTap: () {
+                              if (!LocalStorage.isGuest()) {
+                              final userId = LocalStorage.getUserId();
+                              final name = LocalStorage.getName();
+                              final username = LocalStorage.getUserName();
+                              final mobile = LocalStorage.getMobile();
+
+                              final isComplete = FormValidation.isProfileComplete(
+                                userId: userId,
+                                name: name,
+                                username: username,
+                                mobile: mobile,
+                              );
+
+                              if (!isComplete) {
+                                Navigator.of(context, rootNavigator: true).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => PersonalInfoPage(), 
+                                  ),
+                                );
+                                return;
+                              }
+                            }
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AdoptionViewList()),
+                                  builder: (context) => AdoptionViewList(),
+                                ),
                               ).then((_) {
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((_) {
-                                  print('Card tapped');
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  print('Adoption card tapped');
                                 });
                               });
                             },

@@ -4,6 +4,9 @@ class AppUrl {
   static String SignUpURL = "$mainURL/user/register_user/";
   static String LoginURL = "$mainURL/user/login_user/";
   static String GoogleLoginURL = "$mainURL/user/google_login/";
+  static String AppleLoginURL = "$mainURL/user/apple-signin/";
+  static String guestLoginUrl = "$mainURL/user/auth/guest-login/";
+  static String AppleCompleteURL = "$mainURL/user/apple-signin/complete/";
   static String allCatagoryURL = "$mainURL/user/AllCategoriesList/";
   static String allSubCatagoryURL = "$mainURL/user/all_subcategories/";
   static String SingleCategaryURL = "$mainURL/user/pets/subcategories/";
@@ -42,6 +45,7 @@ class AppUrl {
   static String pdfUrl = "$mainURL/user/api/download-invoice/";
   static String sendrequestUrl = "$mainURL/user/send_friendrequest/";
   static String sessioninfoUrl = "$mainURL/user/get_session_info/";
+  static String PetChatUrl = "$mainURL/user/accept_friendrequest/";
   static String recentchatUrl = "$mainURL/user/FilteredRecentChats/";
   static String adoptionCreationUrl = "$mainURL/user/CreatePetAdoptionRequest/";
   static String ViewAdoptionCreationUrl = "$mainURL/user/ListPetAdoptionRequests/";
@@ -86,5 +90,17 @@ class AppUrl {
   static String Follow = "$mainURL/user/follow/";
   static String RatingandReview = "$mainURL/user/store/product-reviews/add/";
 
-
+  static String GroomingServices = "$mainURL/user/grooming/main-services/";
+  static String GroomingOneTimeServicePlan = "$mainURL/user/grooming/main-services/by-type/?service_type=ONE_TIME";
+  static String GroomingServiceList = "$mainURL/user/grooming/build-plan-services/";
+  static String AvailableServiceSlots = "$mainURL/user/service-slots/available/";
+  static String ServiceAddToCart = "$mainURL/user/grooming/add/cart/";
+  static String ServiceCartList = "$mainURL/user/grooming/cart/";
+  static String ServicePrice = "$mainURL/user/grooming/build-plan/price/";
+  static String UpdateGroomingCartUrl = "$mainURL/user/grooming/cart/update/";
+  static String RemoveServiceCartItem = "$mainURL/user/grooming/cart/remove/";
+  static String GroomingVerifyCoupon = "$mainURL/user/grooming/verify-coupon/";
+  static String GroomingReviewAndPay ="$mainURL/user/grooming/review-and-pay/";
+  static String GroomingVerifyPayment = "$mainURL/user/grooming/verify-payment/";
+  static String GroomingBookings = "$mainURL/user/my/grooming/my-bookings/";
 }

@@ -5,10 +5,11 @@ import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/core/storage_manager/local_storage.dart';
 import 'package:pawlli/data/controller/DoctorconsultationController.dart';
 import 'package:pawlli/data/controller/getuserprofilecontroller.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/Pet%20Adoption/pet_adt_list.dart';
-import 'package:pawlli/presentation/screens/delete%20account/delete_account.dart';
+import 'package:pawlli/presentation/screens/PetGrooming/GroomingMainPage.dart';
+import 'package:pawlli/presentation/screens/PetGrooming/ServiceBookingsPage.dart';
+import 'package:pawlli/presentation/screens/PetWalker/petwalkermainpage.dart';
 import 'package:pawlli/presentation/screens/homepage/homepage.dart';
 import 'package:pawlli/presentation/screens/language/languages.dart';
 import 'package:pawlli/presentation/screens/loginpage/loginpage.dart';
@@ -51,11 +52,11 @@ class _ProfilePageState extends State<ProfilePage> {
       Get.put<UserProfileController>(UserProfileController());
   File? _profileImage;
   bool isNotificationEnabled = true;
-  final Uri termsUrl =
-      Uri.parse('https://www.pawlli.com/terms-and-conditions/');
+  final Uri termsUrl = Uri.parse('https://ivyis777.github.io/pawdli-terms-and-conditions/');
   final Uri privacyUrl = Uri.parse('https://ivyis777.github.io/pawdli-privacy-policy/');
+  final Uri faqsUrl = Uri.parse('https://ivyis777.github.io/pawdli-faqs/');
   final Uri deleteAccountUrl = Uri.parse('https://ivyis777.github.io/pawdli-delete/delete.html');
-  
+
   Future<void> logout() async {
 
     if (Get.isRegistered<DoctorConsultationController>()) {
@@ -222,7 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 _buildSection(
                                   context,
-                                  title: 'My Subscription'.tr,
+                                  title: 'Radio Bookings'.tr,
                                   onTap: () {
                                     Navigator.push(
                                       context,
@@ -254,7 +255,28 @@ class _ProfilePageState extends State<ProfilePage> {
                                     );
                                   },
                                 ),
-
+                                // _buildSection(
+                                //   context,
+                                //   title: 'Pet Grooming Bookings'.tr,
+                                //   onTap: () {
+                                //     Navigator.push(
+                                //       context,
+                                //       MaterialPageRoute(
+                                //           builder: (context) => MyGroomingBookingsPage()),
+                                //     );
+                                //   },
+                                // ), 
+                                // _buildSection(
+                                //   context,
+                                //   title: 'Pet Grooming'.tr,
+                                //   onTap: () {
+                                //     Navigator.push(
+                                //       context,
+                                //       MaterialPageRoute(
+                                //           builder: (context) => PetServicesPage()),
+                                //     );
+                                //   },
+                                // ),
                                 _buildSection(
                                   context,
                                   title: 'Languages'.tr,
@@ -266,7 +288,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                     );
                                   },
                                 ),
-                                
                                 _buildSection(
                                   context,
                                   title: 'Delete Account'.tr,
@@ -289,6 +310,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                           mode: LaunchMode.externalApplication);
                                     } else {
                                       throw 'Could not launch $termsUrl';
+                                    }
+                                  },
+                                ),
+                                _buildSection(
+                                  context,
+                                  title: 'FAQs'.tr,
+                                  onTap: () async {
+                                    if (await canLaunchUrl(faqsUrl)) {
+                                      await launchUrl(faqsUrl,
+                                          mode: LaunchMode.externalApplication);
+                                    } else {
+                                      throw 'Could not launch $faqsUrl';
                                     }
                                   },
                                 ),

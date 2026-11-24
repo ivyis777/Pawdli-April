@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pawlli/core/storage_manager/LocalStorageConstants.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
 import 'package:pawlli/data/controller/pettherapyslotscontroller.dart';
 import 'package:pawlli/data/model/therapyslot.dart';
-import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
+import 'package:pawlli/presentation/screens/loginpage/loginpage.dart';
 import 'package:pawlli/presentation/screens/pet%20therapy/book_therapyslot.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
@@ -335,14 +336,126 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                               child: ElevatedButton(
                                 onPressed: _allSelectedSlots.isNotEmpty
                                     ? () {
+                                        // ✅ GUEST CHECK
+                                        if (LocalStorage.isGuest()) {
+                                          Get.dialog(
+                                            Dialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(20),
+                                                side: BorderSide(
+                                                  color: Colours.primarycolour,
+                                                  width: 2,
+                                                ),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(20),
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Image.asset(
+                                                      "assets/images/LoginRequired.png", // Your image
+                                                      height: 140,
+                                                      fit: BoxFit.contain,
+                                                    ),
+
+                                                    const SizedBox(height: 15),
+
+                                                    // Text(
+                                                    //   "Login Required".tr,
+                                                    //   textAlign: TextAlign.center,
+                                                    //   style: const TextStyle(
+                                                    //     fontSize: 22,
+                                                    //     fontWeight: FontWeight.bold,
+                                                    //   ),
+                                                    // ),
+
+                                                    const SizedBox(height: 10),
+
+                                                    Text(
+                                                      "Please login to continue.".tr,
+                                                      textAlign: TextAlign.center,
+                                                      style: const TextStyle(
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
+
+                                                    const SizedBox(height: 20),
+
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: OutlinedButton(
+                                                            style: OutlinedButton.styleFrom(
+                                                              side: BorderSide(
+                                                                color: Colours.primarycolour,
+                                                              ),
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(12),
+                                                              ),
+                                                              padding: const EdgeInsets.symmetric(
+                                                                vertical: 14,
+                                                              ),
+                                                            ),
+                                                            onPressed: () {
+                                                              Get.back();
+                                                            },
+                                                            child: Text(
+                                                              "Cancel".tr,
+                                                              style: TextStyle(
+                                                                color: Colours.primarycolour,
+                                                                fontWeight: FontWeight.w600,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+
+                                                        const SizedBox(width: 10),
+
+                                                        Expanded(
+                                                          child: ElevatedButton(
+                                                            style: ElevatedButton.styleFrom(
+                                                              backgroundColor: Colours.primarycolour,
+                                                              foregroundColor: Colors.white,
+                                                              elevation: 0,
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(12),
+                                                              ),
+                                                              padding: const EdgeInsets.symmetric(
+                                                                vertical: 14,
+                                                              ),
+                                                            ),
+                                                            onPressed: () {
+                                                              Get.back();
+                                                              Get.offAll(() => LoginPage());
+                                                            },
+                                                            child: Text(
+                                                              "Login".tr,
+                                                              style: const TextStyle(
+                                                                color: Colors.white,
+                                                                fontWeight: FontWeight.w600,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        // ✅ EXISTING CODE
                                         final slotIds = _allSelectedSlots
                                             .map((s) => s.slotId ?? 0)
                                             .toList();
+
                                         final dates = _allSelectedSlots
                                             .map((s) => s.date ?? '')
                                             .toList();
 
-                                        // ✅ Print selected slots and dates
                                         print('Selected Slots: $slotIds');
                                         print('Selected Dates: $dates');
                                         print('Total Amount: $_totalAmount');
@@ -350,8 +463,7 @@ class _TimeSlotPageState extends State<PetTherapySlot> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                pettherapyslotPage(
+                                            builder: (context) => pettherapyslotPage(
                                               selectedSlots: _allSelectedSlots,
                                               totalAmount: _totalAmount,
                                               selectedSlotIds: slotIds,

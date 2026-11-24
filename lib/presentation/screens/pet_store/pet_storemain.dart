@@ -296,7 +296,6 @@ class _PetstorePageState extends State<PetstorePage> {
     });
   }
 
-  // (Rest of your code continues EXACTLY same…)
   @override
   Widget build(BuildContext context) {
     final CartController cartController = Get.find<CartController>();
@@ -322,7 +321,6 @@ class _PetstorePageState extends State<PetstorePage> {
           //   ),
           // ),
 
-          /// ✅ YOUR ORIGINAL SCROLL VIEW (UNCHANGED)
           CustomScrollView(
             slivers: [
               SliverAppBar(
@@ -379,7 +377,7 @@ class _PetstorePageState extends State<PetstorePage> {
                             height: 30,
                             width: 30,
                             fit: BoxFit.contain,
-                            color: Colours.primarycolour, // optional
+                            color: Colours.primarycolour, 
                           )
                         ),
                       ),
@@ -409,8 +407,6 @@ class _PetstorePageState extends State<PetstorePage> {
             ],
           ),
 
-          /// ✅ CART ICON FIXED OVERLAY
-          // if (!_isSearching)
           Positioned(
             bottom: 5,
             right: 20,
@@ -446,7 +442,7 @@ class _PetstorePageState extends State<PetstorePage> {
                     ),
                   ),
 
-                  /// 🔴 BADGE
+                  /// BADGE
                   Obx(() {
                     final count = cartController.cartItems.length;
 

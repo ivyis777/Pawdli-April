@@ -466,7 +466,7 @@ class _SeeAllPageState extends State<SeeAllPage> {
             //     ),
             //   ),
 
-            const SizedBox(height: 5),
+            const SizedBox(height: 20),
 
             // ---------------- LIST of SINGLE CATEGORY ITEMS ----------------
             Obx(() {
@@ -475,8 +475,17 @@ class _SeeAllPageState extends State<SeeAllPage> {
               }
 
               if (singleCategoryController.singleCategories.isEmpty) {
-                return Center(
-                    child: Text(singleCategoryController.errorMessage.value));
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  width: double.infinity,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Image.asset(
+                      'assets/images/NoFriendsAvalable.png',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                );
               }
 
               return ListView.builder(

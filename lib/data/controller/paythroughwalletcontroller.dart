@@ -57,6 +57,7 @@ class PayThroughWalletController extends GetxController {
         date: date ?? "",
         programType: programType ?? "",
         userId: userId,
+        extraData: extraData,
       );
 
       isLoading(false);

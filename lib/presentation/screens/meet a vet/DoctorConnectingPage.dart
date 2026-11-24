@@ -4,9 +4,8 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:pawlli/data/controller/QuickConsultationController.dart';
-import 'package:pawlli/presentation/screens/meet a vet/appointment.dart';
-class DoctorConnectingPage
-    extends StatefulWidget {
+import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
+class DoctorConnectingPage extends StatefulWidget {
 
   final int consultationId;
 
@@ -24,8 +23,10 @@ class DoctorConnectingPage
 class _DoctorConnectingPageState
     extends State<DoctorConnectingPage> {
 
-  final QuickConsultationController controller =
-    Get.find<QuickConsultationController>();
+  // final QuickConsultationController controller =
+  //   Get.find<QuickConsultationController>();
+
+  late final QuickConsultationController controller;
 
     String _selectedReason = "Booked by mistake";
     bool _dialogShown = false;
@@ -33,16 +34,18 @@ class _DoctorConnectingPageState
 
   @override
     void initState() {
-
       super.initState();
 
       print("DOCTOR CONNECT PAGE OPENED");
 
 
-      // controller = Get.put(
-      //   QuickConsultationController(),
-      //   permanent: true,
-      // );
+      controller =
+          Get.isRegistered<QuickConsultationController>()
+              ? Get.find<QuickConsultationController>()
+              : Get.put(
+                  QuickConsultationController(),
+                  permanent: true,
+                );
 
       print("================================");
       print("DOCTOR CONNECT PAGE OPENED");
@@ -62,197 +65,333 @@ class _DoctorConnectingPageState
 
   @override
     void dispose() {
-
-      // controller.pollingTimer?.cancel();
-
+      controller.stopCheckingDoctor();
       super.dispose();
     }
 
     Future<void> _showCancelDialog() async {
-
-      showDialog(
-
-        context: context,
-
-        barrierDismissible: false,
-
-        builder: (context) {
-
-          return AlertDialog(
-
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-
-            title: const Text(
-              "Cancel Request?",
-            ),
-
-            content: const Text(
-              "Are you sure you want to cancel this consultation request?",
-            ),
-
-            actions: [
-
-              TextButton(
-
-                onPressed: () {
-
-                  Get.back();
-
-                },
-
-                child: const Text("No"),
-              ),
-
-              ElevatedButton(
-
-                onPressed: () {
-
-                  Get.back();
-
-                  _showReasonDialog();
-
-                },
-
-                child: const Text("Yes"),
-              ),
-            ],
-          );
-        },
-      );
-    }
-
-    Future<void> _showReasonDialog() async {
-
       final reasons = [
-
         "Booked by mistake",
-
         "Doctor taking too long",
-
         "No longer needed",
-
         "Found another doctor",
-
         "Other",
       ];
 
       _selectedReason = reasons.first;
 
       showDialog(
-
         context: context,
-
         barrierDismissible: false,
-
         builder: (dialogContext) {
-
           return StatefulBuilder(
-
-            builder: (dialogStateContext, setStateDialog) {
-
-              return AlertDialog(
-
+            builder: (context, setDialogState) {
+              return Dialog(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-
-                title: const Text(
-                  "Cancellation Reason",
-                ),
-
-                content: Column(
-
-                  mainAxisSize: MainAxisSize.min,
-
-                  children: reasons.map((reason) {
-
-                    return RadioListTile<String>(
-
-                      title: Text(reason),
-
-                      value: reason,
-
-                      groupValue: _selectedReason,
-
-                      onChanged: (value) {
-
-                        setStateDialog(() {
-
-                          _selectedReason = value!;
-                        });
-                      },
-                    );
-
-                  }).toList(),
-                ),
-
-                actions: [
-
-                  TextButton(
-
-                    onPressed: () {
-
-                      Get.back();
-
-                    },
-
-                    child: const Text("Close"),
+                  borderRadius: BorderRadius.circular(20),
+                  side: const BorderSide(
+                    color: Colors.brown,
+                    width: 2,
                   ),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
 
-                  ElevatedButton(
+                        /// IMAGE
+                        Image.asset(
+                          "assets/images/CancelRequest.png",
+                          height: 100,
+                        ),
 
-                    onPressed: () async {
+                        const SizedBox(height: 15),
 
-                      Get.back();
+                        // const Text(
+                        //   "Cancel Request?",
+                        //   style: TextStyle(
+                        //     fontSize: 20,
+                        //     fontWeight: FontWeight.bold,
+                        //     color: Colors.brown,
+                        //   ),
+                        // ),
 
-                      // controller.stopCheckingDoctor();
+                        const SizedBox(height: 10),
 
-                      bool success = await controller.cancelConsultationRequest(
-                        consultationId: widget.consultationId,
-                        cancellationReason: _selectedReason,
-                      );
-
-                      if (success) {
-
-                        if (!mounted) return;
-
-                        Get.snackbar(
-                          "Cancelled",
-                          "Consultation cancelled successfully",
-                        );
-
-                        Navigator.of(context).popUntil(
-                          (route) => route.isFirst,
-                        );
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const AppointmentPage(),
+                        const Text(
+                          "Are you sure you want to cancel this consultation request?",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
                           ),
-                        );
-                      } else {
+                        ),
 
-                        Get.snackbar(
+                        const SizedBox(height: 20),
 
-                          "Error",
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Cancellation Reason",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.brown.shade700,
+                            ),
+                          ),
+                        ),
 
-                          "Unable to cancel consultation",
-                        );
-                      }
-                    },
+                        const SizedBox(height: 8),
 
-                    child: const Text("OK"),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.brown.shade200,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            children: reasons.map((reason) {
+                              return RadioListTile<String>(
+                                dense: true,
+                                title: Text(
+                                  reason,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                value: reason,
+                                groupValue: _selectedReason,
+                                activeColor: Colors.brown,
+                                onChanged: (value) {
+                                  setDialogState(() {
+                                    _selectedReason = value!;
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        Row(
+                          children: [
+
+                            Expanded(
+                              child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                    color: Colors.brown,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(10),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: const Text(
+                                  "No",
+                                  style: TextStyle(
+                                    color: Colors.brown,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(width: 12),
+
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(10),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  Get.back();
+
+                                  bool success =
+                                      await controller
+                                          .cancelConsultationRequest(
+                                    consultationId:
+                                        widget.consultationId,
+                                    cancellationReason:
+                                        _selectedReason,
+                                  );
+
+                                  if (success) {
+
+                                    controller.stopCheckingDoctor();
+
+                                    Get.snackbar(
+                                      "Cancelled",
+                                      "Consultation cancelled successfully",
+                                    );
+
+                                    Get.offAll(() => MainLayout());
+                                  } else {
+                                    Get.snackbar(
+                                      "Error",
+                                      "Unable to cancel consultation",
+                                    );
+                                  }
+                                },
+                                child: const Text("Yes"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               );
             },
           );
         },
       );
     }
+
+    // Future<void> _showReasonDialog() async {
+
+    //   final reasons = [
+
+    //     "Booked by mistake",
+
+    //     "Doctor taking too long",
+
+    //     "No longer needed",
+
+    //     "Found another doctor",
+
+    //     "Other",
+    //   ];
+
+    //   _selectedReason = reasons.first;
+
+    //   showDialog(
+
+    //     context: context,
+
+    //     barrierDismissible: false,
+
+    //     builder: (dialogContext) {
+
+    //       return StatefulBuilder(
+
+    //         builder: (dialogStateContext, setStateDialog) {
+
+    //           return AlertDialog(
+
+    //             shape: RoundedRectangleBorder(
+    //               borderRadius: BorderRadius.circular(15),
+    //             ),
+
+    //             title: const Text(
+    //               "Cancellation Reason",
+    //             ),
+
+    //             content: Column(
+
+    //               mainAxisSize: MainAxisSize.min,
+
+    //               children: reasons.map((reason) {
+
+    //                 return RadioListTile<String>(
+
+    //                   title: Text(reason),
+
+    //                   value: reason,
+
+    //                   groupValue: _selectedReason,
+
+    //                   onChanged: (value) {
+
+    //                     setStateDialog(() {
+
+    //                       _selectedReason = value!;
+    //                     });
+    //                   },
+    //                 );
+
+    //               }).toList(),
+    //             ),
+
+    //             actions: [
+
+    //               TextButton(
+
+    //                 onPressed: () {
+
+    //                   Get.back();
+
+    //                 },
+
+    //                 child: const Text("Close"),
+    //               ),
+
+    //               ElevatedButton(
+
+    //                 onPressed: () async {
+
+    //                   Get.back();
+
+    //                   // controller.stopCheckingDoctor();
+
+    //                   bool success = await controller.cancelConsultationRequest(
+    //                     consultationId: widget.consultationId,
+    //                     cancellationReason: _selectedReason,
+    //                   );
+
+    //                   if (success) {
+
+    //                     if (!mounted) return;
+
+    //                     Get.snackbar(
+    //                       "Cancelled",
+    //                       "Consultation cancelled successfully",
+    //                     );
+
+    //                     Navigator.of(context).popUntil(
+    //                       (route) => route.isFirst,
+    //                     );
+
+    //                     Navigator.push(
+    //                       context,
+    //                       MaterialPageRoute(
+    //                         builder: (_) => const AppointmentPage(),
+    //                       ),
+    //                     );
+    //                   } else {
+
+    //                     Get.snackbar(
+
+    //                       "Error",
+
+    //                       "Unable to cancel consultation",
+    //                     );
+    //                   }
+    //                 },
+
+    //                 child: const Text("OK"),
+    //               ),
+    //             ],
+    //           );
+    //         },
+    //       );
+    //     },
+    //   );
+    // }
 
     void _showNoDoctorDialog() {
 
@@ -267,39 +406,42 @@ class _DoctorConnectingPageState
 
           return AlertDialog(
 
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-
             title: const Text(
               "No Doctors Available",
             ),
 
             content: const Text(
-              "Sorry, no doctors are available at the moment. Please try again later.",
+              "Sorry, no doctors are available right now.",
             ),
 
             actions: [
 
-              ElevatedButton(
-
+              /// CLOSE
+              TextButton(
                 onPressed: () {
 
                   Get.back();
 
-                  Navigator.of(context).popUntil(
-                    (route) => route.isFirst,
-                  );
+                  Get.offAll(() => MainLayout());
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AppointmentPage(),
-                    ),
-                  );
                 },
+                child: const Text("Close"),
+              ),
 
-                child: const Text("OK"),
+              /// RETRY
+              ElevatedButton(
+                onPressed: () {
+
+                  Get.back();
+
+                  _dialogShown = false;
+
+                  controller.consultationStatus.value =
+                      "searching";
+
+                  controller.startCheckingDoctor();
+                },
+                child: const Text("Retry"),
               ),
             ],
           );
@@ -319,7 +461,7 @@ class _DoctorConnectingPageState
         _showCancelDialog();
       },
       child: Scaffold(
-
+        backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 60,
         backgroundColor: Colors.transparent,
@@ -379,20 +521,40 @@ class _DoctorConnectingPageState
 
           children: [
 
-            const CircularProgressIndicator(),
+            Image.asset(
+              "assets/images/DoctorSearch.gif",
+              height: 300,
+              width: 300,
+            ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
             const Text(
-              "Connecting to doctor...",
+              "Searching...",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.brown,
+              ),
             ),
 
             const SizedBox(height: 10),
 
             const Text(
-              "Please wait while nearby doctors accept your request",
+              "Please wait while we find an available doctor for your consultation.",
               textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black54,
+              ),
             ),
+
+            // const SizedBox(height: 10),
+
+            // const Text(
+            //   "Please wait while nearby doctors accept your request",
+            //   textAlign: TextAlign.center,
+            // ),
 
             const SizedBox(height: 40),
 

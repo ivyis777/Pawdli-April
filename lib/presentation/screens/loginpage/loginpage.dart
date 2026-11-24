@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pawlli/core/form_validation/form_validation.dart';
 import 'package:pawlli/core/storage_manager/colors.dart';
+import 'package:pawlli/data/controller/guestLoginController.dart';
 import 'package:pawlli/data/controller/logincontroller.dart';
 import 'package:pawlli/data/controller/otpcontroller.dart';
 import 'package:pawlli/gen/assests.gen.dart';
@@ -14,6 +16,7 @@ import 'package:pawlli/presentation/screens/personalinfopage/personalinfopage.da
 import 'package:pawlli/presentation/screens/signuppage/signuppage.dart';
 import 'package:pawlli/presentation/widgets/bottom%20bar/bottombar.dart';
 import 'package:pawlli/presentation/widgets/commonui/commonui.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -24,6 +27,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  final LoginController controller =
+      Get.put(LoginController());
+
+  final GuestLoginController guestController =
+    Get.put(GuestLoginController());
+
   bool _isProcessing = false;
   final _formKey1 = GlobalKey<FormState>();
   late final OtpController otpController;
@@ -269,28 +279,86 @@ class _LoginPageState extends State<LoginPage> {
                                                         .toLowerCase();
 
                                                     // ✅ HANDLE EMAIL NOT FOUND PROPERLY
-                                                    if (msg.contains(
-                                                            'not found') ||
-                                                        msg.contains(
-                                                            'sign up')) {
-                                                      // ✅ SHOW ERROR FIRST
-                                                      Get.snackbar(
-                                                        "Account Not Found".tr,
-                                                        result.message,
-                                                        snackPosition:
-                                                            SnackPosition.TOP,
-                                                      );
+                                                    if (msg.contains('not found') ||
+                                                        msg.contains('sign up')) {
 
-                                                      // ✅ WAIT + NAVIGATE
-                                                      Future.delayed(
-                                                          const Duration(
-                                                              seconds: 1), () {
-                                                        Get.to(() => Signuppage(
-                                                              email:
-                                                                  _emailController
-                                                                      .text,
-                                                            ));
-                                                      });
+                                                      Get.dialog(
+                                                        Dialog(
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(20),
+                                                            side: BorderSide(
+                                                              color: Colours.primarycolour,
+                                                              width: 2,
+                                                            ),
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(20),
+                                                            child: Column(
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              children: [
+                                                                Image.asset(
+                                                                  "assets/images/SignUp.png",
+                                                                  height: 140,
+                                                                  fit: BoxFit.contain,
+                                                                ),
+
+                                                                const SizedBox(height: 15),
+
+                                                                Text(
+                                                                  "Signup Required".tr,
+                                                                  textAlign: TextAlign.center,
+                                                                  style: const TextStyle(
+                                                                    fontSize: 22,
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                ),
+
+                                                                const SizedBox(height: 10),
+
+                                                                Text(
+                                                                  "Please sign up first to continue.".tr,
+                                                                  textAlign: TextAlign.center,
+                                                                  style: const TextStyle(
+                                                                    fontSize: 15,
+                                                                  ),
+                                                                ),
+
+                                                                const SizedBox(height: 20),
+
+                                                                Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: OutlinedButton(
+                                                                        onPressed: () {
+                                                                          Get.back();
+                                                                        },
+                                                                        child: Text("Cancel".tr),
+                                                                      ),
+                                                                    ),
+
+                                                                    const SizedBox(width: 10),
+
+                                                                    Expanded(
+                                                                      child: ElevatedButton(
+                                                                        onPressed: () {
+                                                                          Get.back();
+                                                                          Get.to(
+                                                                            () => Signuppage(
+                                                                              email: _emailController.text.trim(),
+                                                                            ),
+                                                                          );
+                                                                        },
+                                                                        child: Text("Sign Up".tr),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        barrierDismissible: false,
+                                                      );
                                                     } else {
                                                       // ❌ SHOW OTHER ERRORS
                                                       Get.snackbar(
@@ -542,104 +610,196 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
 
-                                SizedBox(height: 15),
+                                SizedBox(height: 12),
 
-                                ElevatedButton.icon(
-                                  onPressed: () async {
+                                Column(
+                                  children: [
 
-                                    print("🔥 GOOGLE BUTTON PRESSED");
+                                    // Apple Button
+                                    if (Platform.isIOS)
+                                      SizedBox(
+                                        width: screenWidth * (isSmallScreen ? 0.8 : 0.4),
+                                        height: 50,
+                                        child: Material(
+                                          elevation: 2,
+                                          borderRadius: BorderRadius.circular(15),
+                                          child: SignInWithAppleButton(
+                                            borderRadius: BorderRadius.circular(15),
+                                            style: SignInWithAppleButtonStyle.white,
+                                            onPressed: () async {
+                                              final result =
+                                                  await controller.loginWithApple();
 
-                                    final result =
-                                        await logincontroller.loginWithGoogle();
+                                              if (result.emailRequired) {
 
-                                    print("🔥 GOOGLE RESULT SUCCESS => ${result.success}");
-                                    print("🔥 GOOGLE RESULT MESSAGE => ${result.message}");
+                                                Get.dialog(
+                                                  Dialog(
+                                                    backgroundColor: Colors.white,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      side: BorderSide(
+                                                        color: Colours.primarycolour,
+                                                        width: 1.5,
+                                                      ),
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(20),
+                                                      child: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          const Text(
+                                                            "Sign in failed",
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              fontSize: 22,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
 
-                                    if (result.success) {
-                                      print("✅ NAVIGATING TO MAINLAYOUT");
-                                      if (result.isNewUser) {
-                                        Get.offAll(() => PersonalInfoPage());
-                                      } else {
-                                        Get.offAll(() => MainLayout());
-                                      }
-                                    }
+                                                          const SizedBox(height: 12),
 
-                                    Get.snackbar(
-                                      result.success ? "Success" : "Error",
-                                      result.message,
-                                      snackPosition: SnackPosition.TOP,
-                                    );
-                                  },
-                                  icon: Image.network(
-                                    'https://app.pawdli.com/media/static/google.png',
-                                    height: 24,
-                                  ),
-                                  label: Text(
-                                    " Continue with Google".tr,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: FontFamily.Ubantu,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    fixedSize: Size(
-                                      screenWidth * (isSmallScreen ? 0.8 : 0.4),
-                                      50,
+                                                          const Text(
+                                                            "Pawdli requires an email address to access our service, We couldn't sign you in because your Apple account doesn't have an email address.",
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              fontSize: 15,
+                                                            ),
+                                                          ),
+
+                                                          const SizedBox(height: 20),
+
+                                                          SizedBox(
+                                                            width: double.infinity,
+                                                            child: ElevatedButton(
+                                                              style: ElevatedButton.styleFrom(
+                                                                backgroundColor: Colours.primarycolour,
+                                                                foregroundColor: Colors.white,
+                                                                shape: RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(12),
+                                                                ),
+                                                              ),
+                                                              onPressed: () {
+                                                                Get.back();
+                                                              },
+                                                              child: const Text("OK"),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  barrierDismissible: false,
+                                                );
+                                                return;
+                                              }
+                                              if (result.success) {
+                                                Get.offAll(() => MainLayout());
+                                              } else {
+                                                Get.snackbar(
+                                                  "Error",
+                                                  result.message,
+                                                  snackPosition: SnackPosition.TOP,
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ),
+
+                                    const SizedBox(height: 12),
+
+                                    // Google Button
+                                    SizedBox(
+                                      width: screenWidth * (isSmallScreen ? 0.8 : 0.4),
+                                      height: 50,
+                                      child: ElevatedButton.icon(
+                                        onPressed: () async {
+
+                                          final result = await logincontroller.loginWithGoogle();
+
+                                          if (result.success) {
+
+                                            if (result.isNewUser) {
+                                              Get.offAll(() => PersonalInfoPage());
+                                            } else {
+                                              Get.offAll(() => MainLayout());
+                                            }
+
+                                          } else {
+
+                                            Get.snackbar(
+                                              "Error",
+                                              result.message,
+                                              snackPosition: SnackPosition.TOP,
+                                            );
+
+                                          }
+                                        },
+                                        icon: Image.network(
+                                          'https://app.pawdli.com/media/static/google.png',
+                                          height: 22,
+                                        ),
+                                        label: const Text(
+                                          "Continue with Google",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            // fontFamily: FontFamily.Ubantu,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 2,
+                                          backgroundColor: Colors.white,
+                                          foregroundColor: Colors.black,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    backgroundColor: Colors.white,
-                                    foregroundColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 12),
+
+                                // Guest Login
+                                Obx(
+                                  () => SizedBox(
+                                    width: screenWidth * (isSmallScreen ? 0.8 : 0.4),
+                                    height: 50,
+                                    child: OutlinedButton(
+                                      onPressed: guestController.isLoading.value
+                                          ? null
+                                          : () {
+                                              guestController.loginAsGuest();
+                                            },
+                                      style: ElevatedButton.styleFrom(
+                                      fixedSize: Size(
+                                        screenWidth *
+                                            (isSmallScreen ? 0.8 : 0.4),
+                                        50,
+                                      ),
+                                      backgroundColor: Colours.brownColour,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                    ),
+                                      child: guestController.isLoading.value
+                                          ? const CircularProgressIndicator()
+                                          : const Text(
+                                              "Continue as Guest",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
                                     ),
                                   ),
                                 ),
 
-                                // SizedBox(height: 15),
-
-                                // if (GetPlatform.isIOS)
-                                //   ElevatedButton.icon(
-                                //   onPressed: () async {
-                                //     print("🍎 ===============================");
-                                //     print("🍎 Apple Button Clicked");
-
-                                //     final result = await logincontroller.loginWithApple();
-
-                                //     print("🍎 RESULT SUCCESS: ${result.success}");
-                                //     print("🍎 RESULT MESSAGE: ${result.message}");
-                                //     print("🍎 ===============================");
-
-                                //     if (result.success) {
-                                //       print("🍎 Navigating to MainLayout");
-                                //       Get.offAll(() => MainLayout());
-                                //     } else {
-                                //       print("🍎 Showing error snackbar");
-
-                                //       Get.snackbar(
-                                //         "Error",
-                                //         result.message,
-                                //         snackPosition: SnackPosition.TOP,
-                                //       );
-                                //     }
-                                //   },
-                                //     icon: Icon(Icons.apple, size: 35),
-                                //     label: Text(
-                                //       "Continue with Apple",
-                                //       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                                //     ),
-                                //     style: ElevatedButton.styleFrom(
-                                //       fixedSize: Size(
-                                //         screenWidth * (isSmallScreen ? 0.8 : 0.4),
-                                //         50,
-                                //       ),
-                                //       backgroundColor: Colors.black,
-                                //       foregroundColor: Colors.white,
-                                //       shape: RoundedRectangleBorder(
-                                //         borderRadius: BorderRadius.circular(15),
-                                //       ),
-                                //     ),
-                                //   ),
-
-                                SizedBox(height: 15),
+                                SizedBox(height: 12),
 
                                 // // Sign Up Section
                                 // Row(
@@ -692,7 +852,7 @@ class _LoginPageState extends State<LoginPage> {
                                     GestureDetector(
                                       onTap: () {
                                         launchUrl(Uri.parse(
-                                            "https://www.pawlli.com/terms-and-conditions/"));
+                                            "https://ivyis777.github.io/pawdli-terms-and-conditions/"));
                                       },
                                       child: Text(
                                         "Terms of use".tr,
@@ -726,7 +886,7 @@ class _LoginPageState extends State<LoginPage> {
                                     GestureDetector(
                                       onTap: () {
                                         launchUrl(Uri.parse(
-                                            "https://www.pawlli.com/privacy-policy/"));
+                                            "https://ivyis777.github.io/pawdli-privacy-policy/"));
                                       },
                                       child: Text(
                                         " Privacy policy".tr,

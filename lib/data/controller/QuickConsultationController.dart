@@ -138,11 +138,11 @@ class QuickConsultationController
   /// START CHECKING DOCTOR
   void startCheckingDoctor() {
 
-    print(
-        "START CHECKING DOCTOR");
+    stopCheckingDoctor();
 
-    print(
-      "START CHECKING DOCTOR FOR => ${consultationId.value}");
+    print("START CHECKING DOCTOR");
+
+    print("START CHECKING DOCTOR FOR => ${consultationId.value}");
 
     isCheckingDoctor.value = true;
 
@@ -301,6 +301,98 @@ class QuickConsultationController
     isCheckingDoctor.value = false;
   }
 
+    Future<bool> reconnectConsultation(
+        int consultationId) async {
+      try {
+
+        final response =
+            await ApiService.reconnectConsultation(
+          consultationId,
+        );
+
+        if (response != null &&
+            response["status"] == true) {
+
+          this.consultationId.value =
+              consultationId;
+
+          consultationStatus.value =
+              response["consultation_status"] ??
+                  "searching";
+
+          print(
+            "RECONNECT SUCCESS => $consultationId",
+          );
+
+          return true;
+        }
+
+        return false;
+
+      } catch (e) {
+
+        print(
+          "RECONNECT CONTROLLER ERROR => $e",
+        );
+
+        return false;
+      }
+    }
+
+    Future<void> rejoinConsultation(
+      int consultationId,
+    ) async {
+
+      try {
+
+        isLoading.value = true;
+
+        final response =
+            await ApiService.rejoinConsultation(
+          consultationId,
+        );
+
+        
+
+        if (response == null) {
+
+          Get.snackbar(
+            "Error",
+            "Unable to rejoin consultation",
+          );
+
+          return;
+        }
+
+        Get.to(
+          () => ConsultationCallPage(
+            roomId:
+                response.consultationRoomId ?? "",
+
+            websocketUrl:
+                response.websocketUrl ?? "",
+
+            consultationRequestId:
+                consultationId,
+
+            isDoctor: false,
+
+            receiverId: "",
+          ),
+        );
+
+      } catch (e) {
+
+        print(
+          "REJOIN CONTROLLER ERROR : $e",
+        );
+
+      } finally {
+
+        isLoading.value = false;
+      }
+    }
+
     Future<bool> cancelConsultationRequest({
 
       required int consultationId,
@@ -329,7 +421,7 @@ class QuickConsultationController
 
           stopCheckingDoctor();
 
-          resetConsultation();
+          consultationStatus.value = "cancelled";
 
           return true;
         }

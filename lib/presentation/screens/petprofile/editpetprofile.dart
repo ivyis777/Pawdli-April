@@ -185,45 +185,89 @@ class _EditPetPageState extends State<EditPetPage> {
   }
 
   Future<File?> _compressImage(XFile image) async {
-    final filePath = image.path;
-    final lastIndex =
-        filePath.lastIndexOf(RegExp(r'.jp')); // works for .jpg, .jpeg
-    final split = filePath.substring(0, lastIndex);
-    final outPath = "${split}_compressed.jpg";
+    try {
+      final filePath = image.path;
 
-    final compressedXFile = await FlutterImageCompress.compressAndGetFile(
-      filePath,
-      outPath,
-      quality: 70, // adjust quality (0–100)
-    );
+      debugPrint('🐾 Original pet image: $filePath');
 
-    if (compressedXFile == null) return null;
+      final lastIndex = filePath.lastIndexOf('.');
 
-    return File(compressedXFile.path); // ✅ return File
+      final split = lastIndex != -1
+          ? filePath.substring(0, lastIndex)
+          : filePath;
+
+      final outPath = '${split}_compressed.jpg';
+
+      final compressedXFile =
+          await FlutterImageCompress.compressAndGetFile(
+        filePath,
+        outPath,
+        quality: 70,
+      );
+
+      if (compressedXFile == null) {
+        debugPrint('❌ Pet image compression returned null');
+        return null;
+      }
+
+      final compressedFile = File(compressedXFile.path);
+
+      debugPrint('✅ Compressed pet image: ${compressedFile.path}');
+      debugPrint('✅ File exists: ${compressedFile.existsSync()}');
+
+      return compressedFile;
+    } catch (e, stackTrace) {
+      debugPrint('❌ PET IMAGE COMPRESSION ERROR: $e');
+      debugPrint('$stackTrace');
+      return null;
+    }
   }
 
   Future<File?> _cropImage(File imageFile) async {
-    final croppedFile = await ImageCropper().cropImage(
-      sourcePath: imageFile.path,
-      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Crop Image'.tr,
-          toolbarColor: Colours.primarycolour,
-          toolbarWidgetColor: Colors.white,
-          cropStyle: CropStyle.circle, // ✅ CIRCLE CROP (Android)
-          hideBottomControls: true,
-          lockAspectRatio: true,
-        ),
-        IOSUiSettings(
-          title: 'Crop Image'.tr,
-          aspectRatioLockEnabled: true,
-        ),
-      ],
-    );
+    try {
+      debugPrint('✂️ CROP START');
+      debugPrint('✂️ Input path: ${imageFile.path}');
+      debugPrint('✂️ Input exists: ${imageFile.existsSync()}');
+      debugPrint('✂️ Input size: ${imageFile.lengthSync()} bytes');
 
-    if (croppedFile == null) return null;
-    return File(croppedFile.path);
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: imageFile.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Image'.tr,
+            toolbarColor: Colours.primarycolour,
+            toolbarWidgetColor: Colors.white,
+            cropStyle: CropStyle.circle,
+            hideBottomControls: true,
+            lockAspectRatio: true,
+          ),
+          IOSUiSettings(
+            title: 'Crop Image'.tr,
+            aspectRatioLockEnabled: true,
+          ),
+        ],
+      );
+
+      debugPrint('✂️ CROP FINISHED');
+
+      if (croppedFile == null) {
+        debugPrint('❌ Crop returned NULL');
+        return null;
+      }
+
+      final croppedImage = File(croppedFile.path);
+
+      debugPrint('✅ Cropped path: ${croppedImage.path}');
+      debugPrint('✅ Cropped exists: ${croppedImage.existsSync()}');
+      debugPrint('✅ Cropped size: ${croppedImage.lengthSync()} bytes');
+
+      return croppedImage;
+    } catch (e, stackTrace) {
+      debugPrint('❌ CROP ERROR: $e');
+      debugPrint('$stackTrace');
+      return null;
+    }
   }
 
   Future<void> _pickImage() async {
@@ -235,46 +279,100 @@ class _EditPetPageState extends State<EditPetPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // CAMERA
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title:  Text('Take a Picture'.tr),
+                title: Text('Take a Picture'.tr),
                 onTap: () async {
-                  Navigator.pop(sheetContext); // ✅ CLOSE SHEET FIRST
+  Navigator.pop(sheetContext);
 
-                  final XFile? image =
-                      await _picker.pickImage(source: ImageSource.camera);
-                  if (image == null) return;
+  try {
+    debugPrint('🐾 Opening pet camera...');
 
-                  final File? compressed = await _compressImage(image);
-                  if (compressed == null) return;
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.camera,
+    );
 
-                  final File? cropped = await _cropImage(compressed);
-                  if (cropped == null) return;
+    if (image == null) return;
 
-                  setState(() {
-                    _profileImage = cropped; // ✅ CROPPED IMAGE SAVED
-                  });
-                },
+    debugPrint('✅ Pet photo captured: ${image.path}');
+
+    final File? compressed = await _compressImage(image);
+
+    if (compressed == null) {
+      debugPrint('❌ Compression failed');
+      return;
+    }
+
+    debugPrint('✅ Compression successful');
+    debugPrint('📸 Displaying compressed image directly');
+
+    if (!mounted) return;
+
+    setState(() {
+      _profileImage = compressed;
+    });
+
+    debugPrint('🟢 Profile image state updated');
+  } catch (e, stackTrace) {
+    debugPrint('❌ CAMERA ERROR: $e');
+    debugPrint('$stackTrace');
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Unable to load photo: $e')),
+      );
+    }
+  }
+},
               ),
+
+              // GALLERY
               ListTile(
                 leading: const Icon(Icons.image),
                 title: Text('Upload from Gallery'.tr),
                 onTap: () async {
-                  Navigator.pop(sheetContext); // ✅ CLOSE SHEET FIRST
+                  Navigator.pop(sheetContext);
 
-                  final XFile? image =
-                      await _picker.pickImage(source: ImageSource.gallery);
-                  if (image == null) return;
+                  try {
+                    debugPrint('🐾 Opening pet gallery...');
 
-                  final File? compressed = await _compressImage(image);
-                  if (compressed == null) return;
+                    final XFile? image = await _picker.pickImage(
+                      source: ImageSource.gallery,
+                    );
 
-                  final File? cropped = await _cropImage(compressed);
-                  if (cropped == null) return;
+                    if (image == null) return;
 
-                  setState(() {
-                    _profileImage = cropped; // ✅ CROPPED IMAGE SAVED
-                  });
+                    final File? compressed = await _compressImage(image);
+
+                    if (compressed == null) {
+                      debugPrint('❌ Pet gallery image compression failed');
+                      return;
+                    }
+
+                    final File? cropped = await _cropImage(compressed);
+
+                    if (cropped == null) return;
+
+                    if (!mounted) return;
+
+                    setState(() {
+                      _profileImage = cropped;
+                    });
+
+                    debugPrint('🎉 Pet gallery image updated');
+                  } catch (e, stackTrace) {
+                    debugPrint('❌ PET GALLERY ERROR: $e');
+                    debugPrint('$stackTrace');
+
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Unable to process pet image: $e'),
+                        ),
+                      );
+                    }
+                  }
                 },
               ),
             ],

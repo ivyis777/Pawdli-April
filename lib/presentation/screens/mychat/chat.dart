@@ -7,8 +7,10 @@ import 'package:pawlli/data/controller/petslistcontroller.dart';
 import 'package:pawlli/data/controller/recentchatcontroller.dart';
 import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
+import 'package:pawlli/presentation/screens/add%20pet/addpet.dart';
 import 'package:pawlli/presentation/screens/chat1to1/chatui.dart';
 import 'package:get/get.dart';
+import 'package:pawlli/presentation/screens/types%20of%20categaries/typesofcategaries.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
   double screenWidth = MediaQuery.of(context).size.width;
@@ -153,7 +155,23 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
         }
 
         if (petsController.userPets.isEmpty) {
-          return Center(child: Text("No pets found.".tr));
+          return Center(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddPetPage(),
+                  ),
+                );
+              },
+              child: Image.asset(
+                'assets/images/NoPetsFound.png',
+                width: MediaQuery.of(context).size.width * 0.3,
+                fit: BoxFit.contain,
+              ),
+            ),
+          );
         }
 
         return Obx(() {
@@ -274,10 +292,26 @@ class _MyChatsSectionState extends State<_MyChatsSection> {
             }
 
             if (recentChatController.recentChats.isEmpty) {
-              return  Center(child: Text("No recent chats available.".tr, style: TextStyle(
-                  fontSize: getResponsiveFont(context, 14),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SeeAllPage(), 
+                    ),
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: screenHeight * 0.25,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/NoRecentChat.png'),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
-              ));
+              );
             }
 
             return ListView.separated(

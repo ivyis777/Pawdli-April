@@ -8,10 +8,10 @@ import 'package:pawlli/presentation/screens/pet%20therapy/TherapyBookingDetailsP
 import 'package:pawlli/presentation/screens/pet%20therapy/superuserdetailspage.dart';
 
 
-class TherapyBookingListPage
-    extends StatelessWidget {
+class TherapyBookingListPage extends StatelessWidget {
+  final VoidCallback onSwitchToTherapyTab;
 
-  TherapyBookingListPage({super.key});
+  TherapyBookingListPage({super.key, required this.onSwitchToTherapyTab});
 
   final controller = Get.put(TherapyBookingController(), permanent: true);
 
@@ -43,10 +43,20 @@ class TherapyBookingListPage
             },
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
-              children: const [
-                SizedBox(height: 250),
-                Center(
-                  child: Text("No Therapy Sessions"),
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  child: Center(
+                    child: GestureDetector(
+                      onTap: onSwitchToTherapyTab,
+                      child: Image.asset(
+                        'assets/images/NoSessions.png',
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        fit: BoxFit.contain,
+                      ),
+                    )
+                  ),
                 ),
               ],
             ),

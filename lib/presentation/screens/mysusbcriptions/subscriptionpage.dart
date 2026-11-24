@@ -11,6 +11,7 @@ import 'package:pawlli/data/model/mysubscriptionmodel.dart';
 import 'package:pawlli/gen/assests.gen.dart';
 import 'package:pawlli/gen/fonts.gen.dart';
 import 'package:pawlli/presentation/screens/agora/videocallpage.dart';
+import 'package:pawlli/presentation/screens/pet%20Radio/petradio.dart';
 
 double getResponsiveFont(BuildContext context, double size) {
   double screenWidth = MediaQuery.of(context).size.width;
@@ -240,7 +241,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 preferredSize: Size.fromHeight(screenHeight * 0.12),
                 child: AppBar(
                   title: Text(
-                    'Subscription'.tr,
+                    'Radio Bookings'.tr,
                     style: TextStyle(
                       fontSize: getResponsiveFont(context, 18),
                       fontWeight: FontWeight.w600,
@@ -347,12 +348,28 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   final allPrograms = [...filteredActive, ...filteredExpired];
 
                   if (allPrograms.isEmpty) {
-                    return Center(child: Text(
-                      'No subscriptions found'.tr,
-                      style: TextStyle(
-                        fontSize: getResponsiveFont(context, 14),
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      width: double.infinity,
+                      child: Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Petradio(), // Replace with your page
+                              ),
+                            );
+                          },
+                          child: Image.asset(
+                            'assets/images/NoRadioBookings.png',
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
                       ),
-                    ));
+                    );
                   }
 
                   return RefreshIndicator(
@@ -535,33 +552,79 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   void showStartTimePopup(String startTime, String date) {
     showDialog(
       context: context,
-      barrierDismissible:
-          false, // Prevent dismiss on outside tap or back button
+      barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          title: Text(
-            "Session Not Started".tr,
-            style: TextStyle(
-              fontSize: getResponsiveFont(context, 18), // Bigger font for title
-              fontWeight: FontWeight.bold,
+        return Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: Colours.primarycolour,
+              width: 1.5,
             ),
           ),
-          content: Text(
-            "The session starts at $startTime on $date.".tr,
-            style: TextStyle(
-              fontSize: getResponsiveFont(context, 14), // Bigger font for content
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  "assets/images/NotStarted.png",
+                  height: 150,
+                  fit: BoxFit.contain,
+                ),
+
+                const SizedBox(height: 12),
+
+                Text(
+                  "Session Not Started".tr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 18),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                Text(
+                  "The session starts at $startTime on $date.".tr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 14),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colours.primarycolour,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "OK".tr,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: getResponsiveFont(context, 14),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(), // Only closes dialog on OK tap
-              child: Text(
-                "OK".tr,
-                style: TextStyle(fontSize: getResponsiveFont(context, 14)),
-              ),
-            ),
-          ],
         );
       },
     );
@@ -593,55 +656,140 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Session Failed'.tr),
-          content: Text('Would you like to rejoin the session?'.tr),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'.tr),
-              onPressed: () {
-                setState(() {
-                  _isDialogShowing = false; // Reset dialog flag
-                });
-                Navigator.of(context).pop();
-              },
+        return Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(
+              color: Colours.primarycolour,
+              width: 1.5,
             ),
-            TextButton(
-              child: Text('Rejoin'.tr),
-              onPressed: () async {
-                setState(() {
-                  _isDialogShowing = false; // Reset dialog flag
-                });
-                Navigator.of(context).pop();
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  "assets/images/SessionFailed.png",
+                  height: 150,
+                  fit: BoxFit.contain,
+                ),
 
-                if (!mounted) return;
+                const SizedBox(height: 12),
 
-                await Future.delayed(Duration(milliseconds: 300));
+                // Text(
+                //   'Session Failed'.tr,
+                //   textAlign: TextAlign.center,
+                //   style: TextStyle(
+                //     fontSize: getResponsiveFont(context, 18),
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
 
-                Navigator.of(context, rootNavigator: true).push(
-                  MaterialPageRoute(
-                    fullscreenDialog: true,
-                    builder: (_) => VideoCallPage(
-                      userId: userId,
-                      // channelName: data['channel_name'],
-                      // token: data['token'],
-                      // uid: data['agora_uid'],
-                      // appId: "daed82b7feea4990bf7fb43d9addd091",
-                      programType: programType,
-                      isCaller: true,
-                      sessionId: data['session_id'] ?? 0,
-                      // isRestart: _isRestart,
-                      websocketUrl: data['websocket_url'],
-                      bookingId: bookingId,
-                    ),
+                const SizedBox(height: 10),
+
+                Text(
+                  'Would you like to rejoin the session?'.tr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: getResponsiveFont(context, 14),
                   ),
-                );
-                // debugPrint("🎫 Agora token from server: ${data['token']}");
-                // debugPrint("📺 Channel: ${data['channel_name']}");
-                // debugPrint("👤 Agora UID: ${data['agora_uid']}");
-              },
+                ),
+
+                const SizedBox(height: 20),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            color: Colours.primarycolour,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isDialogShowing = false;
+                          });
+
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Cancel'.tr,
+                          style: TextStyle(
+                            color: Colours.primarycolour,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colours.primarycolour,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                          ),
+                        ),
+                        onPressed: () async {
+                          setState(() {
+                            _isDialogShowing = false;
+                          });
+
+                          Navigator.of(context).pop();
+
+                          if (!mounted) return;
+
+                          await Future.delayed(
+                            const Duration(milliseconds: 300),
+                          );
+
+                          Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).push(
+                            MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (_) => VideoCallPage(
+                                userId: userId,
+                                programType: programType,
+                                isCaller: true,
+                                sessionId: data['session_id'] ?? 0,
+                                websocketUrl: data['websocket_url'],
+                                bookingId: bookingId,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Rejoin'.tr,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     ).then((_) {

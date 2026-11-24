@@ -763,7 +763,7 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
 
         Future.delayed(const Duration(milliseconds: 500), () {
           if (mounted) {
-            Navigator.pushAndRemoveUntil(
+            Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => PawlliRadio(
@@ -772,7 +772,6 @@ class _RadioProgramPageState extends State<RadioProgramPage> {
                   fromPaymentFlow: true,
                 ),
               ),
-              (route) => false,
             );
           }
         });
